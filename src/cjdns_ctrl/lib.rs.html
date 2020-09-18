@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-ctrl/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_ctrl/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+</pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">//! Parsing/serializing CTRL messages</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Cjdns contains a set of low level messages which are not encrypted. If you send a packet and it cannot be forwarded, the switch,</span>
+<span class="doccomment">//! which knows it is not possible to forward, will notify you with a CTRL message, these are not encrypted</span>
+<span class="doccomment">//! because, obviously, the switch doesn&#39;t know who you are and can&#39;t reasonably encrypt anything to you.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # CTRL message types</span>
+<span class="doccomment">//! * PING: request that the content of the message be echoed back to you</span>
+<span class="doccomment">//! * PONG: response to a PING message</span>
+<span class="doccomment">//! * KEYPING: Similar to a ping except that the message also sends a public key and requests one back.</span>
+<span class="doccomment">//! *NOTE*: When constructing a keyping, remember that the key you send is your key and the other person&#39;s key should be in the response.</span>
+<span class="doccomment">//! * KEYPONG: Response to a KEYPING message, contains the responder&#39;s key.</span>
+<span class="doccomment">//! * ERROR: Emitted by the switch in case a message cannot be forwarded.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Error message types</span>
+<span class="doccomment">//! * MALFORMED_ADDRESS: The switch label was malformed</span>
+<span class="doccomment">//! * FLOOD: Packet dropped because link is congested (never sent as of v18)</span>
+<span class="doccomment">//! * LINK_LIMIT_EXCEEDED: Packet dropped because node has oversent its limit (never sent as of v18)</span>
+<span class="doccomment">//! * OVERSIZE_MESSAGE: Message too big to send, caused by differing MTU along a path</span>
+<span class="doccomment">//! * UNDERSIZED_MESSAGE: Message smaller than expected headers</span>
+<span class="doccomment">//! * AUTHENTICATION: Authentication failed (CryptoAuth could not understand the packet)</span>
+<span class="doccomment">//! * INVALID: Header is invalid or checksum failed</span>
+<span class="doccomment">//! * UNDELIVERABLE: Message could not be sent to its destination through no fault of the sender</span>
+<span class="doccomment">//! * LOOP_ROUTE: The route enters and leaves through the same interface in one switch</span>
+<span class="doccomment">//! * RETURN_PATH_INVALID: The switch is unable to represent the return path, this basically means that</span>
+<span class="doccomment">//! the label is so long that the inverse label is impossible to put in 64 bits.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Example</span>
+<span class="doccomment">//! ```rust</span>
+<span class="doccomment">//! # use std::convert::TryFrom;</span>
+<span class="doccomment">//! # use hex::decode;</span>
+<span class="doccomment">//! # use cjdns_keys::CJDNSPublicKey;</span>
+<span class="doccomment">//! use cjdns_ctrl::*;</span>
+<span class="doccomment">//! # let hex_to_bytes = |s: &amp;str| -&gt; Vec&lt;u8&gt; { decode(s).expect(&quot;invalid hex string&quot;) };</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! let test_bytes = hex_to_bytes(&quot;994b00050123456700000012a331ebbed8d92ac03b10efed3e389cd0c6ec7331a72dbde198476c5eb4d14a1f02e29842b42aedb6bce2ead3&quot;);</span>
+<span class="doccomment">//! let test_message_inst = CtrlMessage {</span>
+<span class="doccomment">//!     msg_type: CtrlMessageType::KeyPing,</span>
+<span class="doccomment">//!     msg_data: CtrlMessageData::PingData(PingData {</span>
+<span class="doccomment">//!         version: 18,</span>
+<span class="doccomment">//!         key: Some(</span>
+<span class="doccomment">//!             CJDNSPublicKey::try_from(&quot;3fdqgz2vtqb0wx02hhvx3wjmjqktyt567fcuvj3m72vw5u6ubu70.k&quot;.to_string()).expect(&quot;invalid key string&quot;)</span>
+<span class="doccomment">//!         ),</span>
+<span class="doccomment">//!         content: hex_to_bytes(&quot;02e29842b42aedb6bce2ead3&quot;),</span>
+<span class="doccomment">//!     }),</span>
+<span class="doccomment">//! };</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! let parsed_msg = CtrlMessage::parse(&amp;test_bytes).expect(&quot;invalid message bytes&quot;);</span>
+<span class="doccomment">//! let serialized_msg = parsed_msg.serialize().expect(&quot;invalid message instance&quot;);</span>
+<span class="doccomment">//! assert_eq!(parsed_msg, test_message_inst);</span>
+<span class="doccomment">//! assert_eq!(serialized_msg, test_bytes)</span>
+<span class="doccomment">//! ```</span>
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">control_message</span>::{<span class="ident">CtrlMessage</span>, <span class="ident">CtrlMessageData</span>, <span class="ident">CtrlMessageType</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error_data</span>::{<span class="ident">ErrorData</span>, <span class="ident">ErrorMessageType</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ping_data</span>::<span class="ident">PingData</span>;
+
+<span class="kw">mod</span> <span class="ident">control_message</span>;
+<span class="kw">mod</span> <span class="ident">error_data</span>;
+<span class="kw">mod</span> <span class="ident">ping_data</span>;
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_ctrl";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

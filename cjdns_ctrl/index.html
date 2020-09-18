@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `cjdns_ctrl` crate."><meta name="keywords" content="rust, rustlang, rust-lang, cjdns_ctrl"><title>cjdns_ctrl - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../cjdns_ctrl/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate cjdns_ctrl</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all cjdns_ctrl's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'cjdns_ctrl', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/cjdns_ctrl/lib.rs.html#1-60' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>cjdns_ctrl</a></span></h1><div class='docblock'><p>Parsing/serializing CTRL messages</p>
+<p>Cjdns contains a set of low level messages which are not encrypted. If you send a packet and it cannot be forwarded, the switch,
+which knows it is not possible to forward, will notify you with a CTRL message, these are not encrypted
+because, obviously, the switch doesn't know who you are and can't reasonably encrypt anything to you.</p>
+<h1 id="ctrl-message-types" class="section-header"><a href="#ctrl-message-types">CTRL message types</a></h1>
+<ul>
+<li>PING: request that the content of the message be echoed back to you</li>
+<li>PONG: response to a PING message</li>
+<li>KEYPING: Similar to a ping except that the message also sends a public key and requests one back.
+<em>NOTE</em>: When constructing a keyping, remember that the key you send is your key and the other person's key should be in the response.</li>
+<li>KEYPONG: Response to a KEYPING message, contains the responder's key.</li>
+<li>ERROR: Emitted by the switch in case a message cannot be forwarded.</li>
+</ul>
+<h1 id="error-message-types" class="section-header"><a href="#error-message-types">Error message types</a></h1>
+<ul>
+<li>MALFORMED_ADDRESS: The switch label was malformed</li>
+<li>FLOOD: Packet dropped because link is congested (never sent as of v18)</li>
+<li>LINK_LIMIT_EXCEEDED: Packet dropped because node has oversent its limit (never sent as of v18)</li>
+<li>OVERSIZE_MESSAGE: Message too big to send, caused by differing MTU along a path</li>
+<li>UNDERSIZED_MESSAGE: Message smaller than expected headers</li>
+<li>AUTHENTICATION: Authentication failed (CryptoAuth could not understand the packet)</li>
+<li>INVALID: Header is invalid or checksum failed</li>
+<li>UNDELIVERABLE: Message could not be sent to its destination through no fault of the sender</li>
+<li>LOOP_ROUTE: The route enters and leaves through the same interface in one switch</li>
+<li>RETURN_PATH_INVALID: The switch is unable to represent the return path, this basically means that
+the label is so long that the inverse label is impossible to put in 64 bits.</li>
+</ul>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">cjdns_ctrl</span>::<span class="kw-2">*</span>;
+
+<span class="kw">let</span> <span class="ident">test_bytes</span> <span class="op">=</span> <span class="ident">hex_to_bytes</span>(<span class="string">&quot;994b00050123456700000012a331ebbed8d92ac03b10efed3e389cd0c6ec7331a72dbde198476c5eb4d14a1f02e29842b42aedb6bce2ead3&quot;</span>);
+<span class="kw">let</span> <span class="ident">test_message_inst</span> <span class="op">=</span> <span class="ident">CtrlMessage</span> {
+    <span class="ident">msg_type</span>: <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPing</span>,
+    <span class="ident">msg_data</span>: <span class="ident">CtrlMessageData</span>::<span class="ident">PingData</span>(<span class="ident">PingData</span> {
+        <span class="ident">version</span>: <span class="number">18</span>,
+        <span class="ident">key</span>: <span class="prelude-val">Some</span>(
+            <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;3fdqgz2vtqb0wx02hhvx3wjmjqktyt567fcuvj3m72vw5u6ubu70.k&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;invalid key string&quot;</span>)
+        ),
+        <span class="ident">content</span>: <span class="ident">hex_to_bytes</span>(<span class="string">&quot;02e29842b42aedb6bce2ead3&quot;</span>),
+    }),
+};
+
+<span class="kw">let</span> <span class="ident">parsed_msg</span> <span class="op">=</span> <span class="ident">CtrlMessage</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="ident">test_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid message bytes&quot;</span>);
+<span class="kw">let</span> <span class="ident">serialized_msg</span> <span class="op">=</span> <span class="ident">parsed_msg</span>.<span class="ident">serialize</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid message instance&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_msg</span>, <span class="ident">test_message_inst</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">serialized_msg</span>, <span class="ident">test_bytes</span>)</pre></div>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.CtrlMessage.html" title='cjdns_ctrl::CtrlMessage struct'>CtrlMessage</a></td><td class='docblock-short'><p>Serialized control message</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.ErrorData.html" title='cjdns_ctrl::ErrorData struct'>ErrorData</a></td><td class='docblock-short'><p>Body data for error type messages</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PingData.html" title='cjdns_ctrl::PingData struct'>PingData</a></td><td class='docblock-short'><p>Body data for ping type control messages</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.CtrlMessageData.html" title='cjdns_ctrl::CtrlMessageData enum'>CtrlMessageData</a></td><td class='docblock-short'><p>Control message serialized body data</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.CtrlMessageType.html" title='cjdns_ctrl::CtrlMessageType enum'>CtrlMessageType</a></td><td class='docblock-short'><p>Control message type, which is considered as message header</p>
+</td></tr><tr class='module-item'><td><a class="enum" href="enum.ErrorMessageType.html" title='cjdns_ctrl::ErrorMessageType enum'>ErrorMessageType</a></td><td class='docblock-short'><p>Concrete types of error for control error message</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "cjdns_ctrl";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

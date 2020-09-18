@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error","An enumeration of potential errors that appear during serde serialiation and deserialization"]],"fn":[["from_bytes","Deserialize an instance of `T` from bencode"],["to_bytes","Serialize an instance of `T` to bencode"]],"struct":[["BValue","Generic Bencode value."],["BencodeError",""]]});

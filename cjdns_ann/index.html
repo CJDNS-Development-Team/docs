@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `cjdns_ann` crate."><meta name="keywords" content="rust, rustlang, rust-lang, cjdns_ann"><title>cjdns_ann - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../cjdns_ann/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate cjdns_ann</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all cjdns_ann's items</p></a><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'cjdns_ann', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/cjdns_ann/lib.rs.html#1-175' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>cjdns_ann</a></span></h1><div class='docblock'><p>Library for parsing cjdns route announcement messages.</p>
+<p>Each cjdns announcement message contains message header, a sequence of entities and some additional data derived from header.
+For example, senders auth curve25519 encryption key is derived from the announcement header.</p>
+<h1 id="header" class="section-header"><a href="#header">Header</a></h1>
+<p>The header is 120 bytes long and contains an ed25519 signature over the entire announcement,
+the public signing key (which is used to create senders auth encryption key using <code>ed25519 -&gt; curve25519</code> conversion) of the node which created the announcement, the cjdns IPv6 address of the supernode to which this subnode is announcing,
+a timestamp, version and a reset flag. On the 03.09.2020 announcement protocol version is <code>1</code>.</p>
+<p>Announcement header packet diagram looks as follows:</p>
+<pre><code class="language-md">                       1               2               3
+       0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    0 |                                                               |
+      +                                                               +
+    4 |                                                               |
+      +                                                               +
+    8 |                                                               |
+      +                                                               +
+   12 |                                                               |
+      +                                                               +
+   16 |                                                               |
+      +                                                               +
+   20 |                                                               |
+      +                                                               +
+   24 |                                                               |
+      +                                                               +
+   28 |                                                               |
+      +                           Signature                           +
+   32 |                                                               |
+      +                                                               +
+   36 |                                                               |
+      +                                                               +
+   40 |                                                               |
+      +                                                               +
+   44 |                                                               |
+      +                                                               +
+   48 |                                                               |
+      +                                                               +
+   52 |                                                               |
+      +                                                               +
+   56 |                                                               |
+      +                                                               +
+   60 |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   64 |                                                               |
+      +                                                               +
+   68 |                                                               |
+      +                                                               +
+   72 |                                                               |
+      +                                                               +
+   76 |                                                               |
+      +                     Public Signing Key                        +
+   80 |                                                               |
+      +                                                               +
+   84 |                                                               |
+      +                                                               +
+   88 |                                                               |
+      +                                                               +
+   92 |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   96 |                                                               |
+      +                                                               +
+  100 |                                                               |
+      +                        SuperNode IP                           +
+  104 |                                                               |
+      +                                                               +
+  108 |                                                               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  112 |                                                               |
+      +                         Timestamp                     +-+-+-+-+
+  116 |                                                       |R| ver |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</code></pre>
+<h1 id="entities" class="section-header"><a href="#entities">Entities</a></h1>
+<p>Every entity in announcement message begins with two bytes, indicating length and type, at the time of this writing the types of entities are:</p>
+<ol>
+<li><code>EncodingScheme</code> with type number <code>0</code>. The entity contains serialized representation of encoding scheme created by <a href="../fn.serialize_forms.html">serializer</a>. Please look <a href="../fn.deserialize_forms.html">here</a> for more information about how this is parsed.</li>
+<li><code>Peer</code> with type number <code>1</code>. Each <code>Peer</code> entity contains roughly the information which is needed to reach the announcer from a given peer. It is important to note that this is <em>not</em> about ability to reach the <em>peer</em>, but to reach the announcer if one can already reach said peer.</li>
+<li><code>NodeProtocolVersion</code> with type number <code>2</code>. The entity tells the protocol version of the node sending it.</li>
+<li><code>LinkState</code> with type number <code>3</code>.</li>
+</ol>
+<p>Entity messages all begin with the length of the entity such that future entities can be added and skipped over by older versions of the parser.
+Entities longer than 255 or shorter than 1 byte are invalid. If the entity length field is exactly 1 byte, it is a pad and that byte should be skipped over.
+Pads can be useful to byte-align messages with oddly sized entities.</p>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">cjdns_ann</span>::<span class="ident">AnnouncementPacket</span>;
+
+<span class="comment">// creating packet</span>
+<span class="kw">let</span> <span class="ident">announcement_packet</span> <span class="op">=</span> <span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">announcement_bytes</span>).<span class="ident">unwrap</span>();
+
+<span class="comment">// checking announcement signature</span>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">announcement_packet</span>.<span class="ident">check</span>().<span class="ident">is_ok</span>());
+
+<span class="comment">// parsing announcement packet</span>
+<span class="kw">let</span> <span class="ident">deserialized_announcement</span> <span class="op">=</span> <span class="ident">announcement_packet</span>.<span class="ident">parse</span>().<span class="ident">unwrap</span>();
+</pre></div>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Announcement.html" title='cjdns_ann::Announcement struct'>Announcement</a></td><td class='docblock-short'><p>Deserialized cjdns route announcement message.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.AnnouncementHeader.html" title='cjdns_ann::AnnouncementHeader struct'>AnnouncementHeader</a></td><td class='docblock-short'><p>Deserialized announcement message header.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.AnnouncementPacket.html" title='cjdns_ann::AnnouncementPacket struct'>AnnouncementPacket</a></td><td class='docblock-short'><p>Serialized announcement message. A thin wrapper over announcement packet bytes.</p>
+</td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.Entity.html" title='cjdns_ann::Entity enum'>Entity</a></td><td class='docblock-short'><p>Announcement message entity types.</p>
+</td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.AnnouncementEntities.html" title='cjdns_ann::AnnouncementEntities type'>AnnouncementEntities</a></td><td class='docblock-short'><p>A sequence of entities in the announcement message.</p>
+</td></tr><tr class='module-item'><td><a class="type" href="type.LinkStateSlots.html" title='cjdns_ann::LinkStateSlots type'>LinkStateSlots</a></td><td class='docblock-short'><p>An array of slots, storing network link samples.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "cjdns_ann";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

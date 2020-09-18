@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ContentType","Header content types."],["ParseError",""],["SerializeError",""]],"struct":[["DataHeader","Deserialized data header struct."],["RouteHeader","Deserialized route header struct."],["SwitchHeader","Deserialized switch header struct."]]});

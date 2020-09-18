@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["parse_node_name","Gets version, label and public key all together in tuple from `name` argument, if it has valid structure. Otherwise returns error."]],"struct":[["NODE_NAME_RE",""]]});

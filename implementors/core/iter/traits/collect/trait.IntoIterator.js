@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["cjdns_core"] = [{"text":"impl&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/iter/traits/collect/trait.IntoIterator.html\" title=\"trait core::iter::traits::collect::IntoIterator\">IntoIterator</a> for &amp;'a <a class=\"struct\" href=\"cjdns_core/struct.EncodingScheme.html\" title=\"struct cjdns_core::EncodingScheme\">EncodingScheme</a>","synthetic":false,"types":["cjdns_core::encoding_scheme::EncodingScheme"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
