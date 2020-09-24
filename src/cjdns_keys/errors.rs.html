@@ -16,29 +16,24 @@
 <span id="16">16</span>
 <span id="17">17</span>
 <span id="18">18</span>
-<span id="19">19</span>
-<span id="20">20</span>
-<span id="21">21</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">thiserror</span>::<span class="ident">Error</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Error</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">KeyError</span> {
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can not decode key string&quot;</span>)]</span>
-    <span class="ident">CannotDecode</span>,
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">KeyCreationError</span> {
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Base32 string must encode exactly 255 bits integer in little-endian&quot;</span>)]</span>
+    <span class="ident">NotDecodableString</span>,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can not create from string&quot;</span>)]</span>
-    <span class="ident">CannotCreateFromString</span>,
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Wrong key string format&quot;</span>)]</span>
+    <span class="ident">BadString</span>,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can not create ip6 from public key&quot;</span>)]</span>
-    <span class="ident">CannotCreateFromPublicKey</span>,
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Resulting IP6 address must start with 0xFC byte&quot;</span>)]</span>
+    <span class="ident">ResultingIp6OutOfValidRange</span>,
 
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can not create from bytes&quot;</span>)]</span>
-    <span class="ident">CannotCreateFromBytes</span>,
-
-    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can not parse node name&quot;</span>)]</span>
-    <span class="ident">CannotParseNodeName</span>,
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Byte array must be exactly 16 bytes long&quot;</span>)]</span>
+    <span class="ident">InvalidLength</span>,
 }
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">KeyError</span><span class="op">&gt;</span>;</pre></div>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">KeyCreationError</span><span class="op">&gt;</span>;
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_keys";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

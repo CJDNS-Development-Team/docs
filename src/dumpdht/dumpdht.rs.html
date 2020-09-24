@@ -166,7 +166,7 @@
         <span class="kw">if</span> <span class="ident">is_fn</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tar</span>) <span class="op">=</span> <span class="ident">benc</span>.<span class="ident">get_dict_value</span>(<span class="string">&quot;tar&quot;</span>)<span class="question-mark">?</span> {
                 <span class="kw">let</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar</span>.<span class="ident">as_bytes</span>()<span class="question-mark">?</span>;
-                <span class="kw">let</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">tar</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">tar</span>.<span class="ident">as_slice</span>()).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())<span class="question-mark">?</span>;
                 <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">tar</span>.<span class="ident">to_string</span>());
             }
         }

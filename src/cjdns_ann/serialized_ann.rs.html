@@ -921,7 +921,7 @@
                             <span class="string">&quot;3a2349bd342608df20d999ff2384e99f1e179dbdf4aaa61692c2477c011cfe635b42d3cdb8556d94f365cdfa338dc38f40c1fabf69500830af915f41bed71b09&quot;</span>
                                 .<span class="ident">to_string</span>(),
                         <span class="ident">pub_signing_key</span>: <span class="string">&quot;f2e1d148ed18b09d16b5766e4250df7b4e83a5ccedd4cfde15f1f474db1a5bc2&quot;</span>.<span class="ident">to_string</span>(),
-                        <span class="ident">super_node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">super_node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">version</span>: <span class="number">1</span>,
                         <span class="ident">is_reset</span>: <span class="bool-val">true</span>,
                         <span class="ident">timestamp</span>: <span class="number">1474857989878</span>
@@ -949,7 +949,7 @@
                             ])
                         },
                         <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">21</span>).<span class="ident">expect</span>(<span class="string">&quot;zero routing label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
@@ -958,9 +958,9 @@
                             <span class="ident">flags</span>: <span class="number">0</span>
                         }
                     ],
-                    <span class="ident">node_encryption_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>.<span class="ident">to_string</span>())
+                    <span class="ident">node_encryption_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>)
                         .<span class="ident">expect</span>(<span class="string">&quot;failed pub key creation&quot;</span>),
-                    <span class="ident">node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                    <span class="ident">node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                     <span class="ident">binary</span>: <span class="ident">AnnouncementPacket</span>(<span class="ident">test_data_bytes</span>),
                     <span class="ident">binary_hash</span>: <span class="ident">test_bytes_hash</span>
                 }
@@ -1020,7 +1020,7 @@
         <span class="kw">let</span> <span class="ident">pub_signing_key</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">signing_key_data</span>);
 
         <span class="kw">let</span> (<span class="ident">super_node_data</span>, <span class="ident">rest_header</span>) <span class="op">=</span> <span class="ident">header_without_sign_n_key</span>.<span class="ident">split_at</span>(<span class="ident">IP_SIZE</span>);
-        <span class="kw">let</span> <span class="ident">super_node_ip</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">super_node_data</span>.<span class="ident">to_vec</span>()).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;failed ip6 creation from bytes data&quot;</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">super_node_ip</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">super_node_data</span>).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;failed ip6 creation from bytes data&quot;</span>)))<span class="question-mark">?</span>;
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rest_header</span>.<span class="ident">len</span>(), <span class="number">8</span>, <span class="string">&quot;Header size != 120 bytes&quot;</span>);
         <span class="kw">let</span> <span class="ident">last_byte</span> <span class="op">=</span> <span class="ident">rest_header</span>[<span class="number">7</span>];
@@ -1167,7 +1167,7 @@
         };
         <span class="kw">let</span> <span class="ident">peer_num</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">2</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">2</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;peer_num slice size != 2&quot;</span>));
         <span class="kw">let</span> <span class="ident">unused</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">4</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;unused slice size != 4&quot;</span>));
-        <span class="kw">let</span> <span class="ident">ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">16</span>)).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;failed ip6 creation from entity bytes&quot;</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">16</span>).<span class="ident">as_slice</span>()).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;failed ip6 creation from entity bytes&quot;</span>)))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">label</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">label_bits</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">4</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;label slice size != 4&quot;</span>));
             <span class="comment">// A label of 0 indicates that the route is being withdrawn and it is no longer usable. Handling of zero label is not a job for parser</span>
@@ -1272,7 +1272,7 @@
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">mod</span> <span class="ident">tests</span> {
-        <span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">BytesRepr</span>, <span class="ident">CJDNSKeysApi</span>};
+        <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSKeysApi</span>;
 
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -1294,8 +1294,8 @@
             <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">120</span>);
                 <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="ident">random_signature</span>);
-                <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">keys</span>.<span class="ident">public_key</span>.<span class="ident">bytes</span>());
-                <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">keys</span>.<span class="ident">ip6</span>.<span class="ident">bytes</span>());
+                <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">keys</span>.<span class="ident">public_key</span>);
+                <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">keys</span>.<span class="ident">ip6</span>);
                 <span class="ident">header_bytes</span>.<span class="ident">extend_from_slice</span>(<span class="ident">random_timestamp</span>);
                 <span class="ident">header_bytes</span>
             };
@@ -1305,7 +1305,7 @@
                 <span class="ident">parsed_header</span>,
                 <span class="ident">AnnouncementHeader</span> {
                     <span class="ident">signature</span>: <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">random_signature</span>),
-                    <span class="ident">pub_signing_key</span>: <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">keys</span>.<span class="ident">public_key</span>.<span class="ident">bytes</span>()),
+                    <span class="ident">pub_signing_key</span>: <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">keys</span>.<span class="ident">public_key</span>),
                     <span class="ident">super_node_ip6</span>: <span class="ident">keys</span>.<span class="ident">ip6</span>,
                     <span class="ident">timestamp</span>: <span class="ident">ann_timestamp</span>,
                     <span class="ident">version</span>,
@@ -1371,7 +1371,7 @@
                 (
                     <span class="string">&quot;200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003&quot;</span>,
                     <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                         <span class="ident">mtu</span>: <span class="number">0</span>,
                         <span class="ident">peer_num</span>: <span class="number">65535</span>,
@@ -1385,7 +1385,7 @@
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
                         <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">32</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
@@ -1401,7 +1401,7 @@
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
                         <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">19</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
@@ -1415,7 +1415,7 @@
                     <span class="comment">// with unrecognised entities at the beginning and at the end</span>
                     <span class="string">&quot;020701200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003030510&quot;</span>,
                     <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                         <span class="ident">mtu</span>: <span class="number">0</span>,
                         <span class="ident">peer_num</span>: <span class="number">65535</span>,
@@ -1446,7 +1446,7 @@
             <span class="kw">let</span> <span class="ident">entities_data_vec</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">multiple_peer_entity_hex</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
 
             <span class="kw">let</span> <span class="ident">parsed_peer</span> <span class="op">=</span> <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                 <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">21</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                 <span class="ident">mtu</span>: <span class="number">0</span>,
                 <span class="ident">peer_num</span>: <span class="number">65535</span>,
