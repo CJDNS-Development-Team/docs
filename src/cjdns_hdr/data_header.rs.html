@@ -161,15 +161,10 @@
 <span id="161">161</span>
 <span id="162">162</span>
 <span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Logic for parsing and serializing the data header, providing type of content</span>
 
-<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">SerializeError</span>};
+<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">SerializeError</span>, <span class="ident">ExpectedSize</span>};
 <span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">Reader</span>, <span class="ident">Writer</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">content_type</span>::<span class="ident">ContentType</span>;
@@ -197,23 +192,18 @@
     <span class="doccomment">/// If content number is not defined in `ContentType`, default `ContentType` variant will be used.</span>
     <span class="doccomment">/// *Note*: default `ContentType` variant is a temporary solution.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ParseError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="self">Self</span>::<span class="ident">SIZE</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>);
-        }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">data</span>);
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">version_with_flags</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_u8</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid header data size&quot;</span>);
-            <span class="ident">version_with_flags</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>
-        };
-        <span class="comment">// Zero-padding</span>
-        <span class="kw">let</span> <span class="ident">pad</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_u8</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid header data size&quot;</span>);
-        <span class="kw">if</span> <span class="ident">pad</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;non-zero padding&quot;</span>));
-        }
-        <span class="kw">let</span> <span class="ident">content_type</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">content_type_code</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_u16_be</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid header data size&quot;</span>);
-            <span class="ident">ContentType</span>::<span class="ident">from_u16</span>(<span class="ident">content_type_code</span>)
-        };
+        <span class="kw">let</span> (<span class="ident">version_with_flags</span>, <span class="ident">content_type_code</span>) <span class="op">=</span> <span class="ident">data_reader</span>
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">Exact</span>(<span class="self">Self</span>::<span class="ident">SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">version_with_flags</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">_padding</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">skip</span>(<span class="number">1</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">content_type_code</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((<span class="ident">version_with_flags</span>, <span class="ident">content_type_code</span>))
+            })
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">version_with_flags</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">4</span>;
+        <span class="kw">let</span> <span class="ident">content_type</span> <span class="op">=</span> <span class="ident">ContentType</span>::<span class="ident">from_u16</span>(<span class="ident">content_type_code</span>);
         <span class="prelude-val">Ok</span>(<span class="ident">DataHeader</span> { <span class="ident">version</span>, <span class="ident">content_type</span> })
     }
 

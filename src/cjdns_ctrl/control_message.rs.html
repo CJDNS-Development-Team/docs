@@ -346,14 +346,13 @@
 <span id="346">346</span>
 <span id="347">347</span>
 <span id="348">348</span>
-<span id="349">349</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">size_of_val</span>;
 
 <span class="kw">use</span> <span class="ident">num_enum</span>::{<span class="ident">IntoPrimitive</span>, <span class="ident">TryFromPrimitive</span>};
 
-<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">Writer</span>};
+<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">ExpectedSize</span>, <span class="ident">Writer</span>};
 <span class="kw">use</span> <span class="ident">netchecksum</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ErrorData</span>, <span class="ident">PingData</span>};
@@ -400,31 +399,30 @@
     <span class="doccomment">/// * unrecognized control message type code was parsed</span>
     <span class="doccomment">/// * control message body parsing methods failed. For more information about this read documentation for corresponding message data structs (i.e. `PingData`, `ErrorData`)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ParseError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="self">Self</span>::<span class="ident">HEADER_SIZE</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>);
-        }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">bytes</span>);
+        <span class="kw">let</span> (<span class="ident">received_checksum</span>, <span class="ident">data</span>, <span class="ident">type_code</span>, <span class="ident">raw_data</span>) <span class="op">=</span> <span class="ident">reader</span>
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">NotLessThan</span>(<span class="self">Self</span>::<span class="ident">HEADER_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">received_checksum</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">after_checksum_data</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">peek_remainder</span>();
+                <span class="kw">let</span> <span class="ident">type_code</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">raw_data</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_remainder</span>();
+                <span class="prelude-val">Ok</span>((<span class="ident">received_checksum</span>, <span class="ident">after_checksum_data</span>, <span class="ident">type_code</span>, <span class="ident">raw_data</span>))
+            })
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>)<span class="question-mark">?</span>;
         <span class="comment">// Validating message checksum</span>
         {
-            <span class="kw">let</span> <span class="ident">received_checksum</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_u16_be</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid message size&quot;</span>);
-            <span class="kw">let</span> <span class="ident">computed_checksum</span> <span class="op">=</span> <span class="ident">netchecksum</span>::<span class="ident">cksum_raw</span>(<span class="ident">reader</span>.<span class="ident">read_all_pure</span>());
+            <span class="kw">let</span> <span class="ident">computed_checksum</span> <span class="op">=</span> <span class="ident">netchecksum</span>::<span class="ident">cksum_raw</span>(<span class="ident">data</span>);
             <span class="kw">let</span> <span class="ident">inverted_checksum</span> <span class="op">=</span> (<span class="ident">computed_checksum</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">8</span>) <span class="op">|</span> (<span class="ident">computed_checksum</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">8</span>);
             <span class="kw">if</span> <span class="ident">received_checksum</span> <span class="op">!</span><span class="op">=</span> <span class="ident">computed_checksum</span> <span class="kw-2">&amp;</span><span class="op">&amp;</span> <span class="ident">received_checksum</span> <span class="op">!</span><span class="op">=</span> <span class="ident">inverted_checksum</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidChecksum</span>(<span class="ident">received_checksum</span>, <span class="ident">computed_checksum</span>));
             }
         }
-        <span class="kw">let</span> <span class="ident">msg_type</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">type_code</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_u16_be</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid message size&quot;</span>);
-            <span class="ident">CtrlMessageType</span>::<span class="ident">from_u16</span>(<span class="ident">type_code</span>).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;unknown ctrl packet&quot;</span>)))<span class="question-mark">?</span>
-        };
-        <span class="kw">let</span> <span class="ident">raw_data</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_all_mut</span>();
+        <span class="kw">let</span> <span class="ident">msg_type</span> <span class="op">=</span> <span class="ident">CtrlMessageType</span>::<span class="ident">from_u16</span>(<span class="ident">type_code</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;unknown ctrl packet&quot;</span>))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">msg_data</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">msg_type</span> {
-            <span class="ident">CtrlMessageType</span>::<span class="ident">Error</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">CtrlMessageData</span>::<span class="ident">ErrorData</span>(<span class="ident">ErrorData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>)<span class="question-mark">?</span>)
-            }
-            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">CtrlMessageData</span>::<span class="ident">SuperNodeQueryData</span>()
-            }
+            <span class="ident">CtrlMessageType</span>::<span class="ident">Error</span> <span class="op">=</span><span class="op">&gt;</span>
+                <span class="ident">CtrlMessageData</span>::<span class="ident">ErrorData</span>(<span class="ident">ErrorData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>)<span class="question-mark">?</span>),
+            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=</span><span class="op">&gt;</span>
+                <span class="ident">CtrlMessageData</span>::<span class="ident">SuperNodeQueryData</span>(),
             <span class="ident">CtrlMessageType</span>::<span class="ident">Ping</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">Pong</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPing</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPong</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="ident">CtrlMessageData</span>::<span class="ident">PingData</span>(<span class="ident">PingData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>, <span class="ident">msg_type</span>)<span class="question-mark">?</span>)
             }

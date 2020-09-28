@@ -198,8 +198,12 @@
 <span id="198">198</span>
 <span id="199">199</span>
 <span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">Writer</span>};
+<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">ExpectedSize</span>, <span class="ident">Writer</span>};
 <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSPublicKey</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">CtrlMessageType</span>;
@@ -223,27 +227,31 @@
     <span class="doccomment">/// * encoded ping magic is not equal to magic defined for the inputted `ping`</span>
     <span class="doccomment">/// * if input `ping` is sort of key pings, but bytes data size is too small to create cjdns public key from it</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">ping</span>: <span class="ident">CtrlMessageType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ParseError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="self">Self</span>::<span class="ident">MIN_SIZE</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>);
-        }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">bytes</span>);
+        <span class="kw">let</span> (<span class="ident">encoded_magic</span>, <span class="ident">version</span>, <span class="ident">pk_bytes</span>, <span class="ident">content</span>) <span class="op">=</span> <span class="ident">reader</span>
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">NotLessThan</span>(<span class="self">Self</span>::<span class="ident">MIN_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">encoded_magic</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u32_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u32_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_array_32</span>();
+                <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_remainder</span>().<span class="ident">to_vec</span>();
+                <span class="prelude-val">Ok</span>((<span class="ident">encoded_magic</span>, <span class="ident">version</span>, <span class="ident">key_bytes</span>, <span class="ident">content</span>))
+            })
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>)<span class="question-mark">?</span>;
+
         <span class="comment">// Validating ping data magic</span>
         {
-            <span class="kw">let</span> <span class="ident">encoded_magic</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_u32_be</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid message size&quot;</span>);
             <span class="kw">let</span> <span class="ident">original_magic</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">ping_to_magic</span>(<span class="ident">ping</span>);
             <span class="kw">if</span> <span class="ident">encoded_magic</span> <span class="op">!</span><span class="op">=</span> <span class="ident">original_magic</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;invalid encoded connection magic&quot;</span>));
             }
         }
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_u32_be</span>().<span class="ident">expect</span>(<span class="string">&quot;invalid message size&quot;</span>);
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ping</span> {
             <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPing</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPong</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">key_bytes</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_array_32</span>().<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>))<span class="question-mark">?</span>;
-                <span class="prelude-val">Some</span>(<span class="ident">CJDNSPublicKey</span>::<span class="ident">from</span>(<span class="ident">key_bytes</span>))
+                <span class="kw">let</span> <span class="ident">pk_bytes</span> <span class="op">=</span> <span class="ident">pk_bytes</span>.<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidPacketSize</span>)<span class="question-mark">?</span>;
+                <span class="prelude-val">Some</span>(<span class="ident">CJDNSPublicKey</span>::<span class="ident">from</span>(<span class="ident">pk_bytes</span>))
             }
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
         };
-        <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">reader</span>.<span class="ident">read_all_mut</span>().<span class="ident">to_vec</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">PingData</span> { <span class="ident">version</span>, <span class="ident">key</span>, <span class="ident">content</span> })
     }
 
