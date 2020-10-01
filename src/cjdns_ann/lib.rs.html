@@ -163,16 +163,6 @@
 <span id="163">163</span>
 <span id="164">164</span>
 <span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Library for parsing cjdns route announcement messages.</span>
 <span class="doccomment">//!</span>
@@ -273,6 +263,8 @@
 <span class="doccomment">//! # use cjdns_ann::{Announcement, AnnouncementHeader, AnnouncementEntities, Entity};</span>
 <span class="doccomment">//! use cjdns_ann::AnnouncementPacket;</span>
 <span class="doccomment">//! #</span>
+<span class="doccomment">//! # let encoding_scheme = |forms| EncodingScheme::try_new(forms).expect(&quot;invalid scheme&quot;);</span>
+<span class="doccomment">//! # let encoding_form = |bit_count, prefix_len, prefix| EncodingSchemeForm::try_new(bit_count, prefix_len, prefix).expect(&quot;invalid encoding form&quot;);</span>
 <span class="doccomment">//! # let announcement_bytes = {</span>
 <span class="doccomment">//! #     let hexed_announcement = &quot;3a2349bd342608df20d999ff2384e99f1e179dbdf4aaa61692c2477c011cfe635b42d3cdb8556d94f365cdfa338dc38f40c1fabf69500830af915f41bed71b09f2e1d148ed18b09d16b5766e4250df7b4e83a5ccedd4cfde15f1f474db1a5bc2fc928136dc1fe6e04ef6a6dd7187b85f00001576462f6f69040200120107006114458100200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000015&quot;;</span>
 <span class="doccomment">//! #     hex::decode(hexed_announcement).expect(&quot;invalid hex string&quot;)</span>
@@ -305,22 +297,10 @@
 <span class="doccomment">//! #             Entity::NodeProtocolVersion(18),</span>
 <span class="doccomment">//! #             Entity::EncodingScheme {</span>
 <span class="doccomment">//! #                 hex: &quot;6114458100&quot;.to_string(),</span>
-<span class="doccomment">//! #                 scheme: EncodingScheme::new(&amp;vec![</span>
-<span class="doccomment">//! #                     EncodingSchemeForm {</span>
-<span class="doccomment">//! #                         bit_count: 3,</span>
-<span class="doccomment">//! #                         prefix_len: 1,</span>
-<span class="doccomment">//! #                         prefix: 1</span>
-<span class="doccomment">//! #                     },</span>
-<span class="doccomment">//! #                     EncodingSchemeForm {</span>
-<span class="doccomment">//! #                         bit_count: 5,</span>
-<span class="doccomment">//! #                         prefix_len: 2,</span>
-<span class="doccomment">//! #                         prefix: 2</span>
-<span class="doccomment">//! #                     },</span>
-<span class="doccomment">//! #                     EncodingSchemeForm {</span>
-<span class="doccomment">//! #                         bit_count: 8,</span>
-<span class="doccomment">//! #                         prefix_len: 2,</span>
-<span class="doccomment">//! #                         prefix: 0</span>
-<span class="doccomment">//! #                     },</span>
+<span class="doccomment">//! #                 scheme: encoding_scheme(&amp;vec![</span>
+<span class="doccomment">//! #                     encoding_form(3, 1, 1),</span>
+<span class="doccomment">//! #                     encoding_form(5, 2, 2),</span>
+<span class="doccomment">//! #                     encoding_form(8, 2, 0),</span>
 <span class="doccomment">//! #                 ])</span>
 <span class="doccomment">//! #             },</span>
 <span class="doccomment">//! #             Entity::Peer {</span>
