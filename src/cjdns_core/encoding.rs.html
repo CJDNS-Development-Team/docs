@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-core/src/encoding.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>encoding.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_core/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-core/src/encoding.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>encoding.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_core/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -714,7 +715,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Accepts `EncodingScheme`, encodes it as bits sequence</span>
     <span class="doccomment">/// and returns the result as bytes vector.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serialize_scheme</span>(<span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">EncodingSerializationError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serialize_scheme</span>(<span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">EncodingSerializationError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">result_vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> [].<span class="ident">to_vec</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="number">0_u32</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur_byte_num</span> <span class="op">=</span> <span class="number">0</span>;
@@ -729,7 +730,7 @@
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EncodingSerializationError</span>::<span class="ident">BadEncodingForm</span>);
             }
 
-            <span class="kw">if</span> <span class="ident">bit_count</span> <span class="op">&lt;</span> <span class="number">1</span> <span class="op">|</span><span class="op">|</span> <span class="ident">bit_count</span> <span class="op">&gt;</span> <span class="number">31</span> {
+            <span class="kw">if</span> <span class="ident">bit_count</span> <span class="op">&lt;</span> <span class="number">1</span> <span class="op">||</span> <span class="ident">bit_count</span> <span class="op">&gt;</span> <span class="number">31</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EncodingSerializationError</span>::<span class="ident">BadEncodingForm</span>);
             }
 
@@ -737,26 +738,26 @@
                 <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">|</span> <span class="ident">prefix</span> <span class="kw">as</span> <span class="ident">u64</span>;
             }
 
-            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">5</span>;
+            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
             <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">|</span> <span class="ident">bit_count</span> <span class="kw">as</span> <span class="ident">u64</span>;
 
-            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">5</span>;
+            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
             <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">|</span> <span class="ident">prefix_len</span> <span class="kw">as</span> <span class="ident">u64</span>;
 
             <span class="kw">let</span> <span class="ident">bits_needed</span> <span class="op">=</span> <span class="number">5</span> <span class="op">+</span> <span class="number">5</span> <span class="op">+</span> <span class="ident">prefix_len</span>;
 
             <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">bits_needed</span> {
-                <span class="kw">if</span> <span class="ident">pos</span> <span class="op">%</span> <span class="number">8</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">pos</span> <span class="op">%</span> <span class="number">8</span> <span class="op">==</span> <span class="number">0</span> {
                     <span class="comment">// start to work with new byte on each 8-th bit (alloc new byte in result_vec)</span>
                     <span class="ident">result_vec</span>.<span class="ident">push</span>(<span class="number">0</span>);
                     <span class="ident">cur_byte_num</span> <span class="op">=</span> <span class="ident">cur_byte_num</span> <span class="op">+</span> <span class="number">1</span>;
                     <span class="ident">cur_bit_num</span> <span class="op">=</span> <span class="number">0</span>;
                 }
-                <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">cur_bit_num</span>;
-                <span class="kw">if</span> (<span class="ident">acc</span> <span class="op">%</span> <span class="number">2</span>) <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+                <span class="kw">let</span> <span class="ident">mask</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">cur_bit_num</span>;
+                <span class="kw">if</span> (<span class="ident">acc</span> <span class="op">%</span> <span class="number">2</span>) <span class="op">==</span> <span class="number">1</span> {
                     <span class="ident">result_vec</span>[<span class="ident">cur_byte_num</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">=</span> <span class="ident">result_vec</span>[<span class="ident">cur_byte_num</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">|</span> <span class="ident">mask</span>;
                 }
-                <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">1</span>;
+                <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&gt;&gt;</span> <span class="number">1</span>;
                 <span class="ident">cur_bit_num</span> <span class="op">=</span> <span class="ident">cur_bit_num</span> <span class="op">+</span> <span class="number">1</span>;
                 <span class="ident">pos</span> <span class="op">=</span> <span class="ident">pos</span> <span class="op">+</span> <span class="number">1</span>;
             }
@@ -770,7 +771,7 @@
     <span class="doccomment">/// Parse byte vector array (bits sequence) and transform it to encoding scheme.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Parses bytes array into `EncodingScheme`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_scheme</span>(<span class="ident">scheme_bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span>, <span class="ident">EncodingSerializationError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deserialize_scheme</span>(<span class="ident">scheme_bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span>, <span class="ident">EncodingSerializationError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">scheme_bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">2</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EncodingSerializationError</span>::<span class="ident">BadSerializedData</span>);
         }
@@ -806,12 +807,12 @@
         <span class="prelude-val">Ok</span>(<span class="ident">ret_scheme</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">read_bits</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">position</span>: <span class="ident">u32</span>, <span class="ident">bits_amount</span>: <span class="ident">u8</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits_amount</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">32</span>); <span class="comment">// It is a programming error to request more than 32 bits</span>
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">position</span> <span class="op">+</span> <span class="ident">bits_amount</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">&lt;</span><span class="op">=</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">*</span> <span class="number">8</span>); <span class="comment">// Programming error to read bits beyond input buffer</span>
+    <span class="kw">fn</span> <span class="ident">read_bits</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">position</span>: <span class="ident">u32</span>, <span class="ident">bits_amount</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">bits_amount</span> <span class="op">&lt;=</span> <span class="number">32</span>); <span class="comment">// It is a programming error to request more than 32 bits</span>
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">position</span> <span class="op">+</span> <span class="ident">bits_amount</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">&lt;=</span> (<span class="ident">data</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">*</span> <span class="number">8</span>); <span class="comment">// Programming error to read bits beyond input buffer</span>
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">acc</span> <span class="op">=</span> <span class="number">0</span>; <span class="comment">// maximum that can be parsed is prefix itself (max - 32 bits)</span>
-        <span class="kw">if</span> <span class="ident">bits_amount</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">bits_amount</span> <span class="op">==</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="ident">acc</span>; <span class="comment">// reading 0 bits from any correct position returns 0x000000</span>
         }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">position</span>;
@@ -824,12 +825,12 @@
             <span class="ident">cur_bit_num</span> <span class="op">=</span> <span class="ident">pos</span> <span class="op">%</span> <span class="number">8</span>;
 
             <span class="comment">// 0000...1...0000, where &quot;1&quot; is on position corresponding to current bit</span>
-            <span class="kw">let</span> <span class="ident">byte_mask</span> <span class="op">=</span> <span class="number">128</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">cur_bit_num</span>;
-            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">byte_mask</span> <span class="op">=</span> <span class="number">128</span> <span class="op">&gt;&gt;</span> <span class="ident">cur_bit_num</span>;
+            <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
 
             <span class="comment">// taking current byte by `cur_byte_num` index from end of `data`</span>
             <span class="kw">let</span> <span class="ident">cur_byte</span> <span class="op">=</span> <span class="ident">data</span>[<span class="ident">data</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">cur_byte_num</span> <span class="kw">as</span> <span class="ident">usize</span>];
-            <span class="kw">if</span> (<span class="ident">cur_byte</span> <span class="op">&amp;</span> <span class="ident">byte_mask</span>) <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">if</span> (<span class="ident">cur_byte</span> <span class="op">&amp;</span> <span class="ident">byte_mask</span>) <span class="op">==</span> <span class="number">0</span> {
                 <span class="comment">// if bit is 0 -&gt; AND with &quot;111111...11110&quot;</span>
                 <span class="ident">acc</span> <span class="op">=</span> <span class="ident">acc</span> <span class="op">&amp;</span> (<span class="op">!</span><span class="number">1</span>);
             } <span class="kw">else</span> {
@@ -847,15 +848,15 @@
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
         <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">SchemeValidationError</span>};
 
-        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingScheme</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="ident">EncodingScheme</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="ident">forms</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid scheme&quot;</span>)
         }
 
-        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingSchemeForm</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">EncodingSchemeForm</span> {
             <span class="ident">EncodingSchemeForm</span>::<span class="ident">try_new</span>(<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid form&quot;</span>)
         }
 
-        <span class="kw">fn</span> <span class="ident">validate</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">validate</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">validate</span>(<span class="ident">forms</span>)
         }
 
@@ -1004,7 +1005,7 @@
                 <span class="kw">let</span> <span class="ident">prefix_len</span> <span class="op">=</span> <span class="ident">i</span>;
                 <span class="kw">let</span> <span class="ident">bit_count</span> <span class="op">=</span> <span class="ident">i</span>;
                 <span class="ident">pack</span>.<span class="ident">push</span>(<span class="ident">encoding_form</span>(<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>));
-                <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">prefix</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">1</span>;
+                <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">prefix</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
             }
 
             <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">pack</span>).<span class="ident">is_ok</span>());
@@ -1056,11 +1057,11 @@
         <span class="doccomment">/// Returns an error in several situations:</span>
         <span class="doccomment">/// * encoding `bit_count` value is out of valid range, which is 1..32</span>
         <span class="doccomment">/// * `prefix_len` is too small for the provided `prefix`</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">FormValidationError</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">bit_count</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">bit_count</span> <span class="op">&gt;</span> <span class="number">31</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">FormValidationError</span><span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="ident">bit_count</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">bit_count</span> <span class="op">&gt;</span> <span class="number">31</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FormValidationError</span>::<span class="ident">BadBitCount</span>);
             }
-            <span class="kw">let</span> <span class="ident">prefix_max_value</span> <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="ident">prefix_len</span>) <span class="op">-</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">prefix_max_value</span> <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="ident">prefix_len</span>) <span class="op">-</span> <span class="number">1</span>;
             <span class="kw">if</span> <span class="ident">prefix</span> <span class="op">&gt;</span> <span class="ident">prefix_max_value</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FormValidationError</span>::<span class="ident">InvalidPrefixData</span>);
             }
@@ -1071,13 +1072,13 @@
         <span class="doccomment">/// * bit count;</span>
         <span class="doccomment">/// * prefix length;</span>
         <span class="doccomment">/// * prefix itself.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">params</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">u8</span>, <span class="ident">u8</span>, <span class="ident">u32</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">params</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">u8</span>, <span class="ident">u8</span>, <span class="ident">u32</span>) {
             (<span class="self">self</span>.<span class="ident">bit_count</span>, <span class="self">self</span>.<span class="ident">prefix_len</span>, <span class="self">self</span>.<span class="ident">prefix</span>)
         }
 
         <span class="doccomment">/// As a scheme is represented as an array of **forms**, this function will tell you how many bits of</span>
         <span class="doccomment">/// label space is occupied by a representation of a given form.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">size_bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u8</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">size_bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
             <span class="self">self</span>.<span class="ident">bit_count</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">prefix_len</span>
         }
     }
@@ -1086,7 +1087,7 @@
         <span class="doccomment">/// Instantiates `EncodingScheme`.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// Returns an error if forms validation failed. See `validate` function docs for more info.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">validate</span>(<span class="ident">forms</span>)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="ident">forms</span>.<span class="ident">to_vec</span>()))
         }
@@ -1102,19 +1103,19 @@
         <span class="doccomment">/// * forms with equal prefixes are in scheme</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// Each returned value fully reflects error type.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">validate</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SchemeValidationError</span><span class="op">&gt;</span> {
             <span class="comment">// each form must have a different prefix_len and bit_count;</span>
             <span class="comment">// can only be expressed in 5 bits limiting it to 31 bits max and a form</span>
             <span class="comment">// using zero bits is not allowed so there are only 31 max possibilities.</span>
-            <span class="kw">if</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">31</span> {
+            <span class="kw">if</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">31</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">InvalidFormsAmount</span>);
             }
 
-            <span class="kw">if</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
+            <span class="kw">if</span> <span class="ident">forms</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
                 <span class="comment">// if single form - prefix must be empty</span>
                 <span class="kw">let</span> <span class="ident">form</span> <span class="op">=</span> <span class="ident">forms</span>[<span class="number">0</span>];
                 <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">form</span>.<span class="ident">params</span>();
-                <span class="kw">if</span> <span class="ident">prefix_len</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">prefix</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">prefix_len</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">prefix</span> <span class="op">!=</span> <span class="number">0</span> {
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">SingleFormWithPrefix</span>);
                 }
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
@@ -1126,7 +1127,7 @@
             <span class="kw">for</span> <span class="ident">form</span> <span class="kw">in</span> <span class="ident">forms</span> {
                 <span class="kw">let</span> (<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">form</span>.<span class="ident">params</span>();
                 <span class="comment">// when multiple forms - prefixes must be non-empty</span>
-                <span class="kw">if</span> <span class="ident">prefix_len</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">prefix_len</span> <span class="op">&gt;</span> <span class="number">31</span> {
+                <span class="kw">if</span> <span class="ident">prefix_len</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> <span class="ident">prefix_len</span> <span class="op">&gt;</span> <span class="number">31</span> {
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">MultiFormBadPrefix</span>);
                 }
 
@@ -1153,7 +1154,7 @@
     <span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">EncodingScheme</span> {
         <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> [<span class="ident">EncodingSchemeForm</span>];
 
-        <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
+        <span class="kw">fn</span> <span class="ident">deref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Target</span> {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>
         }
     }
@@ -1229,14 +1230,14 @@
         }
 
         <span class="doccomment">/// Returns an iterator over all the well-known encoding schemes</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">EncodingScheme</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>() <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">EncodingScheme</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
             <span class="macro">lazy_static</span><span class="macro">!</span> {
                 <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">ALL</span>: [<span class="ident">EncodingScheme</span>; <span class="number">5</span>] <span class="op">=</span> [<span class="ident">F4</span>.<span class="ident">clone</span>(), <span class="ident">F8</span>.<span class="ident">clone</span>(), <span class="ident">V48</span>.<span class="ident">clone</span>(), <span class="ident">V358</span>.<span class="ident">clone</span>(), <span class="ident">V37</span>.<span class="ident">clone</span>()];
             }
             <span class="ident">ALL</span>.<span class="ident">iter</span>()
         }
 
-        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingScheme</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="ident">EncodingScheme</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="ident">forms</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid form&quot;</span>)
         }
     }
@@ -1245,11 +1246,11 @@
     <span class="kw">mod</span> <span class="ident">tests</span> {
         <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">EncodingSchemeForm</span>, <span class="ident">schemes</span>};
         
-        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingScheme</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="ident">EncodingScheme</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="ident">forms</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid scheme&quot;</span>)
         }
 
-        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingSchemeForm</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">EncodingSchemeForm</span> {
             <span class="ident">EncodingSchemeForm</span> {
                 <span class="ident">bit_count</span>,
                 <span class="ident">prefix_len</span>,
@@ -1263,7 +1264,7 @@
                 <span class="ident">encoding_scheme</span>(<span class="kw-2">&amp;</span>[<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">2</span>, <span class="number">0b00</span>), <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">2</span>, <span class="number">0b01</span>)])
                     .<span class="ident">into_iter</span>()
                     .<span class="ident">cloned</span>()
-                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EncodingSchemeForm</span><span class="op">&gt;</span><span class="op">&gt;</span>(),
+                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EncodingSchemeForm</span><span class="op">&gt;&gt;</span>(),
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">2</span>, <span class="number">0b00</span>), <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">2</span>, <span class="number">0b01</span>)]
             );
         }

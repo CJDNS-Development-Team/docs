@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-ann/src/serialized_ann.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>serialized_ann.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_ann/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-ann/src/serialized_ann.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>serialized_ann.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_ann/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -724,14 +725,6 @@
 <span id="724">724</span>
 <span id="725">725</span>
 <span id="726">726</span>
-<span id="727">727</span>
-<span id="728">728</span>
-<span id="729">729</span>
-<span id="730">730</span>
-<span id="731">731</span>
-<span id="732">732</span>
-<span id="733">733</span>
-<span id="734">734</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 
@@ -766,8 +759,10 @@
         <span class="doccomment">///</span>
         <span class="doccomment">/// Results in error if `ann_data` packet length is less than 120 bytes (incomplete message header).</span>
         <span class="doccomment">///</span>
-        <span class="doccomment">/// **Note:** Announcement can have only header without any data, this is a valid case.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">ann_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+        <span class="doccomment">/// # Note</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// It is valid for announcement to have just header with no data.</span>
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_new</span>(<span class="ident">ann_data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="ident">ann_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">ANNOUNCEMENT_MIN_SIZE</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">PacketError</span>::<span class="ident">CannotInstantiatePacket</span>);
             }
@@ -777,9 +772,9 @@
         <span class="doccomment">/// Checks announcement message digital signature validity.</span>
         <span class="doccomment">/// Gets signature, public signing key and signed data bytes from announcement packet and performs signature check using</span>
         <span class="doccomment">/// [crypto_sign_verify_detached](https://libsodium.gitbook.io/doc/public-key_cryptography/public-key_signatures).</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="ident">signature</span> <span class="op">=</span> <span class="ident">Signature</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">get_signature_bytes</span>()).<span class="ident">expect</span>(<span class="string">&quot;signature size != 64&quot;</span>);
-            <span class="kw">let</span> <span class="ident">public_sign_key</span> <span class="op">=</span> <span class="ident">PublicKey</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">get_pub_key_bytes</span>()).<span class="ident">expect</span>(<span class="string">&quot;public key size != 32&quot;</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+            <span class="kw">let</span> <span class="ident">signature</span> <span class="op">=</span> <span class="ident">Signature</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">get_signature_bytes</span>()).<span class="ident">expect</span>(<span class="string">&quot;internal error: signature size != 64&quot;</span>);
+            <span class="kw">let</span> <span class="ident">public_sign_key</span> <span class="op">=</span> <span class="ident">PublicKey</span>::<span class="ident">from_slice</span>(<span class="self">self</span>.<span class="ident">get_pub_key_bytes</span>()).<span class="ident">expect</span>(<span class="string">&quot;internal error: public key size != 32&quot;</span>);
             <span class="kw">let</span> <span class="ident">signed_data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_signed_data</span>();
             <span class="kw">if</span> <span class="ident">verify_detached</span>(<span class="kw-2">&amp;</span><span class="ident">signature</span>, <span class="ident">signed_data</span>, <span class="kw-2">&amp;</span><span class="ident">public_sign_key</span>) {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
@@ -788,31 +783,31 @@
         }
 
         <span class="doccomment">/// Parses announcement packet and creates deserialized announcement message, consuming this packet.</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span><span class="op">&gt;</span> {
-            <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="self">self</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">PacketError</span>::<span class="ident">CannotParsePacket</span>(<span class="ident">e</span>))
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span><span class="op">&gt;</span> {
+            <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="self">self</span>).<span class="ident">map_err</span>(<span class="ident">PacketError</span>::<span class="ident">CannotParsePacket</span>)
         }
 
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Digest</span> {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Digest</span> {
             <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
         }
 
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_entities_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_entities_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="ident">HEADER_SIZE</span>..]
         }
 
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_header_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_header_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="ident">HEADER_SIZE</span>]
         }
 
-        <span class="kw">fn</span> <span class="ident">get_signature_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+        <span class="kw">fn</span> <span class="ident">get_signature_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..<span class="ident">SIGN_SIZE</span>]
         }
 
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_pub_key_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_pub_key_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">get_signed_data</span>()[..<span class="ident">SIGN_KEY_SIZE</span>]
         }
 
-        <span class="kw">fn</span> <span class="ident">get_signed_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+        <span class="kw">fn</span> <span class="ident">get_signed_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="ident">SIGN_SIZE</span>..]
         }
     }
@@ -825,19 +820,19 @@
 
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-        <span class="kw">fn</span> <span class="ident">join</span>(<span class="ident">slice1</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">slice2</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">join</span>(<span class="ident">slice1</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>], <span class="ident">slice2</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
             <span class="ident">slice1</span>.<span class="ident">iter</span>().<span class="ident">chain</span>(<span class="ident">slice2</span>.<span class="ident">iter</span>()).<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>).<span class="ident">collect</span>()
         }
 
-        <span class="kw">fn</span> <span class="ident">hex_to_bytes</span>(<span class="ident">hex_string</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">hex_to_bytes</span>(<span class="ident">hex_string</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
             <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">hex_string</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>)
         }
 
-        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingScheme</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="ident">EncodingScheme</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="ident">forms</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid scheme&quot;</span>)
         }
 
-        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">EncodingSchemeForm</span> {
+        <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">EncodingSchemeForm</span> {
             <span class="ident">EncodingSchemeForm</span>::<span class="ident">try_new</span>(<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid form&quot;</span>)
         }
 
@@ -847,7 +842,7 @@
                 <span class="kw">let</span> <span class="ident">packet_data</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">packet_length</span>];
                 <span class="kw">let</span> <span class="ident">packet</span> <span class="op">=</span> <span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">packet_data</span>);
 
-                <span class="kw">let</span> <span class="ident">valid_case</span> <span class="op">=</span> <span class="ident">packet_length</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">ANNOUNCEMENT_MIN_SIZE</span>;
+                <span class="kw">let</span> <span class="ident">valid_case</span> <span class="op">=</span> <span class="ident">packet_length</span> <span class="op">&gt;=</span> <span class="ident">ANNOUNCEMENT_MIN_SIZE</span>;
                 <span class="kw">if</span> <span class="ident">valid_case</span> {
                     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">packet</span>.<span class="ident">is_ok</span>());
                 } <span class="kw">else</span> {
@@ -874,7 +869,7 @@
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">test_sign_check</span>() {
-            <span class="kw">fn</span> <span class="ident">create_signed_header</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">create_signed_header</span>() <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> (<span class="ident">sodium_pk</span>, <span class="ident">sodium_sk</span>) <span class="op">=</span> <span class="ident">crypto</span>::<span class="ident">sign</span>::<span class="ident">gen_keypair</span>(); <span class="comment">// random numbers generated here - test might be unstable</span>
                 <span class="kw">let</span> <span class="ident">header_data_to_sign</span> <span class="op">=</span> {
                     <span class="kw">let</span> <span class="ident">rest_header_data</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">HEADER_SIZE</span> <span class="op">-</span> <span class="ident">SIGN_SIZE</span> <span class="op">-</span> <span class="ident">SIGN_KEY_SIZE</span>];
@@ -924,7 +919,7 @@
                             <span class="string">&quot;3a2349bd342608df20d999ff2384e99f1e179dbdf4aaa61692c2477c011cfe635b42d3cdb8556d94f365cdfa338dc38f40c1fabf69500830af915f41bed71b09&quot;</span>
                                 .<span class="ident">to_string</span>(),
                         <span class="ident">pub_signing_key</span>: <span class="string">&quot;f2e1d148ed18b09d16b5766e4250df7b4e83a5ccedd4cfde15f1f474db1a5bc2&quot;</span>.<span class="ident">to_string</span>(),
-                        <span class="ident">super_node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">snode_ip</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">version</span>: <span class="number">1</span>,
                         <span class="ident">is_reset</span>: <span class="bool-val">true</span>,
                         <span class="ident">timestamp</span>: <span class="number">1474857989878</span>
@@ -949,11 +944,11 @@
                             <span class="ident">flags</span>: <span class="number">0</span>
                         }
                     ],
-                    <span class="ident">node_encryption_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>)
+                    <span class="ident">node_pub_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>)
                         .<span class="ident">expect</span>(<span class="string">&quot;failed pub key creation&quot;</span>),
-                    <span class="ident">node_ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                    <span class="ident">node_ip</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                     <span class="ident">binary</span>: <span class="ident">AnnouncementPacket</span>(<span class="ident">test_data_bytes</span>),
-                    <span class="ident">binary_hash</span>: <span class="ident">test_bytes_hash</span>
+                    <span class="ident">hash</span>: <span class="ident">test_bytes_hash</span>
                 }
             )
         }
@@ -963,207 +958,185 @@
 <span class="kw">mod</span> <span class="ident">parser</span> {
     <span class="doccomment">//! Parser module encapsulating logic for announcement data parsing</span>
 
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span>;
-
     <span class="kw">use</span> <span class="ident">libsodium_sys</span>::<span class="ident">crypto_sign_ed25519_pk_to_curve25519</span>;
 
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ExpectedSize</span>, <span class="ident">Reader</span>};
 
-    <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">ParserError</span><span class="op">&gt;</span>;
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">var_int</span>::<span class="ident">read_var_int</span>;
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">const</span> <span class="ident">PEER_TYPE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">1</span>;
     <span class="kw">const</span> <span class="ident">VERSION_TYPE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">2</span>;
     <span class="kw">const</span> <span class="ident">LINK_STATE_TYPE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">3</span>;
     <span class="kw">const</span> <span class="ident">ENCODING_SCHEME_TYPE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">0</span>;
 
-    <span class="kw">const</span> <span class="ident">ENTITY_MAX_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">255</span>;
+    <span class="comment">// entity data size without encoded meta-data (i.g., length and type)</span>
+    <span class="kw">const</span> <span class="ident">PEER_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">30</span>;
+    <span class="kw">const</span> <span class="ident">VERSION_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
+    <span class="kw">const</span> <span class="ident">ENCODING_SCHEME_ENTITY_MIN_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
+    <span class="kw">const</span> <span class="ident">STATE_SLOTS_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">18</span>;
 
-    <span class="kw">const</span> <span class="ident">PEER_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">32</span>;
-    <span class="kw">const</span> <span class="ident">VERSION_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">4</span>;
-    <span class="kw">const</span> <span class="ident">LINK_STATE_ENTITY_MIN_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="comment">// it&#39;s actually `2` in cjdnsann doc, but it&#39;s too little, because min size for encoding scheme bytes to be deserialized is `2`.</span>
-    <span class="comment">// So we have 2 bytes for encoded type and length and minimum 2 bytes for encoding scheme deserialization.</span>
-    <span class="kw">const</span> <span class="ident">ENCODING_SCHEME_ENTITY_MIN_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">4</span>;
-
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">packet</span>: <span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">packet</span>: <span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span>, <span class="ident">ParserError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">parse_header</span>(<span class="ident">packet</span>.<span class="ident">get_header_bytes</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">node_encryption_key</span>, <span class="ident">node_ip6</span>) <span class="op">=</span> <span class="ident">parse_sender_auth_data</span>(<span class="ident">packet</span>.<span class="ident">get_pub_key_bytes</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">entities</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="ident">packet</span>.<span class="ident">get_entities_bytes</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">binary_hash</span> <span class="op">=</span> <span class="ident">packet</span>.<span class="ident">get_hash</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">Announcement</span> {
             <span class="ident">header</span>,
-            <span class="ident">node_encryption_key</span>,
-            <span class="ident">node_ip6</span>,
+            <span class="ident">node_pub_key</span>: <span class="ident">node_encryption_key</span>,
+            <span class="ident">node_ip</span>: <span class="ident">node_ip6</span>,
             <span class="ident">entities</span>,
-            <span class="ident">binary_hash</span>,
+            <span class="ident">hash</span>: <span class="ident">binary_hash</span>,
             <span class="ident">binary</span>: <span class="ident">packet</span>,
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_header</span>(<span class="ident">header_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AnnouncementHeader</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">header_data</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">HEADER_SIZE</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;invalid data size&quot;</span>));
-        }
-        <span class="kw">let</span> (<span class="ident">signature_data</span>, <span class="ident">header_without_sign</span>) <span class="op">=</span> <span class="ident">header_data</span>.<span class="ident">split_at</span>(<span class="ident">SIGN_SIZE</span>);
-        <span class="kw">let</span> <span class="ident">signature</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">signature_data</span>);
+    <span class="kw">fn</span> <span class="ident">parse_header</span>(<span class="ident">header_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AnnouncementHeader</span>, <span class="ident">ParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">header_data</span>);
+        <span class="kw">let</span> (<span class="ident">signature_bytes</span>, <span class="ident">sign_key_bytes</span>, <span class="ident">snode_bytes</span>, <span class="ident">last_byte</span>, <span class="ident">timestamp</span>) <span class="op">=</span> <span class="ident">data_reader</span>
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">Exact</span>(<span class="ident">HEADER_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">signature_bytes</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_slice</span>(<span class="ident">SIGN_SIZE</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">sign_key_bytes</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_slice</span>(<span class="ident">SIGN_KEY_SIZE</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">snode_bytes</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_slice</span>(<span class="ident">IP_SIZE</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">last_byte</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">peek_remainder</span>().<span class="ident">last</span>().<span class="ident">expect</span>(<span class="string">&quot;internal error: unexpected buffer size&quot;</span>);
+                <span class="kw">let</span> <span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u64_be</span>()<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((<span class="ident">signature_bytes</span>, <span class="ident">sign_key_bytes</span>, <span class="ident">snode_bytes</span>, <span class="ident">last_byte</span>, <span class="ident">timestamp</span>))
+            })
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;invalid data size&quot;</span>))<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> (<span class="ident">signing_key_data</span>, <span class="ident">header_without_sign_n_key</span>) <span class="op">=</span> <span class="ident">header_without_sign</span>.<span class="ident">split_at</span>(<span class="ident">SIGN_KEY_SIZE</span>);
-        <span class="kw">let</span> <span class="ident">pub_signing_key</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">signing_key_data</span>);
-
-        <span class="kw">let</span> (<span class="ident">super_node_data</span>, <span class="ident">rest_header</span>) <span class="op">=</span> <span class="ident">header_without_sign_n_key</span>.<span class="ident">split_at</span>(<span class="ident">IP_SIZE</span>);
-        <span class="kw">let</span> <span class="ident">super_node_ip</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">super_node_data</span>).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;failed ip6 creation from bytes data&quot;</span>)))<span class="question-mark">?</span>;
-
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rest_header</span>.<span class="ident">len</span>(), <span class="number">8</span>, <span class="string">&quot;Header size != 120 bytes&quot;</span>);
-        <span class="kw">let</span> <span class="ident">last_byte</span> <span class="op">=</span> <span class="ident">rest_header</span>[<span class="number">7</span>];
+        <span class="kw">let</span> <span class="ident">signature</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">signature_bytes</span>);
+        <span class="kw">let</span> <span class="ident">pub_signing_key</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">sign_key_bytes</span>);
+        <span class="kw">let</span> <span class="ident">snode_ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">snode_bytes</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParserError</span>::<span class="ident">CannotParseHeader</span>(<span class="string">&quot;failed ip6 creation from received data&quot;</span>))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> {
-            <span class="comment">// version is encoded as a number from last 3 bits</span>
+            <span class="comment">// version is encoded in 3 least significant bits</span>
             <span class="comment">// For example:</span>
             <span class="comment">// last byte is NNNN_NNNN, where N is either 0 or 1</span>
             <span class="comment">// so version is 0000_0NNN = NNNN_NNNN &amp; 111</span>
             <span class="ident">last_byte</span> <span class="op">&amp;</span> <span class="number">7</span>
         };
         <span class="kw">let</span> <span class="ident">is_reset</span> <span class="op">=</span> {
-            <span class="comment">// this flag is encoded in the fourth byte from the right</span>
+            <span class="comment">// this flag is encoded in the fourth bit in least significant order</span>
             <span class="comment">// For example:</span>
             <span class="comment">// last byte is AAAA_AAAA, where N is either 0 or 1</span>
             <span class="comment">// so reset flag is the bit N in last byte: AAAA_NAAA</span>
-            (<span class="ident">last_byte</span> <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">3</span>) <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>
+            (<span class="ident">last_byte</span> <span class="op">&gt;&gt;</span> <span class="number">3</span>) <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span>
         };
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">u64</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">8</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">rest_header</span>).<span class="ident">expect</span>(<span class="string">&quot;slice size != 8&quot;</span>));
         <span class="comment">// removing `version` and `is_reset` bits form timestamp bytes</span>
-        <span class="ident">timestamp</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span>;
+        <span class="kw">let</span> <span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">timestamp</span> <span class="op">&gt;&gt;</span> <span class="number">4</span>;
 
         <span class="prelude-val">Ok</span>(<span class="ident">AnnouncementHeader</span> {
             <span class="ident">signature</span>,
             <span class="ident">pub_signing_key</span>,
-            <span class="ident">super_node_ip6</span>: <span class="ident">super_node_ip</span>,
+            <span class="ident">snode_ip</span>: <span class="ident">snode_ip6</span>,
             <span class="ident">version</span>,
             <span class="ident">is_reset</span>,
             <span class="ident">timestamp</span>,
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_sender_auth_data</span>(<span class="ident">sender_auth_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">CJDNSPublicKey</span>, <span class="ident">CJDNS_IP6</span>)<span class="op">&gt;</span> {
+    <span class="doccomment">/// It&#39;s expected, that `pub_key_bytes` len is 32. Otherwise function will panic.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Currently, the argument is provided by `AnnouncementPacket::get_pub_key_bytes` method, which returns a slice of the expected len.</span>
+    <span class="kw">fn</span> <span class="ident">parse_sender_auth_data</span>(<span class="ident">pub_key_bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">CJDNSPublicKey</span>, <span class="ident">CJDNS_IP6</span>), <span class="ident">ParserError</span><span class="op">&gt;</span> {
         <span class="comment">// auth encryption key</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">curve25519_key_bytes</span> <span class="op">=</span> [<span class="number">0u8</span>; <span class="ident">SIGN_KEY_SIZE</span>];
         <span class="comment">// ed25519 key</span>
-        <span class="kw">let</span> <span class="ident">public_sign_key</span> <span class="op">=</span> <span class="ident">PublicKey</span>::<span class="ident">from_slice</span>(<span class="ident">sender_auth_data</span>).<span class="ident">expect</span>(<span class="string">&quot;sender sign key size is gt 32&quot;</span>);
+        <span class="kw">let</span> <span class="ident">public_sign_key</span> <span class="op">=</span> <span class="ident">PublicKey</span>::<span class="ident">from_slice</span>(<span class="ident">pub_key_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;internal error: public key size != 32&quot;</span>);
         <span class="kw">let</span> <span class="ident">ok</span> <span class="op">=</span> <span class="kw">unsafe</span> {
             <span class="comment">// call to an extern function which uses raw pointers</span>
             <span class="comment">// considered safe, because data under these pointers is consistent during function call</span>
-            <span class="ident">crypto_sign_ed25519_pk_to_curve25519</span>(<span class="ident">curve25519_key_bytes</span>.<span class="ident">as_mut_ptr</span>(), <span class="ident">public_sign_key</span>.<span class="number">0</span>.<span class="ident">as_ptr</span>()) <span class="op">=</span><span class="op">=</span> <span class="number">0</span>
+            <span class="ident">crypto_sign_ed25519_pk_to_curve25519</span>(<span class="ident">curve25519_key_bytes</span>.<span class="ident">as_mut_ptr</span>(), <span class="ident">public_sign_key</span>.<span class="number">0</span>.<span class="ident">as_ptr</span>()) <span class="op">==</span> <span class="number">0</span>
         };
         <span class="kw">if</span> <span class="op">!</span><span class="ident">ok</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseAuthData</span>(<span class="string">&quot;Conversion from x25519 to curve25519 failed&quot;</span>));
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseAuthData</span>(<span class="string">&quot;conversion from x25519 to curve25519 failed&quot;</span>));
         }
         <span class="kw">let</span> <span class="ident">node_encryption_key</span> <span class="op">=</span> <span class="ident">CJDNSPublicKey</span>::<span class="ident">from</span>(<span class="ident">curve25519_key_bytes</span>);
-        <span class="kw">let</span> <span class="ident">node_ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="kw-2">&amp;</span><span class="ident">node_encryption_key</span>).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseAuthData</span>(<span class="string">&quot;failed ip6 creation from auth pub key&quot;</span>)))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">node_ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="kw-2">&amp;</span><span class="ident">node_encryption_key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParserError</span>::<span class="ident">CannotParseAuthData</span>(<span class="string">&quot;failed ip6 creation from received data&quot;</span>))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>((<span class="ident">node_encryption_key</span>, <span class="ident">node_ip6</span>))
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_entities</span>(<span class="ident">entities_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AnnouncementEntities</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parsed_entities</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">while</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="ident">entities_data</span>.<span class="ident">len</span>() {
-            <span class="kw">let</span> <span class="ident">encoded_entity_len</span> <span class="op">=</span> <span class="ident">entities_data</span>[<span class="ident">idx</span>] <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">let</span> <span class="ident">entity_data</span> <span class="op">=</span> <span class="ident">entities_data</span>
-                .<span class="ident">get</span>(<span class="ident">idx</span>..<span class="ident">idx</span> <span class="op">+</span> <span class="ident">encoded_entity_len</span>)
-                .<span class="ident">ok_or</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;entity with invalid encoded length&quot;</span>))<span class="question-mark">?</span>;
+    <span class="kw">fn</span> <span class="ident">parse_entities</span>(<span class="ident">entities_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AnnouncementEntities</span>, <span class="ident">ParserError</span><span class="op">&gt;</span> {
+        <span class="ident">parse_entities_impl</span>(<span class="ident">entities_data</span>).<span class="ident">map_err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>)
+    }
 
-            <span class="kw">if</span> <span class="ident">encoded_entity_len</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;zero entity inside entities data&quot;</span>));
+    <span class="kw">fn</span> <span class="ident">parse_entities_impl</span>(<span class="ident">entities_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">AnnouncementEntities</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parsed_entities</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">entities_data</span>);
+        <span class="kw">while</span> <span class="op">!</span><span class="ident">data_reader</span>.<span class="ident">is_empty</span>() {
+            <span class="comment">// each valid entity is encoded in `entities_data` as `[entity_length][entity_type][entity_data]`</span>
+            <span class="comment">// `entity_length` must be `2 + entity_data.len()`, where `2` states for `entity_length` and `entity_type` bytes.</span>
+            <span class="kw">let</span> <span class="ident">entity_length</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_u8</span>().<span class="ident">expect</span>(<span class="string">&quot;internal error: empty buffer&quot;</span>);
+            <span class="kw">if</span> <span class="ident">entity_length</span> <span class="op">==</span> <span class="number">0</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;zero length entity&quot;</span>));
             }
-            <span class="kw">if</span> <span class="ident">encoded_entity_len</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span> {
-                <span class="ident">idx</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="comment">// padding</span>
+            <span class="kw">if</span> <span class="ident">entity_length</span> <span class="op">==</span> <span class="number">1</span> {
                 <span class="kw">continue</span>;
             }
+            <span class="kw">let</span> <span class="ident">entity_data</span> <span class="op">=</span> <span class="ident">data_reader</span>
+                <span class="comment">// reading `entity_length - 1`, because entity length byte has been already read</span>
+                .<span class="ident">read_slice</span>((<span class="ident">entity_length</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">usize</span>)
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;encoded entity len &gt; entities data remainder size&quot;</span>))<span class="question-mark">?</span>;
 
-            <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">entity_type</span> <span class="op">=</span> <span class="ident">entities_data</span>.<span class="ident">get</span>(<span class="ident">idx</span> <span class="op">+</span> <span class="number">1</span>).<span class="ident">expect</span>(<span class="string">&quot;entity data length != encoded length in it&quot;</span>);
-            <span class="kw">let</span> <span class="ident">parsed_entity</span> <span class="op">=</span> <span class="ident">parse_entity</span>(<span class="ident">entity_type</span>, <span class="ident">entity_data</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">parsed_entity</span> <span class="op">=</span> <span class="ident">parse_entity</span>(<span class="ident">entity_data</span>)<span class="question-mark">?</span>;
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">entity</span>) <span class="op">=</span> <span class="ident">parsed_entity</span> {
                 <span class="ident">parsed_entities</span>.<span class="ident">push</span>(<span class="ident">entity</span>)
             }
-
-            <span class="ident">idx</span> <span class="op">+</span><span class="op">=</span> <span class="ident">entities_data</span>[<span class="ident">idx</span>] <span class="kw">as</span> <span class="ident">usize</span>;
         }
-
         <span class="prelude-val">Ok</span>(<span class="ident">parsed_entities</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_entity</span>(<span class="ident">entity_type</span>: <span class="ident">u8</span>, <span class="ident">entity_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="comment">// First byte of each entity data is its length. The second byte is its type. So &quot;non meta&quot; data of each entity starts from index 2 (3rd byte).</span>
-        <span class="kw">let</span> <span class="ident">parsing_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">entity_data</span>[<span class="number">2</span>..];
+    <span class="doccomment">/// The function argument represents a properly encoded entity.</span>
+    <span class="doccomment">/// Properly encoded entity has the structure: `[entity_length][entity_type][entity_data]`.</span>
+    <span class="doccomment">/// Entity length is read in `parse_entities_impl`, so received `entity_data` only has entity type and parsing data.</span>
+    <span class="kw">fn</span> <span class="ident">parse_entity</span>(<span class="ident">entity_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">entity_type</span> <span class="op">=</span> <span class="ident">entity_data</span>.<span class="ident">get</span>(<span class="number">0</span>).<span class="ident">expect</span>(<span class="string">&quot;internal error: entity data without entity type&quot;</span>);
+        <span class="kw">let</span> <span class="ident">parsing_data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">entity_data</span>[<span class="number">1</span>..];
         <span class="kw">match</span> <span class="ident">entity_type</span> {
-            <span class="ident">ENCODING_SCHEME_TYPE</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">ENCODING_SCHEME_ENTITY_MIN_SIZE</span> <span class="op">|</span><span class="op">|</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="ident">ENTITY_MAX_SIZE</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;invalid encoding scheme data size&quot;</span>));
-                }
-                <span class="kw">let</span> <span class="ident">scheme_entity</span> <span class="op">=</span> <span class="ident">parse_encoding_scheme</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">scheme_entity</span>))
-            }
-            <span class="ident">PEER_TYPE</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">PEER_ENTITY_SIZE</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;invalid peer data size&quot;</span>));
-                }
-                <span class="kw">let</span> <span class="ident">peer_entity</span> <span class="op">=</span> <span class="ident">parse_peer</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">peer_entity</span>))
-            }
-            <span class="ident">VERSION_TYPE</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">VERSION_ENTITY_SIZE</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;invalid version data size&quot;</span>));
-                }
-                <span class="kw">let</span> <span class="ident">version_entity</span> <span class="op">=</span> <span class="ident">parse_version</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">version_entity</span>))
-            }
-            <span class="ident">LINK_STATE_TYPE</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">if</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">LINK_STATE_ENTITY_MIN_SIZE</span> <span class="op">|</span><span class="op">|</span> <span class="ident">entity_data</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="ident">ENTITY_MAX_SIZE</span> {
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;invalid link state data size&quot;</span>));
-                }
-                <span class="kw">let</span> <span class="ident">link_state_entity</span> <span class="op">=</span> <span class="ident">parse_link_state</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">link_state_entity</span>))
-            }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
+            <span class="ident">ENCODING_SCHEME_TYPE</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">parse_encoding_scheme</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>)),
+            <span class="ident">PEER_TYPE</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">parse_peer</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>)),
+            <span class="ident">VERSION_TYPE</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">parse_version</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>)),
+            <span class="ident">LINK_STATE_TYPE</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">parse_link_state</span>(<span class="ident">parsing_data</span>)<span class="question-mark">?</span>)),
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>),
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_encoding_scheme</span>(<span class="ident">encoding_scheme_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">hex</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">encoding_scheme_data</span>);
-        <span class="kw">let</span> <span class="ident">scheme</span> <span class="op">=</span> <span class="ident">deserialize_scheme</span>(<span class="ident">encoding_scheme_data</span>).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;encoding scheme deserialization failed&quot;</span>)))<span class="question-mark">?</span>;
+    <span class="kw">fn</span> <span class="ident">parse_encoding_scheme</span>(<span class="ident">encoding_scheme_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scheme_data</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">encoding_scheme_data</span>)
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">NotLessThan</span>(<span class="ident">ENCODING_SCHEME_ENTITY_MIN_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="prelude-val">Ok</span>(<span class="ident">r</span>.<span class="ident">read_remainder</span>()))
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InvalidSize</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">hex</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">scheme_data</span>);
+        <span class="kw">let</span> <span class="ident">scheme</span> <span class="op">=</span> <span class="ident">deserialize_scheme</span>(<span class="ident">scheme_data</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;encoding scheme bytes can&#39;t be deserialized&quot;</span>))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">EncodingScheme</span> { <span class="ident">hex</span>, <span class="ident">scheme</span> })
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_version</span>(<span class="ident">version_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span> {
-        <span class="comment">// Version data is always 4 bytes. First 2 bytes are encoded length and type.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">version_data</span>.<span class="ident">len</span>(), <span class="number">2</span>);
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">2</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">version_data</span>).<span class="ident">expect</span>(<span class="string">&quot;version slice length != 2&quot;</span>));
+    <span class="kw">fn</span> <span class="ident">parse_version</span>(<span class="ident">version_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">version_data</span>)
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">Exact</span>(<span class="ident">VERSION_ENTITY_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="prelude-val">Ok</span>(<span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>))
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InvalidSize</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="ident">version</span>))
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_peer</span>(<span class="ident">peer_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span> {
-        <span class="comment">// Peer data is always 32 bytes. First 2 bytes are encoded length and type.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">peer_data</span>.<span class="ident">len</span>(), <span class="number">30</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">peer_data_iter</span> <span class="op">=</span> <span class="ident">peer_data</span>.<span class="ident">iter</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">take_peer_bytes</span> <span class="op">=</span> <span class="op">|</span><span class="ident">n</span>: <span class="ident">usize</span><span class="op">|</span> <span class="ident">peer_data_iter</span>.<span class="ident">by_ref</span>().<span class="ident">take</span>(<span class="ident">n</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">byte</span><span class="op">|</span> <span class="ident">byte</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-        <span class="kw">let</span> (<span class="ident">encoding_form_number</span>, <span class="ident">flags</span>) <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">efn_f</span> <span class="op">=</span> <span class="ident">take_peer_bytes</span>(<span class="number">2</span>);
-            <span class="kw">let</span> <span class="ident">err_msg</span> <span class="op">=</span> <span class="string">&quot;peer data is empty&quot;</span>;
-            <span class="kw">let</span> (<span class="kw-2">&amp;</span><span class="ident">encoding_form_number</span>, <span class="kw-2">&amp;</span><span class="ident">flags</span>) <span class="op">=</span> (<span class="ident">efn_f</span>.<span class="ident">first</span>().<span class="ident">expect</span>(<span class="ident">err_msg</span>), <span class="ident">efn_f</span>.<span class="ident">last</span>().<span class="ident">expect</span>(<span class="ident">err_msg</span>));
-            (<span class="ident">encoding_form_number</span>, <span class="ident">flags</span>)
-        };
-        <span class="kw">let</span> <span class="ident">mtu</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">mtu8</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">2</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">2</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;mtu slice size != 2&quot;</span>));
-            <span class="ident">mtu8</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">8</span>
-        };
-        <span class="kw">let</span> <span class="ident">peer_num</span> <span class="op">=</span> <span class="ident">u16</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">2</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">2</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;peer_num slice size != 2&quot;</span>));
-        <span class="kw">let</span> <span class="ident">unused</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">4</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;unused slice size != 4&quot;</span>));
-        <span class="kw">let</span> <span class="ident">ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">16</span>).<span class="ident">as_slice</span>()).<span class="ident">or</span>(<span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseEntity</span>(<span class="string">&quot;failed ip6 creation from entity bytes&quot;</span>)))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">label</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">label_bits</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">take_peer_bytes</span>(<span class="number">4</span>).<span class="ident">as_slice</span>()).<span class="ident">expect</span>(<span class="string">&quot;label slice size != 4&quot;</span>));
-            <span class="comment">// A label of 0 indicates that the route is being withdrawn and it is no longer usable. Handling of zero label is not a job for parser</span>
-            <span class="comment">// So we return an Option</span>
-            <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="ident">label_bits</span>)
-        };
+    <span class="kw">fn</span> <span class="ident">parse_peer</span>(<span class="ident">peer_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">peer_data</span>);
+        <span class="kw">let</span> (<span class="ident">encoding_form_number</span>, <span class="ident">flags</span>, <span class="ident">mtu8</span>, <span class="ident">peer_num</span>, <span class="ident">unused</span>, <span class="ident">ip6_bytes</span>, <span class="ident">label_bits</span>) <span class="op">=</span> <span class="ident">data_reader</span>
+            .<span class="ident">read</span>(<span class="ident">ExpectedSize</span>::<span class="ident">Exact</span>(<span class="ident">PEER_ENTITY_SIZE</span>), <span class="op">|</span><span class="ident">r</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">encoding_form_number</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u8</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">mtu8</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">peer_num</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u16_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">unused</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u32_be</span>()<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">ip6_bytes</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_slice</span>(<span class="number">16</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">label_bits</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">read_u32_be</span>()<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((<span class="ident">encoding_form_number</span>, <span class="ident">flags</span>, <span class="ident">mtu8</span>, <span class="ident">peer_num</span>, <span class="ident">unused</span>, <span class="ident">ip6_bytes</span>, <span class="ident">label_bits</span>))
+            })
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InvalidSize</span>)<span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">mtu</span> <span class="op">=</span> <span class="ident">mtu8</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">8</span>;
+        <span class="kw">let</span> <span class="ident">ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">ip6_bytes</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;failed ip6 creation from peer bytes&quot;</span>))<span class="question-mark">?</span>;
+        <span class="comment">// A label of 0 indicates that the route is being withdrawn and it is no longer usable. Handling of zero label is not a job for parser</span>
+        <span class="comment">// So we return an Option</span>
+        <span class="kw">let</span> <span class="ident">label</span> <span class="op">=</span> <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="ident">label_bits</span>);
         <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">Peer</span> {
             <span class="ident">ip6</span>,
             <span class="ident">label</span>,
@@ -1175,89 +1148,49 @@
         })
     }
 
-    <span class="comment">// todo refactor</span>
-    <span class="kw">fn</span> <span class="ident">parse_link_state</span>(<span class="ident">link_state_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span><span class="op">&gt;</span> {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">link_state_data</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link_state_iter</span> <span class="op">=</span> <span class="ident">link_state_data</span>.<span class="ident">iter</span>();
-        <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">pads_amount</span> <span class="op">=</span> <span class="ident">link_state_iter</span>.<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;wrong link state data len&quot;</span>);
-        <span class="kw">let</span> <span class="ident">zero_pads</span> <span class="op">=</span> <span class="ident">link_state_iter</span>.<span class="ident">by_ref</span>().<span class="ident">take</span>(<span class="ident">pads_amount</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span>).<span class="ident">count</span>();
-        <span class="kw">if</span> <span class="ident">zero_pads</span> <span class="op">!</span><span class="op">=</span> <span class="ident">pads_amount</span> <span class="kw">as</span> <span class="ident">usize</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseLinkState</span>(<span class="string">&quot;non zero pad found in pad range&quot;</span>));
+    <span class="doccomment">/// C implementation: https://github.com/cjdelisle/cjdns/blob/d832e26951a2af083b4defb576fe1f0beeef6327/subnode/LinkState.h#L127</span>
+    <span class="kw">fn</span> <span class="ident">parse_link_state</span>(<span class="ident">link_state_data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Entity</span>, <span class="ident">EntityParserError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data_reader</span> <span class="op">=</span> <span class="ident">Reader</span>::<span class="ident">new</span>(<span class="ident">link_state_data</span>);
+        {
+            <span class="kw">let</span> <span class="ident">pads_amount</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_u8</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InsufficientData</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">zero_pads</span> <span class="op">=</span> {
+                <span class="kw">let</span> <span class="ident">pads</span> <span class="op">=</span> <span class="ident">data_reader</span>.<span class="ident">read_slice</span>(<span class="ident">pads_amount</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InsufficientData</span>)<span class="question-mark">?</span>;
+                <span class="ident">pads</span>.<span class="ident">iter</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">==</span> <span class="number">0</span>).<span class="ident">count</span>()
+            };
+            <span class="kw">if</span> <span class="ident">zero_pads</span> <span class="op">!=</span> <span class="ident">pads_amount</span> <span class="kw">as</span> <span class="ident">usize</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;non zero pad&quot;</span>));
+            }
         }
-        <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">var_int_pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">link_state_iter</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">starting_point</span> <span class="op">=</span> <span class="ident">var_int_pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">link_state_iter</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;can&#39;t create node id from received bytes&quot;</span>))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">slots_start_idx</span> <span class="op">=</span> <span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;can&#39;t create slots idx from received bytes&quot;</span>))<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="ident">slots_start_idx</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&gt;=</span> <span class="ident">STATE_SLOTS_SIZE</span> {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;slots index out of bounds&quot;</span>));
+        }
+
+        <span class="kw">if</span> <span class="ident">data_reader</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;empty slots&quot;</span>));
+        }
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lag_slots</span> <span class="op">=</span> <span class="ident">LinkStateSlots</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>::<span class="ident">default</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drop_slots</span> <span class="op">=</span> <span class="ident">LinkStateSlots</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>::<span class="ident">default</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">kb_recv_slots</span> <span class="op">=</span> <span class="ident">LinkStateSlots</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">default</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">starting_point</span>;
-        <span class="kw">while</span> <span class="ident">link_state_iter</span>.<span class="ident">as_slice</span>().<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
-            <span class="ident">lag_slots</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">var_int_pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">link_state_iter</span>)<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u16</span>; <span class="comment">//todo need checked conversion here</span>
-            <span class="ident">drop_slots</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">var_int_pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">link_state_iter</span>)<span class="question-mark">?</span> <span class="kw">as</span> <span class="ident">u16</span>; <span class="comment">//todo need checked conversion here</span>
-            <span class="ident">kb_recv_slots</span>[<span class="ident">i</span> <span class="kw">as</span> <span class="ident">usize</span>] <span class="op">=</span> <span class="ident">var_int_pop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">link_state_iter</span>)<span class="question-mark">?</span>;
-            <span class="ident">i</span> <span class="op">=</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="number">18</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">slots_start_idx</span> <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">while</span> <span class="op">!</span><span class="ident">data_reader</span>.<span class="ident">is_empty</span>() {
+            <span class="ident">lag_slots</span>[<span class="ident">i</span>] <span class="op">=</span>
+                <span class="prelude-val">Some</span>(<span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;can&#39;t create log_slots sample from received bytes&quot;</span>))<span class="question-mark">?</span>);
+            <span class="ident">drop_slots</span>[<span class="ident">i</span>] <span class="op">=</span>
+                <span class="prelude-val">Some</span>(<span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;can&#39;t create drop_slots sample from received bytes&quot;</span>))<span class="question-mark">?</span>);
+            <span class="ident">kb_recv_slots</span>[<span class="ident">i</span>] <span class="op">=</span>
+                <span class="prelude-val">Some</span>(<span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;cant create kb_recv_slots sample from received bytes&quot;</span>))<span class="question-mark">?</span>);
+            <span class="ident">i</span> <span class="op">=</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">STATE_SLOTS_SIZE</span>;
         }
         <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">LinkState</span> {
             <span class="ident">node_id</span>,
-            <span class="ident">starting_point</span>,
+            <span class="ident">slots_start_idx</span>,
             <span class="ident">lag_slots</span>,
             <span class="ident">drop_slots</span>,
             <span class="ident">kb_recv_slots</span>,
         })
-    }
-
-    <span class="comment">// todo refactor</span>
-    <span class="kw">fn</span> <span class="ident">var_int_pop</span>(<span class="ident">link_state_iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">link_state_iter</span>.<span class="ident">as_slice</span>().<span class="ident">len</span>();
-        <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">byte</span> <span class="op">=</span> <span class="ident">link_state_iter</span>.<span class="ident">as_slice</span>().<span class="ident">first</span>().<span class="ident">ok_or</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseLinkState</span>(<span class="string">&quot;wrong iter len&quot;</span>))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">runt_err</span> <span class="op">=</span> <span class="prelude-val">Err</span>(<span class="ident">ParserError</span>::<span class="ident">CannotParseLinkState</span>(<span class="string">&quot;runt&quot;</span>));
-        <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">9</span> {
-            <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">5</span> {
-                <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">3</span> {
-                    <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">1</span> {
-                        <span class="kw">return</span> <span class="ident">runt_err</span>;
-                    }
-                    <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0xfd</span> {
-                        <span class="kw">return</span> <span class="ident">runt_err</span>;
-                    }
-                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0xfe</span> {
-                    <span class="kw">return</span> <span class="ident">runt_err</span>;
-                }
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">byte</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0xff</span> {
-                <span class="kw">return</span> <span class="ident">runt_err</span>;
-            }
-        }
-        <span class="ident">output</span> <span class="op">=</span> <span class="ident">check_current_byte_fall_through</span>(<span class="ident">byte</span>, <span class="ident">output</span>, <span class="ident">link_state_iter</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">output</span>)
-    }
-
-    <span class="comment">// todo refactor</span>
-    <span class="kw">fn</span> <span class="ident">check_current_byte_fall_through</span>(<span class="ident">current_byte</span>: <span class="ident">u8</span>, <span class="kw-2">mut</span> <span class="ident">current_output</span>: <span class="ident">u32</span>, <span class="ident">link_state_iter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u32</span> {
-        <span class="kw">match</span> <span class="ident">current_byte</span> {
-            <span class="number">0xff</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">4</span> {
-                    <span class="ident">current_output</span> <span class="op">|</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">link_state_iter</span>.<span class="ident">by_ref</span>().<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;link state data len is too small&quot;</span>) <span class="kw">as</span> <span class="ident">u32</span>;
-                    <span class="ident">current_output</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">8</span>;
-                }
-                <span class="ident">check_current_byte_fall_through</span>(<span class="number">0xfe</span>, <span class="ident">current_output</span>, <span class="ident">link_state_iter</span>)
-            }
-            <span class="number">0xfe</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">2</span> {
-                    <span class="ident">current_output</span> <span class="op">|</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">link_state_iter</span>.<span class="ident">by_ref</span>().<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;link state data len is too small&quot;</span>) <span class="kw">as</span> <span class="ident">u32</span>;
-                    <span class="ident">current_output</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">8</span>;
-                }
-                <span class="ident">check_current_byte_fall_through</span>(<span class="number">0xfe</span>, <span class="ident">current_output</span>, <span class="ident">link_state_iter</span>)
-            }
-            <span class="number">0xfd</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">current_output</span> <span class="op">|</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">link_state_iter</span>.<span class="ident">by_ref</span>().<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;link state data len is too small&quot;</span>) <span class="kw">as</span> <span class="ident">u32</span>;
-                <span class="ident">current_output</span> <span class="op">&lt;</span><span class="op">&lt;</span><span class="op">=</span> <span class="number">8</span>;
-                <span class="ident">check_current_byte_fall_through</span>(<span class="ident">u8</span>::<span class="ident">default</span>(), <span class="ident">current_output</span>, <span class="ident">link_state_iter</span>)
-            }
-            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">current_output</span> <span class="op">|</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">link_state_iter</span>.<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;link state data len is too small&quot;</span>) <span class="kw">as</span> <span class="ident">u32</span>;
-                <span class="ident">current_output</span>
-            }
-        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -1265,6 +1198,10 @@
         <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSKeysApi</span>;
 
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+
+        <span class="kw">fn</span> <span class="ident">decode_hex</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">AsRef</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;&gt;</span>(<span class="ident">hex</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+            <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">hex</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>)
+        }
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">test_parse_header</span>() {
@@ -1275,11 +1212,11 @@
 
             <span class="kw">let</span> <span class="ident">ann_timestamp</span> <span class="op">=</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">u64</span>::<span class="ident">from_be_bytes</span>(<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">8</span>]<span class="op">&gt;</span>::<span class="ident">try_from</span>(<span class="ident">random_timestamp</span>).<span class="ident">expect</span>(<span class="string">&quot;slice array size != 8&quot;</span>));
-                <span class="ident">timestamp</span> <span class="op">&gt;</span><span class="op">&gt;</span><span class="op">=</span> <span class="number">4</span>;
+                <span class="ident">timestamp</span> <span class="op">&gt;&gt;</span><span class="op">=</span> <span class="number">4</span>;
                 <span class="ident">timestamp</span>
             };
             <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">random_timestamp</span>[<span class="number">7</span>] <span class="op">&amp;</span> <span class="number">7</span>;
-            <span class="kw">let</span> <span class="ident">is_reset</span> <span class="op">=</span> (<span class="ident">random_timestamp</span>[<span class="number">7</span>] <span class="op">&gt;</span><span class="op">&gt;</span> <span class="number">3</span>) <span class="op">&amp;</span> <span class="number">1</span> <span class="op">=</span><span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">is_reset</span> <span class="op">=</span> (<span class="ident">random_timestamp</span>[<span class="number">7</span>] <span class="op">&gt;&gt;</span> <span class="number">3</span>) <span class="op">&amp;</span> <span class="number">1</span> <span class="op">==</span> <span class="number">1</span>;
 
             <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">120</span>);
@@ -1296,7 +1233,7 @@
                 <span class="ident">AnnouncementHeader</span> {
                     <span class="ident">signature</span>: <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">random_signature</span>),
                     <span class="ident">pub_signing_key</span>: <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">keys</span>.<span class="ident">public_key</span>),
-                    <span class="ident">super_node_ip6</span>: <span class="ident">keys</span>.<span class="ident">ip6</span>,
+                    <span class="ident">snode_ip</span>: <span class="ident">keys</span>.<span class="ident">ip6</span>,
                     <span class="ident">timestamp</span>: <span class="ident">ann_timestamp</span>,
                     <span class="ident">version</span>,
                     <span class="ident">is_reset</span>
@@ -1306,7 +1243,7 @@
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">test_parse_header_invalid_len</span>() {
-            <span class="kw">let</span> <span class="ident">invalid_header_lengths</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="number">255</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">!</span><span class="op">=</span> <span class="ident">HEADER_SIZE</span>);
+            <span class="kw">let</span> <span class="ident">invalid_header_lengths</span> <span class="op">=</span> (<span class="number">0</span>..<span class="op">=</span><span class="number">255</span>).<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span> <span class="op">!=</span> <span class="ident">HEADER_SIZE</span>);
             <span class="kw">for</span> <span class="ident">len</span> <span class="kw">in</span> <span class="ident">invalid_header_lengths</span> {
                 <span class="kw">let</span> <span class="ident">random_header_bytes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">len</span>];
                 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_header</span>(<span class="kw-2">&amp;</span><span class="ident">random_header_bytes</span>).<span class="ident">is_err</span>())
@@ -1324,7 +1261,7 @@
                 <span class="string">&quot;fc928136dc1fe6e04ef6a6dd7187b85f&quot;</span> <span class="op">+</span>
                 <span class="comment">// timestamp-version-is_reset</span>
                 <span class="string">&quot;0000157354c540c1&quot;</span>;
-            <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">valid_hexed_header</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
+            <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="ident">valid_hexed_header</span>);
             <span class="kw">let</span> <span class="ident">parsed_announcement</span> <span class="op">=</span>
                 <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">header_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid bytes len&quot;</span>)).<span class="ident">expect</span>(<span class="string">&quot;invalid ann data&quot;</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_announcement</span>.<span class="ident">entities</span>, <span class="macro">vec</span><span class="macro">!</span>[]);
@@ -1332,34 +1269,33 @@
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">test_parse_entities</span>() {
-            <span class="kw">let</span> <span class="ident">invalid_entities_data_hexed</span> <span class="op">=</span> [
+            <span class="kw">let</span> <span class="ident">invalid_data</span> <span class="op">=</span> [
                 <span class="comment">// zero length entity</span>
-                <span class="string">&quot;00123123132412&quot;</span>,
-                <span class="string">&quot;02050001&quot;</span>,
-                <span class="comment">// zero byte at the end - corrupt</span>
-                <span class="string">&quot;02050100&quot;</span>,
-                <span class="comment">// invalid encoded len: not equal to actual buffer len</span>
-                <span class="string">&quot;02&quot;</span>,
-                <span class="string">&quot;0305&quot;</span>,
-                <span class="string">&quot;02050302&quot;</span>,
+                <span class="ident">decode_hex</span>(<span class="string">&quot;00123123132412&quot;</span>),
+                <span class="ident">decode_hex</span>(<span class="string">&quot;02050001&quot;</span>),
+                <span class="ident">decode_hex</span>(<span class="string">&quot;02050100&quot;</span>),
+                <span class="comment">// no type</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;02&quot;</span>),
+                <span class="comment">// invalid encoded length</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0305&quot;</span>),
+                <span class="ident">decode_hex</span>(<span class="string">&quot;02050302&quot;</span>),
                 <span class="comment">// invalid data size for entities</span>
-                <span class="string">&quot;030201&quot;</span>,     <span class="comment">// version entity len should be 4</span>
-                <span class="string">&quot;0501000220&quot;</span>, <span class="comment">// peer entity len should be 32</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;030201&quot;</span>),     <span class="comment">// version entity len should be 4</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0501000220&quot;</span>), <span class="comment">// peer entity len should be 32</span>
                 <span class="comment">// mixing valid and invalid</span>
-                <span class="string">&quot;030507006114458100&quot;</span>,                                                 <span class="comment">// 0305 and valid encoding entity</span>
-                <span class="string">&quot;0204020012&quot;</span>,                                                         <span class="comment">// 02 and valid version entity</span>
-                <span class="string">&quot;20200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000015&quot;</span>, <span class="comment">// 20 and valid peer entity</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;030507006114458100&quot;</span>),                                                 <span class="comment">// 0305 and valid encoding entity</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0204020012&quot;</span>),                                                         <span class="comment">// 02 and valid version entity</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;20200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000015&quot;</span>), <span class="comment">// 20 and valid peer entity</span>
             ];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">invalid_entity_data</span> <span class="kw">in</span> <span class="ident">invalid_entities_data_hexed</span>.<span class="ident">iter</span>() {
-                <span class="kw">let</span> <span class="ident">data_bytes</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">invalid_entity_data</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
-                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_entities</span>(<span class="kw-2">&amp;</span><span class="ident">data_bytes</span>).<span class="ident">is_err</span>());
+            <span class="kw">for</span> <span class="ident">data</span> <span class="kw">in</span> <span class="ident">invalid_data</span>.<span class="ident">iter</span>() {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_entities</span>(<span class="ident">data</span>).<span class="ident">is_err</span>());
             }
 
             <span class="kw">let</span> <span class="ident">valid_tests</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
                 <span class="comment">// no entities passed</span>
-                (<span class="string">&quot;&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[]),
+                (<span class="ident">decode_hex</span>(<span class="string">&quot;&quot;</span>), <span class="macro">vec</span><span class="macro">!</span>[]),
                 (
-                    <span class="string">&quot;200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003&quot;</span>,
+                    <span class="ident">decode_hex</span>(<span class="string">&quot;200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
                         <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
@@ -1371,7 +1307,7 @@
                     }],
                 ),
                 (
-                    <span class="string">&quot;04020002200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000020&quot;</span>,
+                    <span class="ident">decode_hex</span>(<span class="string">&quot;04020002200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000020&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
                         <span class="ident">Entity</span>::<span class="ident">Peer</span> {
@@ -1387,7 +1323,7 @@
                 ),
                 (
                     <span class="comment">// with some pads</span>
-                    <span class="string">&quot;0402000201010101200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000013&quot;</span>,
+                    <span class="ident">decode_hex</span>(<span class="string">&quot;0402000201010101200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000013&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
                         <span class="ident">Entity</span>::<span class="ident">Peer</span> {
@@ -1403,7 +1339,7 @@
                 ),
                 (
                     <span class="comment">// with unrecognised entities at the beginning and at the end</span>
-                    <span class="string">&quot;020701200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003030510&quot;</span>,
+                    <span class="ident">decode_hex</span>(<span class="string">&quot;020701200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003030510&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
                         <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
@@ -1416,14 +1352,13 @@
                 ),
                 (
                     <span class="comment">// all of them are unrecognised</span>
-                    <span class="string">&quot;03100102050504020304&quot;</span>,
+                    <span class="ident">decode_hex</span>(<span class="string">&quot;03100102050504020304&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[],
                 ),
             ];
-            <span class="kw">for</span> (<span class="ident">test_data_hexed</span>, <span class="ident">res</span>) <span class="kw">in</span> <span class="ident">valid_tests</span>.<span class="ident">into_iter</span>() {
-                <span class="kw">let</span> <span class="ident">test_bytes</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">test_data_hexed</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
-                <span class="kw">let</span> <span class="ident">parsed_entity</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="kw-2">&amp;</span><span class="ident">test_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid entity passed&quot;</span>);
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_entity</span>, <span class="ident">res</span>);
+            <span class="kw">for</span> (<span class="ident">test_bytes</span>, <span class="ident">res</span>) <span class="kw">in</span> <span class="ident">valid_tests</span>.<span class="ident">iter</span>() {
+                <span class="kw">let</span> <span class="ident">parsed_entity</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="ident">test_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid entity passed&quot;</span>);
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_entity</span>, <span class="kw-2">*</span><span class="ident">res</span>);
             }
         }
 
@@ -1433,7 +1368,7 @@
                 <span class="kw">let</span> <span class="ident">peer_data_hex</span> <span class="op">=</span> <span class="string">&quot;200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000015&quot;</span>;
                 <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}{}{}&quot;</span>, <span class="ident">peer_data_hex</span>, <span class="ident">peer_data_hex</span>, <span class="ident">peer_data_hex</span>)
             };
-            <span class="kw">let</span> <span class="ident">entities_data_vec</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">multiple_peer_entity_hex</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
+            <span class="kw">let</span> <span class="ident">entities_data_vec</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="ident">multiple_peer_entity_hex</span>);
 
             <span class="kw">let</span> <span class="ident">parsed_peer</span> <span class="op">=</span> <span class="ident">Entity</span>::<span class="ident">Peer</span> {
                 <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
@@ -1450,20 +1385,70 @@
         }
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
-        <span class="kw">fn</span> <span class="ident">test_parse_link_state</span>() {
-            <span class="kw">let</span> <span class="ident">hexed_data</span> <span class="op">=</span> <span class="string">&quot;2003060000000000000410130001120002130002130000140003120001130001&quot;</span>;
-            <span class="kw">let</span> <span class="ident">test_bytes</span> <span class="op">=</span> <span class="ident">hex</span>::<span class="ident">decode</span>(<span class="ident">hexed_data</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid hex string&quot;</span>);
+        <span class="kw">fn</span> <span class="ident">test_parse_link_state_base</span>() {
+            <span class="kw">let</span> <span class="ident">test_bytes</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="string">&quot;2003060000000000000410130001120002130002130000140003120001130001&quot;</span>);
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="kw-2">&amp;</span><span class="ident">test_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid entity&quot;</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(
                 <span class="ident">res</span>,
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">LinkState</span> {
                     <span class="ident">node_id</span>: <span class="number">4</span>,
-                    <span class="ident">starting_point</span>: <span class="number">16</span>,
-                    <span class="ident">lag_slots</span>: [<span class="number">19</span>, <span class="number">19</span>, <span class="number">20</span>, <span class="number">18</span>, <span class="number">19</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">19</span>, <span class="number">18</span>],
-                    <span class="ident">drop_slots</span>: [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],
-                    <span class="ident">kb_recv_slots</span>: [<span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]
+                    <span class="ident">slots_start_idx</span>: <span class="number">16</span>,
+                    <span class="ident">lag_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">20</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>)],
+                    <span class="ident">drop_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>)],
+                    <span class="ident">kb_recv_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>)]
                 }]
             )
+        }
+
+        <span class="attribute">#[<span class="ident">test</span>]</span>
+        <span class="kw">fn</span> <span class="ident">test_parse_link_state</span>() {
+            <span class="kw">let</span> <span class="ident">invalid_data</span> <span class="op">=</span> [
+                <span class="comment">// no pads</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0203&quot;</span>),
+                <span class="comment">// invalid pads (non zero pad in data)</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;07030400000001&quot;</span>),
+                <span class="comment">// bad node id data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;080300fe01020304&quot;</span>),
+                <span class="comment">// bad slots starting idx data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;090300fd0102fd0102&quot;</span>),
+                <span class="comment">// out of bounds starting idx</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;050300fafa&quot;</span>),
+                <span class="comment">// empty slots</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;050300fa0a&quot;</span>),
+                <span class="comment">// inconsistent slots data: some slots have more samples data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0b0300fa0f010203fd0102&quot;</span>),
+                <span class="comment">// bad lag slot data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;120300fa0f010203040506fe010203040102&quot;</span>),
+                <span class="comment">// bad drop slot data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;130300fa0f010203040506fd0102fe03040102&quot;</span>),
+                <span class="comment">// bad kb_recv slot data</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;10030001010203ff1122334455667788&quot;</span>),
+                <span class="comment">// insufficient data</span>
+                <span class="comment">// not enough ff bytes</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0f0300fa0f0102ff01020304050607&quot;</span>),
+                <span class="comment">// can&#39;t create log slot</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;070300fa0ffd01&quot;</span>),
+                <span class="comment">// can&#39;t create log slot</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;090300fa0ffe010203&quot;</span>),
+            ];
+            <span class="kw">for</span> <span class="ident">data</span> <span class="kw">in</span> <span class="ident">invalid_data</span>.<span class="ident">iter</span>() {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_entities</span>(<span class="ident">data</span>).<span class="ident">is_err</span>())
+            }
+        }
+
+        <span class="attribute">#[<span class="ident">test</span>]</span>
+        <span class="kw">fn</span> <span class="ident">test_link_state_valid</span>() {
+            <span class="kw">let</span> <span class="ident">valid_cases</span> <span class="op">=</span> [
+                <span class="comment">// minimum valid</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0803000102030405&quot;</span>),
+                <span class="comment">// var ints</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;2d0300fd00af00fdaa01fdaa01ff00000000556677887788ff0000000011223344fdaa0101fe03040506110f78&quot;</span>),
+                <span class="comment">// with some pads</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0d030500000000000a0a0a0a0a&quot;</span>),
+            ];
+            <span class="kw">for</span> <span class="ident">data</span> <span class="kw">in</span> <span class="ident">valid_cases</span>.<span class="ident">iter</span>() {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_entities</span>(<span class="ident">data</span>).<span class="ident">is_ok</span>());
+            }
         }
     }
 }

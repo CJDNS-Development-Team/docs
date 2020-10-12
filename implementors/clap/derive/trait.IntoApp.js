@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["cjdns_snode"] = [{"text":"impl <a class=\"trait\" href=\"https://docs.rs/clap/3.0.0-beta.1/clap/derive/trait.IntoApp.html\" title=\"trait clap::derive::IntoApp\">IntoApp</a> for <a class=\"struct\" href=\"cjdns_snode/args/struct.Opts.html\" title=\"struct cjdns_snode::args::Opts\">Opts</a>","synthetic":false,"types":["cjdns_snode::args::Opts"]}];
+implementors["cjdns_snode"] = [{"text":"impl IntoApp for Opts","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

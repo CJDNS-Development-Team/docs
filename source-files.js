@@ -1,6 +1,6 @@
 var N = null;var sourcesIndex = {};
 sourcesIndex["cjdns_admin"] = {"name":"","files":["config.rs","conn.rs","errors.rs","func_args.rs","func_list.rs","func_ret.rs","lib.rs","msgs.rs","txid.rs"]};
-sourcesIndex["cjdns_ann"] = {"name":"","files":["errors.rs","lib.rs","models.rs","serialized_ann.rs"]};
+sourcesIndex["cjdns_ann"] = {"name":"","files":["errors.rs","lib.rs","models.rs","serialized_ann.rs","var_int.rs"]};
 sourcesIndex["cjdns_bencode"] = {"name":"","files":["lib.rs","value.rs"]};
 sourcesIndex["cjdns_bytes"] = {"name":"","files":["errors.rs","lib.rs","utils.rs"]};
 sourcesIndex["cjdns_core"] = {"name":"","files":["encoding.rs","lib.rs","pathhop.rs","routinglabel.rs","splice.rs","strconv.rs"]};

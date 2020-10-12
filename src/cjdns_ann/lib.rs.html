@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-ann/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_ann/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-ann/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_ann/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -288,7 +289,7 @@
 <span class="doccomment">//! #                 &quot;3a2349bd342608df20d999ff2384e99f1e179dbdf4aaa61692c2477c011cfe635b42d3cdb8556d94f365cdfa338dc38f40c1fabf69500830af915f41bed71b09&quot;</span>
 <span class="doccomment">//! #                     .to_string(),</span>
 <span class="doccomment">//! #             pub_signing_key: &quot;f2e1d148ed18b09d16b5766e4250df7b4e83a5ccedd4cfde15f1f474db1a5bc2&quot;.to_string(),</span>
-<span class="doccomment">//! #             super_node_ip6: CJDNS_IP6::try_from(&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;).expect(&quot;failed ip6 creation&quot;),</span>
+<span class="doccomment">//! #             snode_ip: CJDNS_IP6::try_from(&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;).expect(&quot;failed ip6 creation&quot;),</span>
 <span class="doccomment">//! #             version: 1,</span>
 <span class="doccomment">//! #             is_reset: true,</span>
 <span class="doccomment">//! #             timestamp: 1474857989878</span>
@@ -313,21 +314,21 @@
 <span class="doccomment">//! #                 flags: 0</span>
 <span class="doccomment">//! #             }</span>
 <span class="doccomment">//! #         ],</span>
-<span class="doccomment">//! #         node_encryption_key: CJDNSPublicKey::try_from(&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;)</span>
+<span class="doccomment">//! #         node_pub_key: CJDNSPublicKey::try_from(&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;)</span>
 <span class="doccomment">//! #             .expect(&quot;failed pub key creation&quot;),</span>
-<span class="doccomment">//! #         node_ip6: CJDNS_IP6::try_from(&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;).expect(&quot;failed ip6 creation&quot;),</span>
+<span class="doccomment">//! #         node_ip: CJDNS_IP6::try_from(&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;).expect(&quot;failed ip6 creation&quot;),</span>
 <span class="doccomment">//! #         binary: returning_packet,</span>
-<span class="doccomment">//! #         binary_hash: announcement_bytes_hash</span>
+<span class="doccomment">//! #         hash: announcement_bytes_hash</span>
 <span class="doccomment">//! #     }</span>
 <span class="doccomment">//! # );</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">models</span>::{<span class="ident">Announcement</span>, <span class="ident">AnnouncementEntities</span>, <span class="ident">AnnouncementHeader</span>, <span class="ident">Entity</span>, <span class="ident">LinkStateSlots</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">serialized_ann</span>::<span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>;
 
 <span class="kw">mod</span> <span class="ident">errors</span>;
 <span class="kw">mod</span> <span class="ident">models</span>;
 <span class="kw">mod</span> <span class="ident">serialized_ann</span>;
+<span class="kw">mod</span> <span class="ident">var_int</span>;
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_ann";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
