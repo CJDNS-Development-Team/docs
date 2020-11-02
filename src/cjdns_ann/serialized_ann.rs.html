@@ -725,10 +725,19 @@
 <span id="724">724</span>
 <span id="725">725</span>
 <span id="726">726</span>
+<span id="727">727</span>
+<span id="728">728</span>
+<span id="729">729</span>
+<span id="730">730</span>
+<span id="731">731</span>
+<span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 
-<span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">hash</span>::<span class="ident">sha512</span>::{<span class="ident">Digest</span>, <span class="ident">hash</span>};
+<span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">hash</span>::<span class="ident">sha512</span>;
 <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">sign</span>::<span class="ident">ed25519</span>::{<span class="ident">PublicKey</span>, <span class="ident">Signature</span>, <span class="ident">verify_detached</span>};
 
 <span class="kw">use</span> <span class="ident">cjdns_core</span>::{<span class="ident">deserialize_scheme</span>, <span class="ident">RoutingLabel</span>};
@@ -787,8 +796,8 @@
             <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="self">self</span>).<span class="ident">map_err</span>(<span class="ident">PacketError</span>::<span class="ident">CannotParsePacket</span>)
         }
 
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Digest</span> {
-            <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">sha512</span>::<span class="ident">Digest</span> {
+            <span class="ident">sha512</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>)
         }
 
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">get_entities_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
@@ -810,6 +819,10 @@
         <span class="kw">fn</span> <span class="ident">get_signed_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[<span class="ident">SIGN_SIZE</span>..]
         }
+
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_inner</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+            <span class="self">self</span>.<span class="number">0</span>
+        }
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -817,6 +830,8 @@
         <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="kw-2">*</span>;
 
         <span class="kw">use</span> <span class="ident">cjdns_core</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">EncodingSchemeForm</span>};
+
+        <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">models</span>::{<span class="ident">AnnHash</span>, <span class="ident">PeerData</span>};
 
         <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
@@ -905,7 +920,7 @@
 
                 <span class="ident">hex_to_bytes</span>(<span class="ident">s</span>)
             };
-            <span class="kw">let</span> <span class="ident">test_bytes_hash</span> <span class="op">=</span> <span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">test_data_bytes</span>);
+            <span class="kw">let</span> <span class="ident">test_bytes_hash</span> <span class="op">=</span> <span class="ident">AnnHash</span>::<span class="ident">from_digest</span>(<span class="ident">sha512</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">test_data_bytes</span>));
 
             <span class="kw">let</span> <span class="ident">ann_packet</span> <span class="op">=</span> <span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">test_data_bytes</span>.<span class="ident">clone</span>()).<span class="ident">expect</span>(<span class="string">&quot;wrong packet size&quot;</span>);
             <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ann_packet</span>.<span class="ident">check</span>().<span class="ident">is_ok</span>());
@@ -934,20 +949,20 @@
                                 <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">2</span>, <span class="number">0</span>),
                             ])
                         },
-                        <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                            <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">21</span>).<span class="ident">expect</span>(<span class="string">&quot;zero routing label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
                             <span class="ident">unused</span>: <span class="number">4294967295</span>,
                             <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                             <span class="ident">flags</span>: <span class="number">0</span>
-                        }
+                        })
                     ],
                     <span class="ident">node_pub_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>)
                         .<span class="ident">expect</span>(<span class="string">&quot;failed pub key creation&quot;</span>),
                     <span class="ident">node_ip</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
-                    <span class="ident">binary</span>: <span class="ident">AnnouncementPacket</span>(<span class="ident">test_data_bytes</span>),
+                    <span class="ident">binary</span>: <span class="ident">test_data_bytes</span>,
                     <span class="ident">hash</span>: <span class="ident">test_bytes_hash</span>
                 }
             )
@@ -961,8 +976,11 @@
     <span class="kw">use</span> <span class="ident">libsodium_sys</span>::<span class="ident">crypto_sign_ed25519_pk_to_curve25519</span>;
 
     <span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ExpectedSize</span>, <span class="ident">Reader</span>};
+    <span class="kw">use</span> <span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>;
 
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">models</span>::{<span class="ident">AnnHash</span>, <span class="ident">LINK_STATE_SLOTS</span>, <span class="ident">LinkStateData</span>, <span class="ident">PeerData</span>};
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">var_int</span>::<span class="ident">read_var_int</span>;
+
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">const</span> <span class="ident">PEER_TYPE</span>: <span class="ident">u8</span> <span class="op">=</span> <span class="number">1</span>;
@@ -974,20 +992,20 @@
     <span class="kw">const</span> <span class="ident">PEER_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">30</span>;
     <span class="kw">const</span> <span class="ident">VERSION_ENTITY_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
     <span class="kw">const</span> <span class="ident">ENCODING_SCHEME_ENTITY_MIN_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
-    <span class="kw">const</span> <span class="ident">STATE_SLOTS_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">18</span>;
+    <span class="kw">const</span> <span class="ident">STATE_SLOTS_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">LINK_STATE_SLOTS</span> <span class="kw">as</span> <span class="ident">usize</span>;
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">packet</span>: <span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span>, <span class="ident">ParserError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">parse</span>(<span class="ident">packet</span>: <span class="ident">AnnouncementPacket</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Announcement</span>, <span class="ident">ParserError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">header</span> <span class="op">=</span> <span class="ident">parse_header</span>(<span class="ident">packet</span>.<span class="ident">get_header_bytes</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">node_encryption_key</span>, <span class="ident">node_ip6</span>) <span class="op">=</span> <span class="ident">parse_sender_auth_data</span>(<span class="ident">packet</span>.<span class="ident">get_pub_key_bytes</span>())<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">entities</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="ident">packet</span>.<span class="ident">get_entities_bytes</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">binary_hash</span> <span class="op">=</span> <span class="ident">packet</span>.<span class="ident">get_hash</span>();
+        <span class="kw">let</span> <span class="ident">digest</span> <span class="op">=</span> <span class="ident">packet</span>.<span class="ident">get_hash</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">Announcement</span> {
             <span class="ident">header</span>,
             <span class="ident">node_pub_key</span>: <span class="ident">node_encryption_key</span>,
             <span class="ident">node_ip</span>: <span class="ident">node_ip6</span>,
             <span class="ident">entities</span>,
-            <span class="ident">hash</span>: <span class="ident">binary_hash</span>,
-            <span class="ident">binary</span>: <span class="ident">packet</span>,
+            <span class="ident">hash</span>: <span class="ident">AnnHash</span>::<span class="ident">from_digest</span>(<span class="ident">digest</span>),
+            <span class="ident">binary</span>: <span class="ident">packet</span>.<span class="ident">into_inner</span>(),
         })
     }
 
@@ -1133,19 +1151,19 @@
             .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">InvalidSize</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">mtu</span> <span class="op">=</span> <span class="ident">mtu8</span> <span class="kw">as</span> <span class="ident">u32</span> <span class="op">*</span> <span class="number">8</span>;
-        <span class="kw">let</span> <span class="ident">ip6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">ip6_bytes</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;failed ip6 creation from peer bytes&quot;</span>))<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">ipv6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="ident">ip6_bytes</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;failed ip6 creation from peer bytes&quot;</span>))<span class="question-mark">?</span>;
         <span class="comment">// A label of 0 indicates that the route is being withdrawn and it is no longer usable. Handling of zero label is not a job for parser</span>
         <span class="comment">// So we return an Option</span>
         <span class="kw">let</span> <span class="ident">label</span> <span class="op">=</span> <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="ident">label_bits</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">Peer</span> {
-            <span class="ident">ip6</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+            <span class="ident">ipv6</span>,
             <span class="ident">label</span>,
             <span class="ident">mtu</span>,
             <span class="ident">peer_num</span>,
             <span class="ident">unused</span>,
             <span class="ident">encoding_form_number</span>,
             <span class="ident">flags</span>,
-        })
+        }))
     }
 
     <span class="doccomment">/// C implementation: https://github.com/cjdelisle/cjdns/blob/d832e26951a2af083b4defb576fe1f0beeef6327/subnode/LinkState.h#L127</span>
@@ -1184,13 +1202,13 @@
                 <span class="prelude-val">Some</span>(<span class="ident">read_var_int</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data_reader</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">EntityParserError</span>::<span class="ident">BadData</span>(<span class="string">&quot;cant create kb_recv_slots sample from received bytes&quot;</span>))<span class="question-mark">?</span>);
             <span class="ident">i</span> <span class="op">=</span> (<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">%</span> <span class="ident">STATE_SLOTS_SIZE</span>;
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">LinkState</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="ident">LinkStateData</span> {
             <span class="ident">node_id</span>,
-            <span class="ident">slots_start_idx</span>,
+            <span class="ident">starting_point</span>: <span class="ident">slots_start_idx</span>,
             <span class="ident">lag_slots</span>,
             <span class="ident">drop_slots</span>,
             <span class="ident">kb_recv_slots</span>,
-        })
+        }))
     }
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
@@ -1263,7 +1281,7 @@
                 <span class="string">&quot;0000157354c540c1&quot;</span>;
             <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="ident">valid_hexed_header</span>);
             <span class="kw">let</span> <span class="ident">parsed_announcement</span> <span class="op">=</span>
-                <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">header_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid bytes len&quot;</span>)).<span class="ident">expect</span>(<span class="string">&quot;invalid ann data&quot;</span>);
+                <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">header_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid bytes len&quot;</span>)).<span class="ident">expect</span>(<span class="string">&quot;invalid ann data&quot;</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_announcement</span>.<span class="ident">entities</span>, <span class="macro">vec</span><span class="macro">!</span>[]);
         }
 
@@ -1296,29 +1314,29 @@
                 (<span class="ident">decode_hex</span>(<span class="string">&quot;&quot;</span>), <span class="macro">vec</span><span class="macro">!</span>[]),
                 (
                     <span class="ident">decode_hex</span>(<span class="string">&quot;200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003&quot;</span>),
-                    <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                    <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                        <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                         <span class="ident">mtu</span>: <span class="number">0</span>,
                         <span class="ident">peer_num</span>: <span class="number">65535</span>,
                         <span class="ident">unused</span>: <span class="number">4294967295</span>,
                         <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                         <span class="ident">flags</span>: <span class="number">0</span>,
-                    }],
+                    })],
                 ),
                 (
                     <span class="ident">decode_hex</span>(<span class="string">&quot;04020002200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000020&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
-                        <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                            <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">32</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
                             <span class="ident">unused</span>: <span class="number">4294967295</span>,
                             <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                             <span class="ident">flags</span>: <span class="number">0</span>,
-                        },
+                        }),
                     ],
                 ),
                 (
@@ -1326,29 +1344,29 @@
                     <span class="ident">decode_hex</span>(<span class="string">&quot;0402000201010101200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000013&quot;</span>),
                     <span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">2</span>),
-                        <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                            <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                        <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                            <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                             <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">19</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                             <span class="ident">mtu</span>: <span class="number">0</span>,
                             <span class="ident">peer_num</span>: <span class="number">65535</span>,
                             <span class="ident">unused</span>: <span class="number">4294967295</span>,
                             <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                             <span class="ident">flags</span>: <span class="number">0</span>,
-                        },
+                        }),
                     ],
                 ),
                 (
                     <span class="comment">// with unrecognised entities at the beginning and at the end</span>
                     <span class="ident">decode_hex</span>(<span class="string">&quot;020701200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000003030510&quot;</span>),
-                    <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                        <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+                    <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                        <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                         <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">3</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                         <span class="ident">mtu</span>: <span class="number">0</span>,
                         <span class="ident">peer_num</span>: <span class="number">65535</span>,
                         <span class="ident">unused</span>: <span class="number">4294967295</span>,
                         <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                         <span class="ident">flags</span>: <span class="number">0</span>,
-                    }],
+                    })],
                 ),
                 (
                     <span class="comment">// all of them are unrecognised</span>
@@ -1370,15 +1388,15 @@
             };
             <span class="kw">let</span> <span class="ident">entities_data_vec</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="ident">multiple_peer_entity_hex</span>);
 
-            <span class="kw">let</span> <span class="ident">parsed_peer</span> <span class="op">=</span> <span class="ident">Entity</span>::<span class="ident">Peer</span> {
-                <span class="ident">ip6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
+            <span class="kw">let</span> <span class="ident">parsed_peer</span> <span class="op">=</span> <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
+                <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                 <span class="ident">label</span>: <span class="prelude-val">Some</span>(<span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">try_new</span>(<span class="number">21</span>).<span class="ident">expect</span>(<span class="string">&quot;zero label bits&quot;</span>)),
                 <span class="ident">mtu</span>: <span class="number">0</span>,
                 <span class="ident">peer_num</span>: <span class="number">65535</span>,
                 <span class="ident">unused</span>: <span class="number">4294967295</span>,
                 <span class="ident">encoding_form_number</span>: <span class="number">0</span>,
                 <span class="ident">flags</span>: <span class="number">0</span>,
-            };
+            });
             <span class="kw">let</span> <span class="ident">parsed_entities</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="kw-2">&amp;</span><span class="ident">entities_data_vec</span>).<span class="ident">expect</span>(<span class="string">&quot;parsing entities failed&quot;</span>);
 
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_entities</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">parsed_peer</span>; <span class="number">3</span>]);
@@ -1390,13 +1408,13 @@
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">parse_entities</span>(<span class="kw-2">&amp;</span><span class="ident">test_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid entity&quot;</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(
                 <span class="ident">res</span>,
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">LinkState</span> {
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="ident">LinkStateData</span> {
                     <span class="ident">node_id</span>: <span class="number">4</span>,
-                    <span class="ident">slots_start_idx</span>: <span class="number">16</span>,
+                    <span class="ident">starting_point</span>: <span class="number">16</span>,
                     <span class="ident">lag_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">20</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>)],
                     <span class="ident">drop_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>)],
                     <span class="ident">kb_recv_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>)]
-                }]
+                })]
             )
         }
 

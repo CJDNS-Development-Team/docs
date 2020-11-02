@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["keep_table_clean",""],["run",""],["service",""],["test_srv",""]]});

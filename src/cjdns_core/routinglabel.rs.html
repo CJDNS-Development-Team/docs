@@ -139,6 +139,26 @@
 <span id="138">138</span>
 <span id="139">139</span>
 <span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Routing label bit operations.</span>
 
@@ -205,12 +225,25 @@
         }
     }
 
+    <span class="doccomment">/// Create a new label which is a self-reference.</span>
+    <span class="doccomment">/// Corresponds to director with value of `1`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">self_reference</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">bits</span> <span class="op">=</span> <span class="ident">L</span>::<span class="ident">ONE</span>;
+        <span class="ident">RoutingLabel</span>(<span class="ident">bits</span>)
+    }
+
     <span class="doccomment">/// Raw data of this routing label. Always non-zero.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bits</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">L</span> {
         <span class="kw">let</span> <span class="ident">RoutingLabel</span>(<span class="ident">bits</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">bits</span> <span class="op">!=</span> <span class="ident">L</span>::<span class="ident">ZERO</span>, <span class="string">&quot;invariant broken&quot;</span>);
         <span class="ident">bits</span>
+    }
+
+    <span class="doccomment">/// Size in bytes of this routing label</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">size</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="ident">L</span>::<span class="ident">BIT_SIZE</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">/</span> <span class="number">8</span>
     }
 }
 
@@ -278,6 +311,13 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u128</span> <span class="kw">as</span> <span class="ident">LabelBits</span><span class="op">&gt;</span>::<span class="ident">highest_set_bit</span>(<span class="kw-2">&amp;</span><span class="number">14574489829</span>), <span class="prelude-val">Some</span>(<span class="number">33</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u64</span> <span class="kw">as</span> <span class="ident">LabelBits</span><span class="op">&gt;</span>::<span class="ident">highest_set_bit</span>(<span class="kw-2">&amp;</span>(<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">63</span>)), <span class="prelude-val">Some</span>(<span class="number">63</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">&lt;</span><span class="ident">u128</span> <span class="kw">as</span> <span class="ident">LabelBits</span><span class="op">&gt;</span>::<span class="ident">highest_set_bit</span>(<span class="kw-2">&amp;</span>(<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">100</span>)), <span class="prelude-val">Some</span>(<span class="number">100</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_self_reference</span>() {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;0000.0001&quot;</span>, <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>::<span class="ident">self_reference</span>().<span class="ident">to_string</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;0000.0000.0000.0001&quot;</span>, <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>::<span class="ident">self_reference</span>().<span class="ident">to_string</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;0000.0000.0000.0000.0000.0000.0000.0001&quot;</span>, <span class="ident">RoutingLabel</span>::<span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>::<span class="ident">self_reference</span>().<span class="ident">to_string</span>());
     }
 }
 </pre></div>

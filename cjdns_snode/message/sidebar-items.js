@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["DecodingError",""],["EncodingError",""],["MessageData",""]],"struct":[["Message","Message consisting of an unique reply ID and message data. ID can be zero if no reply is required."]]});

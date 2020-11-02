@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["RoutingError",""]],"fn":[["get_route",""],["get_route_impl",""],["link_cost",""]],"mod":[["dijkstra",""]],"struct":[["CacheKey",""],["Hop",""],["Route",""],["Routing",""]]});

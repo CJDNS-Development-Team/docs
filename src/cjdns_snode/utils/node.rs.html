@@ -54,12 +54,19 @@
 <span id="53">53</span>
 <span id="54">54</span>
 <span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
 </pre><div class="example-wrap"><pre class="rust ">
+<span class="doccomment">//! Node name parsing utilities</span>
+
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
+
+<span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 
 <span class="kw">use</span> <span class="ident">cjdns_core</span>::<span class="ident">RoutingLabel</span>;
 <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSPublicKey</span>;
-<span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 
 <span class="macro">lazy_static</span><span class="macro">!</span> {
     <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">NODE_NAME_RE</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex</span>::<span class="ident">new</span>(
@@ -69,12 +76,12 @@
     ).<span class="ident">expect</span>(<span class="string">&quot;bad regexp&quot;</span>);
 }
 
-<span class="doccomment">/// Gets version, label and public key all together in tuple from `name` argument, if it has valid structure. Otherwise returns error.</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// TODO not yet used</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_node_name</span>(<span class="ident">name</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">CJDNSPublicKey</span>), ()<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="ident">NODE_NAME_RE</span>.<span class="ident">captures</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>) {
+<span class="doccomment">/// Gets version, label and public key all together in tuple from `name` argument, if it has valid structure.</span>
+<span class="doccomment">/// Otherwise returns error.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_node_name</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">u16</span>, <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>, <span class="ident">CJDNSPublicKey</span>), ()<span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=</span> <span class="ident">NODE_NAME_RE</span>.<span class="ident">captures</span>(<span class="ident">name</span>) {
         <span class="kw">let</span> <span class="ident">str_from_captured_group</span> <span class="op">=</span> <span class="op">|</span><span class="ident">group_num</span>: <span class="ident">usize</span><span class="op">|</span> <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> { <span class="ident">c</span>.<span class="ident">get</span>(<span class="ident">group_num</span>).<span class="ident">expect</span>(<span class="string">&quot;bad group index&quot;</span>).<span class="ident">as_str</span>() };
-        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">str_from_captured_group</span>(<span class="number">1</span>).<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;bad regexp - version&quot;</span>);
+        <span class="kw">let</span> <span class="ident">version</span> <span class="op">=</span> <span class="ident">str_from_captured_group</span>(<span class="number">1</span>).<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>().<span class="ident">expect</span>(<span class="string">&quot;bad regexp - version&quot;</span>);
         <span class="kw">let</span> <span class="ident">label</span> <span class="op">=</span> <span class="ident">RoutingLabel</span>::<span class="ident">try_from</span>(<span class="ident">str_from_captured_group</span>(<span class="number">2</span>)).<span class="ident">expect</span>(<span class="string">&quot;bad regexp - label&quot;</span>);
         <span class="kw">let</span> <span class="ident">public_key</span> <span class="op">=</span> <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="ident">str_from_captured_group</span>(<span class="number">3</span>)).<span class="ident">or</span>(<span class="prelude-val">Err</span>(()))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>((<span class="ident">version</span>, <span class="ident">label</span>, <span class="ident">public_key</span>))
@@ -84,16 +91,18 @@
 }
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
-<span class="kw">fn</span> <span class="ident">test_parse_node_name</span>() {
+<span class="kw">fn</span> <span class="ident">test_parse_node_name_valid</span>() {
     <span class="kw">let</span> <span class="ident">valid_node_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
         <span class="string">&quot;v19.0000.0000.0000.0863.2v6dt6f841hzhq2wsqwt263w2dswkt6fz82vcyxqptk88mtp8y50.k&quot;</span>,
         <span class="string">&quot;v10.0a20.00ff.00e0.9901.qgkjd0stfvk9r3j28s4gh8rgslbgx2r5xgxzxkgm5vdxqwn8xsu0.k&quot;</span>,
     ];
     <span class="kw">for</span> <span class="ident">valid_node_name</span> <span class="kw">in</span> <span class="ident">valid_node_names</span> {
-        <span class="kw">let</span> <span class="ident">valid_node_name</span> <span class="op">=</span> <span class="ident">valid_node_name</span>.<span class="ident">to_string</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_node_name</span>(<span class="ident">valid_node_name</span>).<span class="ident">is_ok</span>());
     }
+}
 
+<span class="attribute">#[<span class="ident">test</span>]</span>
+<span class="kw">fn</span> <span class="ident">test_parse_node_name_invalid</span>() {
     <span class="kw">let</span> <span class="ident">invalid_node_names</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
         <span class="string">&quot;12foo&quot;</span>,
         <span class="string">&quot;&quot;</span>,
@@ -106,9 +115,7 @@
         <span class="string">&quot;v10.0a20.00ff.00e0.9901.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.k)&quot;</span>,
     ];
     <span class="kw">for</span> <span class="ident">invalid_node_name</span> <span class="kw">in</span> <span class="ident">invalid_node_names</span> {
-        <span class="kw">let</span> <span class="ident">invalid_node_name</span> <span class="op">=</span> <span class="ident">invalid_node_name</span>.<span class="ident">to_string</span>();
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_node_name</span>(<span class="ident">invalid_node_name</span>).<span class="ident">is_err</span>());
     }
-}
-</pre></div>
+}</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

@@ -4,4 +4,5 @@ implementors["cjdns_core"] = [{"text":"impl Copy for EncodingSchemeForm","synthe
 implementors["cjdns_ctrl"] = [{"text":"impl Copy for CtrlMessageType","synthetic":false,"types":[]},{"text":"impl Copy for ErrorMessageType","synthetic":false,"types":[]}];
 implementors["cjdns_hdr"] = [{"text":"impl Copy for ContentType","synthetic":false,"types":[]}];
 implementors["cjdns_keys"] = [{"text":"impl Copy for CJDNSKeysApi","synthetic":false,"types":[]}];
+implementors["cjdns_snode"] = [{"text":"impl Copy for PeerType","synthetic":false,"types":[]},{"text":"impl Copy for NodeType","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Dijkstra","Dijkstra path search implementation."],["Frontier","Forntier for the Dijkstra algorithm."]],"trait":[["GraphBuilder","Graph building functions."],["GraphSolver","Path finding functions."],["Zero",""]]});

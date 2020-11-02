@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["node_announcement_hash",""]]});
