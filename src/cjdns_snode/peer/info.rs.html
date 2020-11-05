@@ -43,25 +43,17 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
-<span id="45">45</span>
-<span id="46">46</span>
-<span id="47">47</span>
-<span id="48">48</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Info about connections to peer supernodes</span>
 
-<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Serialize</span>;
-
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">peer</span>::{<span class="ident">Peer</span>, <span class="ident">PeerList</span>, <span class="ident">Peers</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PeersInfo</span> {
     <span class="kw">pub</span> <span class="ident">peers</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PeerInfo</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">announcements</span>: <span class="ident">usize</span>,
     <span class="kw">pub</span> <span class="ident">ann_by_hash_len</span>: <span class="ident">usize</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PeerInfo</span> {
     <span class="kw">pub</span> <span class="ident">addr</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">outstanding_requests</span>: <span class="ident">usize</span>,
@@ -91,10 +83,9 @@
         <span class="ident">PeerInfo</span> {
             <span class="ident">addr</span>: <span class="self">self</span>.<span class="ident">addr</span>.<span class="ident">clone</span>(),
             <span class="ident">outstanding_requests</span>: <span class="self">self</span>.<span class="ident">get_outstanding_reqs_count</span>(),
-            <span class="ident">msgs_on_wire</span>: <span class="number">0</span>, <span class="comment">//TODO useless?</span>
-            <span class="ident">msg_queue</span>: <span class="number">0</span>, <span class="comment">//self.msg_queue.len(), //TODO possible?</span>
+            <span class="ident">msgs_on_wire</span>: <span class="number">0</span>, <span class="comment">//TODO No such concept in rust code - ask CJ what to do with it, remove or keep 0 for compatibility?</span>
+            <span class="ident">msg_queue</span>: <span class="number">0</span>, <span class="comment">//TODO originally &quot;self.msg_queue.len()&quot;, not easy to get in Rust code - is it really needed, or can be dropped?</span>
         }
     }
-}
-</pre></div>
+}</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

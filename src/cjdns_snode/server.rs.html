@@ -772,6 +772,16 @@
 <span id="771">771</span>
 <span id="772">772</span>
 <span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS supernode implementation.</span>
 
@@ -1102,9 +1112,11 @@
                         <span class="comment">// nothing</span>
                     } <span class="kw">else</span> {
                         <span class="comment">// only small changes (if any)</span>
-                        <span class="ident">stored_link</span>.<span class="ident">flags</span> <span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">flags</span>;
-                        <span class="ident">stored_link</span>.<span class="ident">mtu</span> <span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">mtu</span>;
-                        <span class="ident">stored_link</span>.<span class="ident">time</span> <span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">time</span>;
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stored_link_state</span> <span class="op">=</span> <span class="ident">stored_link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
+                        <span class="kw">let</span> <span class="ident">new_link_state</span> <span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
+                        <span class="ident">stored_link_state</span>.<span class="ident">flags</span> <span class="op">=</span> <span class="ident">new_link_state</span>.<span class="ident">flags</span>;
+                        <span class="ident">stored_link_state</span>.<span class="ident">mtu</span> <span class="op">=</span> <span class="ident">new_link_state</span>.<span class="ident">mtu</span>;
+                        <span class="ident">stored_link_state</span>.<span class="ident">time</span> <span class="op">=</span> <span class="ident">new_link_state</span>.<span class="ident">time</span>;
                         <span class="kw">continue</span> <span class="lifetime">&#39;peer</span>;
                     }
                     <span class="comment">// major changes, replace the link and wipe out link state</span>
@@ -1500,7 +1512,7 @@
 
 <span class="kw">mod</span> <span class="ident">link</span> {
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">atomic</span>::<span class="ident">AtomicU32</span>};
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
     <span class="kw">use</span> <span class="ident">parking_lot</span>::<span class="ident">Mutex</span>;
 
@@ -1513,11 +1525,15 @@
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">encoding_form_number</span>: <span class="ident">u8</span>,
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">peer_num</span>: <span class="ident">u16</span>,
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">link_state</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">LinkStateEntry</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">mut_state</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">LinkStateMut</span><span class="op">&gt;&gt;</span>
+    }
 
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">LinkStateMut</span> {
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">mtu</span>: <span class="ident">u32</span>,
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">flags</span>: <span class="ident">u8</span>,
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">time</span>: <span class="ident">u64</span>,
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">cost</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicU32</span><span class="op">&gt;</span>,
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">cost</span>: <span class="ident">u32</span>,
     }
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -1533,10 +1549,14 @@
             <span class="ident">encoding_form_number</span>: <span class="ident">ann_peer</span>.<span class="ident">encoding_form_number</span>,
             <span class="ident">peer_num</span>: <span class="ident">ann_peer</span>.<span class="ident">peer_num</span>,
             <span class="ident">link_state</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">HashMap</span>::<span class="ident">new</span>())),
-            <span class="ident">mtu</span>: <span class="ident">ann_peer</span>.<span class="ident">mtu</span>,
-            <span class="ident">flags</span>: <span class="ident">ann_peer</span>.<span class="ident">flags</span>,
-            <span class="ident">time</span>: <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>,
-            <span class="ident">cost</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">AtomicU32</span>::<span class="ident">new</span>(<span class="number">0</span>)),
+            <span class="ident">mut_state</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(
+                <span class="ident">LinkStateMut</span> {
+                    <span class="ident">mtu</span>: <span class="ident">ann_peer</span>.<span class="ident">mtu</span>,
+                    <span class="ident">flags</span>: <span class="ident">ann_peer</span>.<span class="ident">flags</span>,
+                    <span class="ident">time</span>: <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>,
+                    <span class="ident">cost</span>: <span class="number">0</span>,
+                }
+            ))
         }
     }
 }

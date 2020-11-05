@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["mk_link",""]],"struct":[["Link",""],["LinkStateEntry",""]]});
+initSidebarItems({"fn":[["mk_link",""]],"struct":[["Link",""],["LinkStateEntry",""],["LinkStateMut",""]]});

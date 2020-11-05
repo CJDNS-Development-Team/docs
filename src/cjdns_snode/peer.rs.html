@@ -290,6 +290,14 @@
 <span id="289">289</span>
 <span id="290">290</span>
 <span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Connecting to other supernodes</span>
 
@@ -371,8 +379,16 @@
             <span class="kw">match</span> <span class="ident">res</span> {
                 <span class="prelude-val">Ok</span>((<span class="ident">ws_stream</span>, <span class="kw">_</span>)) <span class="op">=&gt;</span> {
                     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Connected to {}&quot;</span>, <span class="ident">uri</span>);
-                    <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}:{}&quot;</span>, <span class="ident">uri</span>.<span class="ident">host</span>().<span class="ident">expect</span>(<span class="string">&quot;host&quot;</span>), <span class="ident">uri</span>.<span class="ident">port</span>().<span class="ident">expect</span>(<span class="string">&quot;port&quot;</span>));
-                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">outgoing</span>(<span class="ident">addr</span>, <span class="ident">ws_stream</span>).<span class="kw">await</span>;
+                    <span class="kw">let</span> <span class="ident">ipv6_addr</span> <span class="op">=</span> { <span class="comment">// Trim brackets: &#39;[1:2:3:4]&#39; -&gt; &#39;1:2:3:4&#39;</span>
+                        <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">uri</span>.<span class="ident">host</span>().<span class="ident">expect</span>(<span class="string">&quot;host&quot;</span>);
+                        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">host</span>.<span class="ident">len</span>();
+                        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="ident">host</span>.<span class="ident">starts_with</span>(<span class="string">&#39;[&#39;</span>) <span class="op">&amp;&amp;</span> <span class="ident">host</span>.<span class="ident">ends_with</span>(<span class="string">&#39;]&#39;</span>) {
+                            <span class="kw-2">&amp;</span><span class="ident">host</span>[<span class="number">1</span>..<span class="ident">n</span><span class="op">-</span><span class="number">2</span>]
+                        } <span class="kw">else</span> {
+                            <span class="ident">host</span>
+                        }
+                    }.<span class="ident">to_string</span>();
+                    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">outgoing</span>(<span class="ident">ipv6_addr</span>, <span class="ident">ws_stream</span>).<span class="kw">await</span>;
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">res</span> {
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Error reading from peer: {}&quot;</span>, <span class="ident">e</span>);
                     }

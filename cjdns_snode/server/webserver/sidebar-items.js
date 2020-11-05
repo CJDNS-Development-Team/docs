@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["api",""],["debug_node_route",""],["dump_route",""],["info_route",""],["test_srv_task",""],["with_server",""],["ws_route",""]],"mod":[["handlers",""]]});
+initSidebarItems({"fn":[["api",""],["debug_node_route",""],["dump_route",""],["info_route",""],["ni_empty",""],["ni_with_ip_route",""],["path_route",""],["test_srv_task",""],["walk_route",""],["with_server",""],["ws_route",""]],"mod":[["handlers",""],["node_info",""]]});
