@@ -288,16 +288,40 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Local node (router) service task</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Duration</span>;
 
 <span class="kw">use</span> <span class="ident">anyhow</span>::<span class="ident">Error</span>;
-<span class="kw">use</span> <span class="ident">tokio</span>::<span class="ident">select</span>;
+<span class="kw">use</span> <span class="ident">tokio</span>::{<span class="ident">select</span>, <span class="ident">time</span>};
 
-<span class="kw">use</span> <span class="ident">cjdns_admin</span>::<span class="ident">msgs</span>::<span class="ident">Empty</span>;
+<span class="kw">use</span> <span class="ident">cjdns_admin</span>::{<span class="ident">ArgValues</span>, <span class="ident">Connection</span>, <span class="ident">ReturnValue</span>};
+<span class="kw">use</span> <span class="ident">cjdns_admin</span>::<span class="ident">msgs</span>::{<span class="ident">Empty</span>, <span class="ident">GenericResponsePayload</span>};
 <span class="kw">use</span> <span class="ident">cjdns_bencode</span>::<span class="ident">BValue</span>;
 <span class="kw">use</span> <span class="ident">cjdns_hdr</span>::<span class="ident">RouteHeader</span>;
 <span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">CJDNS_IP6</span>, <span class="ident">CJDNSPublicKey</span>};
@@ -312,9 +336,11 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">core_node_info</span>::<span class="ident">CoreNodeInfoPayload</span>;
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">service_task</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) {
-    <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">do_service</span>(<span class="ident">server</span>).<span class="kw">await</span>;
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">res</span> {
-        <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Failed to service local node: {}&quot;</span>, <span class="ident">err</span>)
+    <span class="kw">loop</span> {
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">do_service</span>(<span class="ident">server</span>.<span class="ident">clone</span>()).<span class="kw">await</span>;
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">res</span> {
+            <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Failed to service local node: {}. Reconecting...&quot;</span>, <span class="ident">err</span>);
+        }
     }
 }
 
@@ -335,38 +361,56 @@
         <span class="ident">mktime</span>(<span class="number">0xffffffffffffffff</span>),
         <span class="ident">ipv6</span>,
         <span class="prelude-val">None</span>,
-    )<span class="question-mark">?</span>;
+    ).<span class="ident">expect</span>(<span class="string">&quot;internal error: unknown encoding scheme&quot;</span>); <span class="comment">// Safe because encoding scheme is specified explicitly</span>
     <span class="ident">server</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">self_node</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">self_node</span>));
 
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Got selfNode&quot;</span>);
 
     <span class="comment">// Starting to sniff traffic</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sniffer</span> <span class="op">=</span> <span class="ident">Sniffer</span>::<span class="ident">sniff_traffic</span>(<span class="ident">cjdns</span>, <span class="ident">ContentType</span>::<span class="ident">Cjdht</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">sniffer</span> <span class="op">=</span> <span class="ident">Sniffer</span>::<span class="ident">sniff_traffic</span>(<span class="ident">cjdns</span>.<span class="ident">clone</span>(), <span class="ident">ContentType</span>::<span class="ident">Cjdht</span>).<span class="kw">await</span><span class="question-mark">?</span>;
 
-    <span class="comment">// todo check connection impl after implementing new routes for test_srv</span>
+    <span class="macro">select</span><span class="macro">!</span> {
+        <span class="ident">res</span> <span class="op">=</span> <span class="ident">handle_subnode_messages</span>(<span class="ident">sniffer</span>, <span class="ident">server</span>) <span class="op">=&gt;</span> <span class="ident">res</span>,
+        <span class="ident">res</span> <span class="op">=</span> <span class="ident">check_connection_alive</span>(<span class="ident">cjdns</span>) <span class="op">=&gt;</span> <span class="ident">res</span>,
+    }
+}
 
-    <span class="comment">// Handling subnode messages</span>
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_subnode_messages</span>(<span class="kw-2">mut</span> <span class="ident">sniffer</span>: <span class="ident">Sniffer</span>, <span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">loop</span> {
-        <span class="macro">select</span><span class="macro">!</span> {
-            <span class="ident">msg</span> <span class="op">=</span> <span class="ident">sniffer</span>.<span class="ident">receive</span>() <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="ident">msg</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">ret_msg_opt</span> <span class="op">=</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ret_msg</span>) <span class="op">=</span> <span class="ident">ret_msg_opt</span> {
-                            <span class="ident">sniffer</span>.<span class="ident">send</span>(<span class="ident">ret_msg</span>, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
-                        }
-                    }
-
-                    <span class="prelude-val">Err</span>(<span class="ident">err</span> @ <span class="ident">ReceiveError</span>::<span class="ident">SocketError</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
-                        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
-                    }
-
-                    <span class="prelude-val">Err</span>(<span class="ident">ReceiveError</span>::<span class="ident">ParseError</span>(<span class="ident">err</span>, <span class="ident">data</span>)) <span class="op">=&gt;</span> {
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Bad message received:\n{}\n{}&quot;</span>, <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">data</span>), <span class="macro">anyhow</span><span class="macro">!</span>(<span class="ident">err</span>));
-                    }
+        <span class="kw">match</span> <span class="ident">sniffer</span>.<span class="ident">receive</span>().<span class="kw">await</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">ret_msg_opt</span> <span class="op">=</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ret_msg</span>) <span class="op">=</span> <span class="ident">ret_msg_opt</span> {
+                    <span class="ident">sniffer</span>.<span class="ident">send</span>(<span class="ident">ret_msg</span>, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
                 }
             }
+            <span class="prelude-val">Err</span>(<span class="ident">err</span> @ <span class="ident">ReceiveError</span>::<span class="ident">SocketError</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
+            }
+            <span class="prelude-val">Err</span>(<span class="ident">ReceiveError</span>::<span class="ident">ParseError</span>(<span class="ident">err</span>, <span class="ident">data</span>)) <span class="op">=&gt;</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Bad message received:\n{}\n{}&quot;</span>, <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">data</span>), <span class="macro">anyhow</span><span class="macro">!</span>(<span class="ident">err</span>));
+            }
         }
+    }
+}
+
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">check_connection_alive</span>(<span class="kw-2">mut</span> <span class="ident">cjdns</span>: <span class="ident">Connection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">const</span> <span class="ident">CHECK_CONNECTION_DELAY</span>: <span class="ident">Duration</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">5</span>);
+
+    <span class="kw">loop</span> {
+        <span class="ident">time</span>::<span class="ident">delay_for</span>(<span class="ident">CHECK_CONNECTION_DELAY</span>).<span class="kw">await</span>;
+
+        <span class="kw">if</span> <span class="ident">count_handlers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cjdns</span>).<span class="kw">await</span><span class="question-mark">?</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;Call to UpperDistributor_listHandlers returned 0 handlers - connection aborted?&quot;</span>));
+        }
+    }
+}
+
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">count_handlers</span>(<span class="ident">cjdns</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Connection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">ret</span>: <span class="ident">GenericResponsePayload</span> <span class="op">=</span> <span class="ident">cjdns</span>.<span class="ident">invoke</span>(<span class="string">&quot;UpperDistributor_listHandlers&quot;</span>, <span class="ident">ArgValues</span>::<span class="ident">new</span>().<span class="ident">add</span>(<span class="string">&quot;page&quot;</span>, <span class="number">0</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">match</span> <span class="ident">ret</span>.<span class="ident">get</span>(<span class="string">&quot;handlers&quot;</span>).<span class="ident">ok_or</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no &#39;handler&#39; key in response&quot;</span>))<span class="question-mark">?</span> {
+        <span class="ident">ReturnValue</span>::<span class="ident">List</span>(<span class="ident">handlers</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">handlers</span>.<span class="ident">len</span>()),
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;unrecognized &#39;handlers&#39; value format&quot;</span>))
     }
 }
 

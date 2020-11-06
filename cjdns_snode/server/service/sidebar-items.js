@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["do_service",""],["on_subnode_message","Handles a message from local node, and returns a response message that should be sent in return."],["on_subnode_message_impl",""],["service_task",""]],"mod":[["core_node_info",""]]});
+initSidebarItems({"fn":[["check_connection_alive",""],["count_handlers",""],["do_service",""],["handle_subnode_messages",""],["on_subnode_message","Handles a message from local node, and returns a response message that should be sent in return."],["on_subnode_message_impl",""],["service_task",""]],"mod":[["core_node_info",""]]});
