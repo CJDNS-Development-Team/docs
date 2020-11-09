@@ -289,13 +289,6 @@
 <span id="288">288</span>
 <span id="289">289</span>
 <span id="290">290</span>
-<span id="291">291</span>
-<span id="292">292</span>
-<span id="293">293</span>
-<span id="294">294</span>
-<span id="295">295</span>
-<span id="296">296</span>
-<span id="297">297</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Connecting to other supernodes</span>
 
@@ -363,8 +356,6 @@
     <span class="doccomment">/// Asynchronously start connecting to the specified peer supernode.</span>
     <span class="doccomment">/// If the connection can&#39;t be established or closed by the remote side,</span>
     <span class="doccomment">/// it will be reconnected automatically after a delay.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// TODO never returns (should return after async disconnect() call)</span>
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">connect_to</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">uri</span>: <span class="ident">Uri</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Connecting to {}&quot;</span>, <span class="ident">uri</span>);
         <span class="kw">loop</span> {
@@ -398,16 +389,11 @@
             <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sucessfully_connected</span> { <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>) } <span class="kw">else</span> { <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span>) };
             <span class="ident">time</span>::<span class="ident">delay_for</span>(<span class="ident">delay</span>).<span class="kw">await</span>;
         }
-        <span class="comment">//TODO break the loop by using select!() on external interupt channel</span>
     }
 
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">accept_incoming_connection</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from_ipv6</span>: <span class="ident">String</span>, <span class="ident">ws_stream</span>: <span class="kw">impl</span> <span class="ident">WebSock</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Incoming connection from {}&quot;</span>, <span class="ident">from_ipv6</span>);
         <span class="self">self</span>.<span class="ident">incoming</span>(<span class="ident">from_ipv6</span>, <span class="ident">ws_stream</span>).<span class="kw">await</span>
-    }
-
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">disconnect_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="comment">//TODO close all existing connections, prevent from reconnecting</span>
     }
 
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">add_ann</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">hash</span>: <span class="ident">AnnHash</span>, <span class="ident">binary</span>: <span class="ident">AnnData</span>) {
