@@ -428,8 +428,8 @@
 <span class="kw">struct</span> <span class="ident">Hop</span> {
     <span class="ident">label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>,
     <span class="ident">orig_label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
-    <span class="ident">scheme</span>: <span class="ident">EncodingScheme</span>, <span class="comment">//TODO use `Arc&lt;EncodingScheme&gt;` everywhere to avoid expensive copying</span>
-    <span class="ident">inverse_form_num</span>: <span class="ident">usize</span>, <span class="comment">//TODO probably `usize` is too big, smth like `u8` is more than enough - needs refactoring</span>
+    <span class="ident">scheme</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span><span class="op">&gt;</span>,
+    <span class="ident">inverse_form_num</span>: <span class="ident">u8</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Error</span>)]</span>
@@ -535,7 +535,7 @@
                             <span class="ident">inverse_form_num</span>: <span class="ident">form_num</span>,
                         };
                         <span class="ident">hops</span>.<span class="ident">push</span>(<span class="ident">hop</span>);
-                        <span class="ident">form_num</span> <span class="op">=</span> <span class="ident">link</span>.<span class="ident">encoding_form_number</span> <span class="kw">as</span> <span class="ident">usize</span>;
+                        <span class="ident">form_num</span> <span class="op">=</span> <span class="ident">link</span>.<span class="ident">encoding_form_number</span>;
                     } <span class="kw">else</span> {
                         <span class="kw">return</span> <span class="prelude-val">None</span>;
                     }

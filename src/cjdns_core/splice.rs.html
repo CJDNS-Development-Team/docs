@@ -1243,6 +1243,13 @@
 <span id="1242">1242</span>
 <span id="1243">1243</span>
 <span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Routing label splice/unsplice routines.</span>
 
@@ -1331,8 +1338,10 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// See: [EncodingScheme_getFormNum()](https://github.com/cjdelisle/cjdns/blob/cjdns-v20.2/switch/EncodingScheme.c#L23)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_encoding_form</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span>(<span class="ident">label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>, <span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">EncodingSchemeForm</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_encoding_form</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span>(<span class="ident">label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>, <span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">EncodingSchemeForm</span>, <span class="ident">u8</span>)<span class="op">&gt;</span> {
+    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">scheme</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">256</span>); <span class="comment">// Enforced by EncodingScheme&#39;s invariant</span>
     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">form</span>) <span class="kw">in</span> <span class="ident">scheme</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u8</span>; <span class="comment">// cast is safe due to the assert above</span>
         <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">form</span>.<span class="ident">params</span>();
         <span class="kw">if</span> <span class="number">0</span> <span class="op">==</span> <span class="ident">prefix_len</span> {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="kw-2">*</span><span class="ident">form</span>, <span class="ident">i</span>));
@@ -1434,11 +1443,12 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// See: [EncodingScheme_convertLabel()](https://github.com/cjdelisle/cjdns/blob/cjdns-v20.2/switch/EncodingScheme.c#L56)</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">re_encode</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span>(<span class="ident">label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>, <span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>, <span class="ident">desired_form_num</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">re_encode</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span>(<span class="ident">label</span>: <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>, <span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>, <span class="ident">desired_form_num</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span> {
     <span class="kw">let</span> (<span class="ident">form</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">get_encoding_form</span>(<span class="ident">label</span>, <span class="ident">scheme</span>)<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dir</span> <span class="op">=</span> <span class="ident">get_director</span>(<span class="ident">label</span>, <span class="ident">form</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">desired_form</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">num</span>) <span class="op">=</span> <span class="ident">desired_form_num</span> {
+        <span class="kw">let</span> <span class="ident">num</span> <span class="op">=</span> <span class="ident">num</span> <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">if</span> <span class="ident">num</span> <span class="op">&gt;=</span> <span class="ident">scheme</span>.<span class="ident">len</span>() {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SpliceError</span>::<span class="ident">BadArgument</span>);
         }
@@ -1867,8 +1877,10 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_reencode_big</span>() {
         <span class="kw">fn</span> <span class="ident">test_scheme</span>(<span class="ident">scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) {
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">scheme</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">scheme</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">256</span>, <span class="string">&quot;bad test&quot;</span>);
+            <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">scheme</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u8</span>;
             <span class="kw">let</span> <span class="ident">biggest_form</span> <span class="op">=</span> <span class="kw-2">*</span>(<span class="ident">scheme</span>.<span class="ident">last</span>().<span class="ident">expect</span>(<span class="string">&quot;bad test&quot;</span>));
-            <span class="kw">let</span> <span class="ident">biggest_form_num</span> <span class="op">=</span> <span class="ident">scheme</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">biggest_form_num</span> <span class="op">=</span> <span class="ident">n</span> <span class="op">-</span> <span class="number">1</span>;
             <span class="kw">let</span> (<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">biggest_form</span>.<span class="ident">params</span>();
             <span class="kw">let</span> <span class="ident">max</span> <span class="op">=</span> ((<span class="number">1u64</span> <span class="op">&lt;&lt;</span> (<span class="ident">bit_count</span> <span class="kw">as</span> <span class="ident">u64</span>)) <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">u32</span>;
 
@@ -1880,6 +1892,7 @@
 
                 <span class="kw">let</span> <span class="ident">dir_bit_count</span> <span class="op">=</span> <span class="ident">director_bit_length</span>(<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span>);
                 <span class="kw">for</span> (<span class="ident">form_num</span>, <span class="ident">form</span>) <span class="kw">in</span> <span class="ident">scheme</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
+                    <span class="kw">let</span> <span class="ident">form_num</span> <span class="op">=</span> <span class="ident">form_num</span> <span class="kw">as</span> <span class="ident">u8</span>;
                     <span class="kw">if</span> (<span class="ident">form</span>.<span class="ident">params</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">&lt;</span> <span class="ident">dir_bit_count</span> {
                         <span class="kw">continue</span>;
                     }
@@ -1891,6 +1904,7 @@
                     );
 
                     <span class="kw">for</span> (<span class="ident">smaller_form_num</span>, <span class="ident">smaller_form</span>) <span class="kw">in</span> <span class="ident">scheme</span>.<span class="ident">into_iter</span>().<span class="ident">enumerate</span>() {
+                        <span class="kw">let</span> <span class="ident">smaller_form_num</span> <span class="op">=</span> <span class="ident">smaller_form_num</span> <span class="kw">as</span> <span class="ident">u8</span>;
                         <span class="kw">if</span> <span class="ident">smaller_form_num</span> <span class="op">&gt;=</span> <span class="ident">form_num</span> <span class="op">||</span> (<span class="ident">smaller_form</span>.<span class="ident">params</span>().<span class="number">0</span> <span class="kw">as</span> <span class="ident">u32</span>) <span class="op">&lt;</span> <span class="ident">dir_bit_count</span> {
                             <span class="kw">continue</span>;
                         }
@@ -1920,7 +1934,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_reencode_358</span>() {
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="number">256</span> {
-            <span class="kw">let</span> (<span class="ident">form_num</span>, <span class="ident">label</span>): (<span class="ident">usize</span>, <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">director_bit_length</span>(<span class="ident">i</span>) {
+            <span class="kw">let</span> (<span class="ident">form_num</span>, <span class="ident">label</span>): (<span class="ident">u8</span>, <span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">director_bit_length</span>(<span class="ident">i</span>) {
                 <span class="number">1</span>..<span class="op">=</span><span class="number">3</span> <span class="op">=&gt;</span> (<span class="number">0</span>, <span class="ident">RoutingLabel</span>::<span class="ident">try_new</span>((<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>) <span class="op">|</span> (<span class="ident">i</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>) <span class="op">|</span> <span class="number">1</span>).<span class="ident">expect</span>(<span class="string">&quot;bad test data&quot;</span>)),
                 <span class="number">4</span> <span class="op">|</span> <span class="number">5</span> <span class="op">=&gt;</span> (<span class="number">1</span>, <span class="ident">RoutingLabel</span>::<span class="ident">try_new</span>((<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>) <span class="op">|</span> (<span class="ident">i</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>) <span class="op">|</span> (<span class="number">0b10</span>)).<span class="ident">expect</span>(<span class="string">&quot;bad test data&quot;</span>)),
                 <span class="number">6</span>..<span class="op">=</span><span class="number">8</span> <span class="op">=&gt;</span> (<span class="number">2</span>, <span class="ident">RoutingLabel</span>::<span class="ident">try_new</span>((<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">10</span>) <span class="op">|</span> (<span class="ident">i</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>)).<span class="ident">expect</span>(<span class="string">&quot;bad test data&quot;</span>)),

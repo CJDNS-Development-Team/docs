@@ -357,7 +357,7 @@
     <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">new_node</span>(
         <span class="ident">version</span>,
         <span class="ident">pub_key</span>,
-        <span class="prelude-val">Some</span>(<span class="ident">encoding_scheme</span>),
+        <span class="prelude-val">Some</span>(<span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">encoding_scheme</span>)),
         <span class="ident">mktime</span>(<span class="number">0xffffffffffffffff</span>),
         <span class="ident">ipv6</span>,
         <span class="prelude-val">None</span>,
