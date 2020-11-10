@@ -389,6 +389,27 @@
 <span id="388">388</span>
 <span id="389">389</span>
 <span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Route computation</span>
 
@@ -402,7 +423,6 @@
 <span class="kw">use</span> <span class="ident">cjdns_core</span>::<span class="ident">splice</span>::{<span class="ident">get_encoding_form</span>, <span class="ident">re_encode</span>, <span class="ident">splice</span>};
 <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNS_IP6</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">link</span>::<span class="ident">Link</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">nodes</span>::{<span class="ident">Node</span>, <span class="ident">Nodes</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">Server</span>;
 
@@ -411,7 +431,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Routing</span> {
     <span class="ident">last_rebuild</span>: <span class="ident">Instant</span>,
     <span class="ident">route_cache</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">CacheKey</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Route</span><span class="op">&gt;&gt;</span>,
-    <span class="ident">dijkstra</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span>, <span class="ident">u32</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">dijkstra</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span>, <span class="ident">f64</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
@@ -474,17 +494,22 @@
                     <span class="kw">if</span> <span class="ident">reverse</span>.<span class="ident">inward_links_by_ip</span>.<span class="ident">lock</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">nip</span>).<span class="ident">is_none</span>() {
                         <span class="kw">continue</span>;
                     }
-                    <span class="kw">let</span> <span class="ident">min</span> <span class="op">=</span> <span class="ident">peer_links</span>
+                    <span class="kw">let</span> <span class="ident">total_cmp</span> <span class="op">=</span> <span class="op">|</span><span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">f64</span>, <span class="ident">b</span>: <span class="kw-2">&amp;</span><span class="ident">f64</span><span class="op">|</span> { <span class="comment">// Replace with `f64::total_cmp` when it is stabilized</span>
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">to_bits</span>() <span class="kw">as</span> <span class="ident">i64</span>;
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">to_bits</span>() <span class="kw">as</span> <span class="ident">i64</span>;
+                        <span class="ident">a</span> <span class="op">^=</span> (((<span class="ident">a</span> <span class="op">&gt;&gt;</span> <span class="number">63</span>) <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&gt;&gt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i64</span>;
+                        <span class="ident">b</span> <span class="op">^=</span> (((<span class="ident">b</span> <span class="op">&gt;&gt;</span> <span class="number">63</span>) <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&gt;&gt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i64</span>;
+                        <span class="ident">a</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">b</span>)
+                    };
+                    <span class="kw">let</span> <span class="ident">max_value</span> <span class="op">=</span> <span class="ident">peer_links</span>
                         .<span class="ident">iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">link</span><span class="op">|</span> {
-                            <span class="kw">let</span> <span class="ident">cost</span> <span class="op">=</span> <span class="ident">link_cost</span>(<span class="ident">link</span>);
-                            <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">cost</span> <span class="op">=</span> <span class="ident">cost</span>;
-                            <span class="ident">cost</span>
-                        })
-                        .<span class="ident">min</span>()
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">link</span><span class="op">|</span> <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">value</span>)
+                        .<span class="ident">max_by</span>(<span class="ident">total_cmp</span>) <span class="comment">// Replace with `f64::total_cmp` when it is stabilized (unstable as of Rust 1.46)</span>
                         .<span class="ident">expect</span>(<span class="string">&quot;no links&quot;</span>) <span class="comment">// Safe because of the above `peer_links.is_empty()` check</span>
                     ;
-                    <span class="ident">l</span>.<span class="ident">insert</span>(<span class="ident">pip</span>.<span class="ident">clone</span>(), <span class="ident">min</span>);
+                    <span class="kw">let</span> <span class="ident">max_value</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">max_value</span> <span class="op">==</span> <span class="number">0.0</span> { <span class="number">1e-20</span> } <span class="kw">else</span> { <span class="ident">max_value</span> };
+                    <span class="kw">let</span> <span class="ident">min_cost</span> <span class="op">=</span> <span class="ident">max_value</span>.<span class="ident">recip</span>();
+                    <span class="ident">l</span>.<span class="ident">insert</span>(<span class="ident">pip</span>.<span class="ident">clone</span>(), <span class="ident">min_cost</span>);
                 }
             }
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;building dijkstra tree {} {:?}&quot;</span>, <span class="ident">nip</span>, <span class="ident">l</span>);
@@ -564,10 +589,6 @@
     <span class="prelude-val">Some</span>(<span class="ident">route</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">link_cost</span>(<span class="ident">_link</span>: <span class="kw-2">&amp;</span><span class="ident">Link</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
-    <span class="number">1</span>
-}
-
 <span class="kw">impl</span> <span class="ident">Route</span> {
     <span class="kw">fn</span> <span class="ident">identity</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Route</span> {
@@ -595,12 +616,12 @@
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Add</span>;
 
     <span class="doccomment">/// Graph building functions.</span>
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">GraphBuilder</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">GraphBuilder</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
         <span class="kw">fn</span> <span class="ident">add_node</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span>(<span class="ident">T</span>, <span class="ident">W</span>)<span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">node_tag</span>: <span class="ident">T</span>, <span class="ident">links</span>: <span class="ident">I</span>);
     }
 
     <span class="doccomment">/// Path finding functions.</span>
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">GraphSolver</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">GraphSolver</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
         <span class="doccomment">/// Find a path from `from` node to `to` node.</span>
         <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">to</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
 
@@ -624,12 +645,33 @@
         <span class="ident">index</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
     }
 
+    <span class="doccomment">/// Helper trait providing zero value for numeric types.</span>
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">Zero</span> {
         <span class="kw">const</span> <span class="ident">ZERO</span>: <span class="self">Self</span>;
     }
 
-    <span class="kw">impl</span> <span class="ident">Zero</span> <span class="kw">for</span> <span class="ident">u32</span> {
-        <span class="kw">const</span> <span class="ident">ZERO</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">impl</span> <span class="ident">Zero</span> <span class="kw">for</span> <span class="ident">f64</span> {
+        <span class="kw">const</span> <span class="ident">ZERO</span>: <span class="ident">f64</span> <span class="op">=</span> <span class="number">0.0</span>;
+    }
+
+    <span class="doccomment">/// Helper trait, providing total ordering for non-`Ord` types,</span>
+    <span class="doccomment">/// such as `f64`, given its value is finite (i.e. not `NaN`, `Infinity` etc.)</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">IntoOrd</span> <span class="kw">where</span> <span class="self">Self</span>::<span class="ident">Output</span>: <span class="ident">Ord</span> {
+        <span class="doccomment">/// Some substitute `Ord` type which can be used instead of `Self` for ordering purposes.</span>
+        <span class="doccomment">/// Only should be used for comparisons, its value itself is meaningless.</span>
+        <span class="kw">type</span> <span class="ident">Output</span>;
+        <span class="kw">fn</span> <span class="ident">into_ord</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span>;
+    }
+
+    <span class="kw">impl</span> <span class="ident">IntoOrd</span> <span class="kw">for</span> <span class="ident">f64</span> {
+        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">i64</span>;
+
+        <span class="kw">fn</span> <span class="ident">into_ord</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Output</span> {
+            <span class="comment">// For the explanation of this black magic,</span>
+            <span class="comment">// see implementation of `f64::total_ord()` (unstable as of Rust 1.46)</span>
+            <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_bits</span>() <span class="kw">as</span> <span class="ident">i64</span>;
+            <span class="ident">x</span> <span class="op">^</span> (((<span class="ident">x</span> <span class="op">&gt;&gt;</span> <span class="number">63</span>) <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&gt;&gt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i64</span>
+        }
     }
 
     <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
@@ -640,13 +682,13 @@
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">GraphBuilder</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">GraphBuilder</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> {
         <span class="kw">fn</span> <span class="ident">add_node</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">IntoIterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span>(<span class="ident">T</span>, <span class="ident">W</span>)<span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">node_tag</span>: <span class="ident">T</span>, <span class="ident">links</span>: <span class="ident">I</span>) {
             <span class="self">self</span>.<span class="ident">nodes</span>.<span class="ident">insert</span>(<span class="ident">node_tag</span>, <span class="ident">links</span>.<span class="ident">into_iter</span>().<span class="ident">collect</span>());
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">=</span><span class="ident">W</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Zero</span><span class="op">&gt;</span> <span class="ident">GraphSolver</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">GraphSolver</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Dijkstra</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">IntoOrd</span> <span class="op">+</span> <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">=</span><span class="ident">W</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Zero</span> {
         <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">to</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">reverse_path</span>(<span class="ident">from</span>, <span class="ident">to</span>);
 
@@ -720,7 +762,7 @@
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span><span class="op">&gt;</span> <span class="ident">Frontier</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Frontier</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Ord</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Hash</span>, <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">IntoOrd</span> {
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Frontier</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">W</span><span class="op">&gt;</span> {
             <span class="ident">Frontier</span> {
                 <span class="ident">queue</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
@@ -731,7 +773,7 @@
         <span class="doccomment">/// Sorts by cost in descending order, then by tag</span>
         <span class="kw">fn</span> <span class="ident">key_fn</span>(<span class="ident">item</span>: <span class="kw-2">&amp;</span>(<span class="ident">T</span>, <span class="ident">W</span>)) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Ord</span> {
             <span class="kw">let</span> (<span class="ident">t</span>, <span class="ident">w</span>) <span class="op">=</span> <span class="ident">item</span>;
-            (<span class="ident">Reverse</span>(<span class="ident">w</span>.<span class="ident">clone</span>()), <span class="ident">t</span>.<span class="ident">clone</span>())
+            (<span class="ident">Reverse</span>(<span class="ident">w</span>.<span class="ident">clone</span>().<span class="ident">into_ord</span>()), <span class="ident">t</span>.<span class="ident">clone</span>())
         }
 
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">tag</span>: <span class="ident">T</span>, <span class="ident">weight</span>: <span class="ident">W</span>) {
@@ -772,10 +814,10 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_search</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">Dijkstra</span>::<span class="ident">new</span>();
-        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;A&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;B&quot;</span>, <span class="number">1</span>)]);
-        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;B&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;A&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;C&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;D&quot;</span>, <span class="number">4</span>)]);
-        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;C&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;B&quot;</span>, <span class="number">2</span>), (<span class="string">&quot;D&quot;</span>, <span class="number">1</span>)]);
-        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;D&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;C&quot;</span>, <span class="number">1</span>), (<span class="string">&quot;B&quot;</span>, <span class="number">4</span>)]);
+        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;A&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;B&quot;</span>, <span class="number">1.0</span>)]);
+        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;B&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;A&quot;</span>, <span class="number">1.0</span>), (<span class="string">&quot;C&quot;</span>, <span class="number">2.0</span>), (<span class="string">&quot;D&quot;</span>, <span class="number">4.0</span>)]);
+        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;C&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;B&quot;</span>, <span class="number">2.0</span>), (<span class="string">&quot;D&quot;</span>, <span class="number">1.0</span>)]);
+        <span class="ident">g</span>.<span class="ident">add_node</span>(<span class="string">&quot;D&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;C&quot;</span>, <span class="number">1.0</span>), (<span class="string">&quot;B&quot;</span>, <span class="number">4.0</span>)]);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">g</span>.<span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="string">&quot;A&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;D&quot;</span>), <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>]);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">g</span>.<span class="ident">reverse_path</span>(<span class="kw-2">&amp;</span><span class="string">&quot;A&quot;</span>, <span class="kw-2">&amp;</span><span class="string">&quot;D&quot;</span>), <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;D&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;A&quot;</span>]);
     }

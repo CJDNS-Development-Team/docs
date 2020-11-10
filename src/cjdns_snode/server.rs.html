@@ -503,6 +503,16 @@
 <span id="502">502</span>
 <span id="503">503</span>
 <span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS supernode implementation.</span>
 
@@ -705,37 +715,32 @@
             }
         }
 
-        <span class="kw">let</span> <span class="ident">max_clock_skew</span> <span class="op">=</span> {
-            <span class="kw">if</span> <span class="ident">from_node</span> {
-                <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no self_node&quot;</span>))<span class="question-mark">?</span>;
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
-                    <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">!=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
-                        <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement from peer which is one of ours&quot;</span>);
-                        <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
-                        <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                    }
+        <span class="kw">if</span> <span class="ident">from_node</span> {
+            <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no self_node&quot;</span>))<span class="question-mark">?</span>;
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
+                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">!=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
+                    <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement meant for other snode&quot;</span>);
+                    <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
+                    <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
                 }
-                <span class="ident">MAX_CLOCKSKEW</span>
-            } <span class="kw">else</span> {
-                <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">self_node</span>), <span class="prelude-val">Some</span>(<span class="ident">ann</span>)) <span class="op">=</span> (<span class="ident">self_node</span>, <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>()) {
-                    <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">==</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
-                        <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement meant for other snode&quot;</span>);
-                        <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
-                        <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                    }
-                }
-                <span class="ident">MAX_GLOBAL_CLOCKSKEW</span>
             }
-        };
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
-            <span class="kw">let</span> <span class="ident">clock_skew</span> <span class="op">=</span> <span class="ident">time_diff</span>(<span class="ident">SystemTime</span>::<span class="ident">now</span>(), <span class="ident">mktime</span>(<span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>));
-            <span class="kw">if</span> <span class="ident">clock_skew</span> <span class="op">&gt;</span> <span class="ident">max_clock_skew</span> {
-                <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;unacceptably large clock skew {}h&quot;</span>, <span class="ident">clock_skew</span>.<span class="ident">as_secs_f64</span>() <span class="op">/</span> <span class="number">60.0</span> <span class="op">/</span> <span class="number">60.0</span>);
-                <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">ExcessiveClockSkew</span>;
-                <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-            } <span class="kw">else</span> {
-                <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;clock skew {}ms&quot;</span>, <span class="ident">clock_skew</span>.<span class="ident">as_millis</span>());
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
+                <span class="kw">let</span> <span class="ident">clock_skew</span> <span class="op">=</span> <span class="ident">time_diff</span>(<span class="ident">SystemTime</span>::<span class="ident">now</span>(), <span class="ident">mktime</span>(<span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>));
+                <span class="kw">if</span> <span class="ident">clock_skew</span> <span class="op">&gt;</span> <span class="ident">MAX_CLOCKSKEW</span> {
+                    <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;unacceptably large clock skew {}h&quot;</span>, <span class="ident">clock_skew</span>.<span class="ident">as_secs_f64</span>() <span class="op">/</span> <span class="number">60.0</span> <span class="op">/</span> <span class="number">60.0</span>);
+                    <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">ExcessiveClockSkew</span>;
+                    <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                } <span class="kw">else</span> {
+                    <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;clock skew {}ms&quot;</span>, <span class="ident">clock_skew</span>.<span class="ident">as_millis</span>());
+                }
+            }
+        } <span class="kw">else</span> {
+            <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">self_node</span>), <span class="prelude-val">Some</span>(<span class="ident">ann</span>)) <span class="op">=</span> (<span class="ident">self_node</span>, <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>()) {
+                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">==</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
+                    <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement received by gossip which is meant for us&quot;</span>);
+                    <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
+                    <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                }
             }
         }
 
@@ -949,6 +954,16 @@
                     <span class="op">!</span><span class="ident">drop</span>
                 });
 
+                {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link_mut</span> <span class="op">=</span> <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
+                    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">&gt;=</span> <span class="ident">ts</span>, <span class="string">&quot;broken invariant&quot;</span>);
+                    <span class="kw">let</span> <span class="ident">decay_slots</span> <span class="op">=</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">-</span> <span class="ident">ts</span>;
+                    <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">=</span> <span class="ident">ts</span>;
+                    <span class="kw">if</span> <span class="ident">decay_slots</span> <span class="op">&gt;</span> <span class="number">0</span> {
+                        <span class="ident">link_mut</span>.<span class="ident">value</span> <span class="op">/=</span> <span class="number">1.0</span> <span class="op">+</span> (<span class="ident">decay_slots</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
+                    }
+                }
+
                 <span class="comment">// The `starting_point` is the index of the *oldest* entry, newer entries continue forward from</span>
                 <span class="comment">// this entry. To save space, cjdns doesn&#39;t send any more entries than it needs to, which</span>
                 <span class="comment">// means while deserializing, the nonexistant entries will be filled by `None`s.</span>
@@ -979,6 +994,11 @@
                             <span class="ident">lag</span>: <span class="ident">lag_slot</span>,
                             <span class="ident">kb_recv</span>: <span class="ident">kb_recv_slot</span>,
                         };
+                        <span class="kw">let</span> <span class="ident">lsv</span> <span class="op">=</span> <span class="ident">new_state</span>.<span class="ident">ls_value</span>();
+                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">lsv</span> <span class="op">&gt;=</span> <span class="number">0.0</span>, <span class="string">&quot;lsv {} for ls {:?}&quot;</span>, <span class="ident">lsv</span>, <span class="ident">new_state</span>);
+                        <span class="kw">let</span> <span class="ident">delta_v</span> <span class="op">=</span> <span class="ident">lsv</span> <span class="op">/</span> (<span class="number">1.0</span> <span class="op">+</span> (<span class="ident">ts</span> <span class="op">-</span> <span class="ident">time</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
+                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">delta_v</span> <span class="op">&gt;=</span> <span class="number">0.0</span>);
+                        <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">value</span> <span class="op">+=</span> <span class="ident">delta_v</span>;
                         <span class="macro">debug</span><span class="macro">!</span>(
                             <span class="string">&quot;LINK_STATE_UPDATE: time={}, node_ip={}, ips_by_num[{}]={}, label={}, new_state={:?}&quot;</span>,
                             <span class="ident">time</span>, <span class="ident">ann</span>.<span class="ident">node_ip</span>, <span class="ident">ls</span>.<span class="ident">node_id</span>, <span class="ident">ips_by_num</span>[<span class="kw-2">&amp;</span><span class="ident">ls</span>.<span class="ident">node_id</span>], <span class="ident">link</span>.<span class="ident">label</span>, <span class="ident">new_state</span>
