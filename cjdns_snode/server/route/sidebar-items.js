@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["RoutingError",""]],"fn":[["get_route",""],["get_route_impl",""]],"mod":[["dijkstra",""]],"struct":[["CacheKey",""],["Hop",""],["Route",""],["Routing",""]]});
+initSidebarItems({"enum":[["RoutingError",""]],"fn":[["build_node_graph",""],["compute_route",""],["compute_routing_label",""],["get_route",""],["get_route_impl",""]],"struct":[["CacheKey",""],["Hop",""],["Route",""],["Routing",""]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["dijkstra","Dijkstra path search implementation."],["frontier","Frontier for the Dijkstra algorithm."],["graph","Path solver graph traits."],["numtraits","Dijkstra algorithm helper traits."]]});

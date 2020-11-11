@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["IntoOrd","Helper trait, providing total ordering for non-`Ord` types, such as `f64`, given its value is finite (i.e. not `NaN`, `Infinity` etc.)"],["Zero","Helper trait providing zero value for numeric types."]]});

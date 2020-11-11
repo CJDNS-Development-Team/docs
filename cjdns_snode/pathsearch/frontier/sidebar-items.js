@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Frontier","Frontier for the Dijkstra algorithm. Internally uses binary search to maintain priority queue and hashmap-based index."]]});
