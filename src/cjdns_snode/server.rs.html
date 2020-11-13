@@ -512,7 +512,6 @@
 <span id="511">511</span>
 <span id="512">512</span>
 <span id="513">513</span>
-<span id="514">514</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS supernode implementation.</span>
 
@@ -956,12 +955,11 @@
 
                 {
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link_mut</span> <span class="op">=</span> <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
-                    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">&gt;=</span> <span class="ident">ts</span>, <span class="string">&quot;broken invariant&quot;</span>);
-                    <span class="kw">let</span> <span class="ident">decay_slots</span> <span class="op">=</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">-</span> <span class="ident">ts</span>;
-                    <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">=</span> <span class="ident">ts</span>;
-                    <span class="kw">if</span> <span class="ident">decay_slots</span> <span class="op">&gt;</span> <span class="number">0</span> {
+                    <span class="kw">if</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">&gt;</span> <span class="ident">ts</span> {
+                        <span class="kw">let</span> <span class="ident">decay_slots</span> <span class="op">=</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">-</span> <span class="ident">ts</span>;
                         <span class="ident">link_mut</span>.<span class="ident">value</span> <span class="op">/=</span> <span class="number">1.0</span> <span class="op">+</span> (<span class="ident">decay_slots</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
                     }
+                    <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">=</span> <span class="ident">ts</span>;
                 }
 
                 <span class="comment">// The `starting_point` is the index of the *oldest* entry, newer entries continue forward from</span>
