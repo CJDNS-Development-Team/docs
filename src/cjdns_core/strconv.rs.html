@@ -340,11 +340,22 @@
 <span id="339">339</span>
 <span id="340">340</span>
 <span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! From/to string conversion routines for routing labels.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! RoutingLabel supports default formatting `format!(&quot;{}&quot;, routing_label)` (in hex form)</span>
 <span class="doccomment">//! and binary formatting `format!(&quot;{:b}&quot;, routing_label)`.</span>
+
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
@@ -354,10 +365,17 @@
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">RoutingLabel</span>;
 
+<span class="doccomment">/// Label string parsing errors.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Error</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LabelError</span> {
+    <span class="doccomment">/// Routing label string form is not valid and can not be parsed.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Malformed routing label string&quot;</span>)]</span>
     <span class="ident">MalformedRoutingLabelStringValue</span>,
+
+    <span class="doccomment">/// Routing label is all-zeroes.</span>
+    <span class="doccomment">/// This is not a valid label anyway,</span>
+    <span class="doccomment">/// so it should be better expressed</span>
+    <span class="doccomment">/// as `None` in `Option&lt;RoutingLabel&gt;`.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Routing label is all-zeroes&quot;</span>)]</span>
     <span class="ident">ZeroRoutingLabel</span>,
 }

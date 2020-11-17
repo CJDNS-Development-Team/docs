@@ -58,19 +58,49 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Path hop.</span>
 
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
+
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">LabelBits</span>, <span class="ident">RoutingLabel</span>};
 
+<span class="doccomment">/// An intermediate node in a path between the two nodes.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PathHop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Label for a director to the previous hop.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Must be `None` if it&#39;s a starting hop (i.e. packet sender node).</span>
+    <span class="doccomment">/// Knowing the label is important for reverse label creation.</span>
+    <span class="doccomment">/// For more info pls refer to [build_label](splice/fn.build_label.html) function docs.</span>
     <span class="kw">pub</span> <span class="ident">label_p</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span>,
+
+    <span class="doccomment">/// Label for a director to the next hop.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Must be `None` if it&#39;s a final hop (i.e. destination node).</span>
     <span class="kw">pub</span> <span class="ident">label_n</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span>,
+
+    <span class="doccomment">/// Encoding scheme used by the current node.</span>
     <span class="kw">pub</span> <span class="ident">encoding_scheme</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">EncodingScheme</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span> <span class="ident">PathHop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">L</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// New instance</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">label_p</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span>, <span class="ident">label_n</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;&gt;</span>, <span class="ident">encoding_scheme</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">PathHop</span> {
             <span class="ident">label_p</span>,

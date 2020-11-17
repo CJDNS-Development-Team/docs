@@ -1250,8 +1250,23 @@
 <span id="1249">1249</span>
 <span id="1250">1250</span>
 <span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Routing label splice/unsplice routines.</span>
+
+<span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">thiserror</span>::<span class="ident">Error</span>;
 
@@ -1260,19 +1275,30 @@
 <span class="doccomment">/// Result type alias.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">SpliceError</span><span class="op">&gt;</span>;
 
-<span class="doccomment">/// Error type.</span>
+<span class="doccomment">/// Routing label splice failure.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Error</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SpliceError</span> {
+    <span class="doccomment">/// Label requires more bits than it is available in underlying `LabelBits`.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Label is too long&quot;</span>)]</span>
     <span class="ident">LabelTooLong</span>,
+
+    <span class="doccomment">/// Array argument must contain at least 2 items.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Not enough arguments&quot;</span>)]</span>
     <span class="ident">NotEnoughArguments</span>,
+
+    <span class="doccomment">/// Invalid function argument.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Bad argument&quot;</span>)]</span>
     <span class="ident">BadArgument</span>,
+
+    <span class="doccomment">/// Unable to unsplice because provided destination doesn&#39;t route through given mid path.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can&#39;t unsplice&quot;</span>)]</span>
     <span class="ident">CannotUnsplice</span>,
+
+    <span class="doccomment">/// Can&#39;t find proper encoding form in encoding scheme: label is not recognized as using the given scheme.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can&#39;t detect form&quot;</span>)]</span>
     <span class="ident">CannotFindForm</span>,
+
+    <span class="doccomment">/// Label can&#39;t be re-encoded with the given form.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Can&#39;t re-encode&quot;</span>)]</span>
     <span class="ident">CannotReencode</span>,
 }
