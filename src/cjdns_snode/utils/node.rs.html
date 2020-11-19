@@ -58,6 +58,7 @@
 <span id="57">57</span>
 <span id="58">58</span>
 <span id="59">59</span>
+<span id="60">60</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Node name parsing utilities</span>
 
@@ -73,7 +74,8 @@
         <span class="string">&quot;^v([0-9]+)\\.\
         ([[:xdigit:]]{4}\\.[[:xdigit:]]{4}\\.[[:xdigit:]]{4}\\.[[:xdigit:]]{4})\\.\
         ([a-z0-9]{52}\\.k)&quot;</span>
-    ).<span class="ident">expect</span>(<span class="string">&quot;bad regexp&quot;</span>);
+    )
+    .<span class="ident">expect</span>(<span class="string">&quot;bad regexp&quot;</span>);
 }
 
 <span class="doccomment">/// Gets version, label and public key all together in tuple from `name` argument, if it has valid structure.</span>
@@ -117,5 +119,6 @@
     <span class="kw">for</span> <span class="ident">invalid_node_name</span> <span class="kw">in</span> <span class="ident">invalid_node_names</span> {
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">parse_node_name</span>(<span class="ident">invalid_node_name</span>).<span class="ident">is_err</span>());
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

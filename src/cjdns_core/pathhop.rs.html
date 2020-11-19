@@ -112,7 +112,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">LabelBits</span>, <span class="ident">PathHop</span>, <span class="ident">RoutingLabel</span>, <span class="ident">schemes</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">schemes</span>, <span class="ident">EncodingScheme</span>, <span class="ident">LabelBits</span>, <span class="ident">PathHop</span>, <span class="ident">RoutingLabel</span>};
 
     <span class="kw">fn</span> <span class="ident">hop</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">LabelBits</span><span class="op">&gt;</span>(<span class="ident">label_p_bits</span>: <span class="ident">L</span>, <span class="ident">label_n_bits</span>: <span class="ident">L</span>, <span class="ident">encoding_scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="ident">PathHop</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">label_p</span> <span class="op">=</span> <span class="ident">RoutingLabel</span>::<span class="ident">try_new</span>(<span class="ident">label_p_bits</span>);

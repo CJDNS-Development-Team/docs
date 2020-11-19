@@ -120,6 +120,12 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS Admin tool</span>
 
@@ -128,7 +134,7 @@
 <span class="kw">use</span> <span class="ident">anyhow</span>::<span class="ident">Error</span>;
 <span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
 
-<span class="kw">use</span> <span class="ident">cjdns_admin</span>::{<span class="ident">ArgValue</span>, <span class="ident">ArgValues</span>, <span class="ident">Func</span>, <span class="ident">msgs</span>::<span class="ident">GenericResponsePayload</span>};
+<span class="kw">use</span> <span class="ident">cjdns_admin</span>::{<span class="ident">msgs</span>::<span class="ident">GenericResponsePayload</span>, <span class="ident">ArgValue</span>, <span class="ident">ArgValues</span>, <span class="ident">Func</span>};
 
 <span class="attribute">#[<span class="ident">tokio</span>::<span class="ident">main</span>]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>() {
@@ -227,8 +233,14 @@
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot; 42&quot;#</span>)<span class="question-mark">?</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>)]);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;42 &quot;#</span>)<span class="question-mark">?</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>)]);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;&quot;foo&quot;&quot;#</span>)<span class="question-mark">?</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">String</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_string</span>())]);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;42,&quot;foo&quot;,-42&quot;#</span>)<span class="question-mark">?</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>), <span class="ident">ArgValue</span>::<span class="ident">String</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="op">-</span><span class="number">42</span>)]);
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;42, &quot;foo&quot;, -42&quot;#</span>)<span class="question-mark">?</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>), <span class="ident">ArgValue</span>::<span class="ident">String</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="op">-</span><span class="number">42</span>)]);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;42,&quot;foo&quot;,-42&quot;#</span>)<span class="question-mark">?</span>,
+        <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>), <span class="ident">ArgValue</span>::<span class="ident">String</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="op">-</span><span class="number">42</span>)]
+    );
+    <span class="macro">assert_eq</span><span class="macro">!</span>(
+        <span class="ident">parse_remote_fn_args</span>(<span class="string">r#&quot;42, &quot;foo&quot;, -42&quot;#</span>)<span class="question-mark">?</span>,
+        <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="number">42</span>), <span class="ident">ArgValue</span>::<span class="ident">String</span>(<span class="string">&quot;foo&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">ArgValue</span>::<span class="ident">Int</span>(<span class="op">-</span><span class="number">42</span>)]
+    );
 
     <span class="prelude-val">Ok</span>(())
 }
@@ -241,5 +253,6 @@
         <span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">arg</span>.<span class="ident">name</span>.<span class="ident">clone</span>(), <span class="ident">arg_value</span>);
     }
     <span class="ident">args</span>
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdnsadmin";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

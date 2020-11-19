@@ -193,6 +193,8 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! IP to node mapping</span>
 
@@ -206,7 +208,7 @@
 <span class="kw">use</span> <span class="ident">cjdns_ann</span>::{<span class="ident">AnnHash</span>, <span class="ident">Announcement</span>};
 <span class="kw">use</span> <span class="ident">cjdns_bytes</span>::<span class="ident">Writer</span>;
 <span class="kw">use</span> <span class="ident">cjdns_core</span>::<span class="ident">EncodingScheme</span>;
-<span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">CJDNS_IP6</span>, <span class="ident">CJDNSPublicKey</span>};
+<span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">CJDNSPublicKey</span>, <span class="ident">CJDNS_IP6</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">peer</span>::<span class="ident">Peers</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">link</span>::<span class="ident">Link</span>;
@@ -214,7 +216,7 @@
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">Nodes</span> {
     <span class="ident">peers</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Peers</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Shared state guarded by a regular sync mutex (since we don&#39;t need to keep the lock between `.await` points)</span>
-    <span class="ident">nodes_by_ip</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>
+    <span class="ident">nodes_by_ip</span>: <span class="ident">RwLock</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">Node</span> {
@@ -241,7 +243,9 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">enum</span> <span class="ident">NodeType</span> { <span class="ident">Node</span> }
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">enum</span> <span class="ident">NodeType</span> {
+    <span class="ident">Node</span>,
+}
 
 <span class="comment">// No async methods allowed here since we use sync mutex</span>
 <span class="kw">impl</span> <span class="ident">Nodes</span> {
@@ -305,7 +309,7 @@
         <span class="ident">encoding_scheme</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span><span class="op">&gt;&gt;</span>,
         <span class="ident">timestamp</span>: <span class="ident">SystemTime</span>,
         <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>,
-        <span class="ident">announcement</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Announcement</span><span class="op">&gt;</span>
+        <span class="ident">announcement</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Announcement</span><span class="op">&gt;</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Node</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">encoding_scheme</span> <span class="op">=</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">encoding_scheme</span>) <span class="op">=</span> <span class="ident">encoding_scheme</span> {
@@ -323,7 +327,7 @@
             <span class="ident">timestamp</span>,
             <span class="ident">announcements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             <span class="ident">state_hash</span>: <span class="prelude-val">None</span>,
-            <span class="ident">reset_msg</span>: <span class="prelude-val">None</span>
+            <span class="ident">reset_msg</span>: <span class="prelude-val">None</span>,
         };
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">announcement</span> {
@@ -380,10 +384,10 @@
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">Node</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">node_type</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">node_type</span>
-        <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">version</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">version</span>
-        <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">key</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">key</span>
-        <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">ipv6</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">ipv6</span>
-        <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">encoding_scheme</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">other</span>.<span class="ident">encoding_scheme</span>
+            <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">version</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">version</span>
+            <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">key</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">key</span>
+            <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">ipv6</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">ipv6</span>
+            <span class="op">&amp;&amp;</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">encoding_scheme</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">other</span>.<span class="ident">encoding_scheme</span>
     }
 }
 

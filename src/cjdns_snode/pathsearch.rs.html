@@ -37,22 +37,16 @@
 <span id="36">36</span>
 <span id="37">37</span>
 <span id="38">38</span>
-<span id="39">39</span>
-<span id="40">40</span>
-<span id="41">41</span>
-<span id="42">42</span>
-<span id="43">43</span>
-<span id="44">44</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Path search in a weighted graph.</span>
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">dijkstra</span>::<span class="ident">Dijkstra</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">graph</span>::{<span class="ident">GraphBuilder</span>, <span class="ident">GraphSolver</span>};
 
-<span class="kw">mod</span> <span class="ident">graph</span>;
-<span class="kw">mod</span> <span class="ident">numtraits</span>;
 <span class="kw">mod</span> <span class="ident">dijkstra</span>;
 <span class="kw">mod</span> <span class="ident">frontier</span>;
+<span class="kw">mod</span> <span class="ident">graph</span>;
+<span class="kw">mod</span> <span class="ident">numtraits</span>;
 
 <span class="attribute">#[<span class="ident">test</span>]</span>
 <span class="kw">fn</span> <span class="ident">test_dijkstra_search</span>() {
@@ -79,13 +73,8 @@
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">all</span>.<span class="ident">start_node</span>, <span class="string">&quot;1&quot;</span>);
     <span class="macro">assert_eq</span><span class="macro">!</span>(
         <span class="ident">all</span>.<span class="ident">paths</span>,
-        <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="string">&quot;2&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[]),
-            (<span class="string">&quot;3&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[]),
-            (<span class="string">&quot;4&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>]),
-            (<span class="string">&quot;5&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>, <span class="string">&quot;6&quot;</span>]),
-            (<span class="string">&quot;6&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>]),
-        ],
+        <span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;2&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[]), (<span class="string">&quot;3&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[]), (<span class="string">&quot;4&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>]), (<span class="string">&quot;5&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>, <span class="string">&quot;6&quot;</span>]), (<span class="string">&quot;6&quot;</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;3&quot;</span>]),],
     );
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_snode";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

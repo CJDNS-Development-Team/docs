@@ -89,6 +89,9 @@
 <span id="88">88</span>
 <span id="89">89</span>
 <span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Tool to sniff CJDHT messages.</span>
 
@@ -160,7 +163,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">dump_bencode</span>(<span class="ident">benc</span>: <span class="ident">BValue</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), ()<span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">qb</span>) <span class="op">=</span> <span class="ident">benc</span>.<span class="ident">get_dict_value</span>(<span class="string">&quot;q&quot;</span>)<span class="question-mark">?</span> {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">qb</span>) <span class="op">=</span> <span class="ident">benc</span>.<span class="ident">get_dict_value</span>(<span class="string">&quot;q&quot;</span>)<span class="question-mark">?</span>.<span class="ident">or</span>(<span class="ident">benc</span>.<span class="ident">get_dict_value</span>(<span class="string">&quot;sq&quot;</span>)<span class="question-mark">?</span>) {
         <span class="kw">let</span> <span class="ident">q</span> <span class="op">=</span> <span class="ident">qb</span>.<span class="ident">as_string</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">is_fn</span> <span class="op">=</span> <span class="ident">q</span> <span class="op">==</span> <span class="string">&quot;fn&quot;</span>;
         <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">q</span>);
@@ -174,10 +177,14 @@
     } <span class="kw">else</span> {
         <span class="ident">buf</span>.<span class="ident">push</span>(<span class="string">&quot;reply&quot;</span>.<span class="ident">to_string</span>())
     }
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">txid</span>) <span class="op">=</span> <span class="ident">benc</span>.<span class="ident">get_dict_value</span>(<span class="string">&quot;txid&quot;</span>)<span class="question-mark">?</span> {
+        <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">txid</span>.<span class="ident">as_bytes</span>().<span class="ident">unwrap_or_default</span>()));
+    }
     <span class="prelude-val">Ok</span>(())
 }
 
 <span class="kw">fn</span> <span class="ident">dump_error</span>(<span class="ident">err</span>: <span class="ident">ParseError</span>, <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Bad message received:\n{}\n{}&quot;</span>, <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">data</span>), <span class="macro">anyhow</span><span class="macro">!</span>(<span class="ident">err</span>));
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "dumpdht";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

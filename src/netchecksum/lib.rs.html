@@ -125,8 +125,6 @@
 <span id="124">124</span>
 <span id="125">125</span>
 <span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! The 1s complement checksum used by TCP, UDP and ICMP.</span>
 <span class="doccomment">//!</span>
@@ -222,7 +220,7 @@
     <span class="kw">let</span> <span class="ident">cases</span> <span class="op">=</span> [
         (
             <span class="ident">hexbuf</span>(<span class="string">&quot;fce5de17cbdec87b528905568b83c9c8fc0000000000000000000000000000010000001900000011b4a9003500190000e4e4010000010000000000000000020001&quot;</span>),
-            <span class="number">0x4972</span>
+            <span class="number">0x4972</span>,
         ),
         <span class="comment">// Validate that even when the int rolls over it still works.</span>
         (<span class="ident">fill</span>(<span class="number">40000</span>, <span class="string">b&quot;This_is_a_test__&quot;</span>), <span class="number">0x62d0</span>),
@@ -249,10 +247,8 @@
     <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> [<span class="number">0xc0</span>, <span class="number">0xa8</span>, <span class="number">0x01</span>, <span class="number">0x91</span>];
     <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> [<span class="number">0xc0</span>, <span class="number">0xa8</span>, <span class="number">0x01</span>, <span class="number">0x01</span>];
     <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[
-        <span class="number">0xfe</span>, <span class="number">0x8d</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
-        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x06</span>, <span class="number">0x67</span>, <span class="number">0x6f</span>, <span class="number">0x6f</span>,
-        <span class="number">0x67</span>, <span class="number">0x6c</span>, <span class="number">0x65</span>, <span class="number">0x03</span>, <span class="number">0x63</span>, <span class="number">0x6f</span>, <span class="number">0x6d</span>, <span class="number">0x00</span>,
-        <span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x01</span>
+        <span class="number">0xfe</span>, <span class="number">0x8d</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x06</span>, <span class="number">0x67</span>, <span class="number">0x6f</span>, <span class="number">0x6f</span>, <span class="number">0x67</span>, <span class="number">0x6c</span>, <span class="number">0x65</span>, <span class="number">0x03</span>, <span class="number">0x63</span>, <span class="number">0x6f</span>, <span class="number">0x6d</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
+        <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x01</span>,
     ];
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">cksum_udp4</span>(<span class="ident">src</span>, <span class="ident">dst</span>, <span class="number">0xf970</span>, <span class="number">0x0035</span>, <span class="ident">content</span>), <span class="prelude-val">Ok</span>(<span class="number">0x6fd6</span>));
 }

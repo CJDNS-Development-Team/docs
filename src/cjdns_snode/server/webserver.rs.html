@@ -466,9 +466,6 @@
 <span id="465">465</span>
 <span id="466">466</span>
 <span id="467">467</span>
-<span id="468">468</span>
-<span id="469">469</span>
-<span id="470">470</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Web server</span>
 
@@ -485,7 +482,7 @@
     <span class="ident">warp</span>::<span class="ident">serve</span>(<span class="ident">routes</span>).<span class="ident">run</span>(([<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>], <span class="number">3333</span>)).<span class="kw">await</span>;
 }
 
-<span class="kw">fn</span> <span class="ident">api</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">api</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="comment">// endpoint &#39;/&#39;</span>
     <span class="kw">let</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">info_route</span>(<span class="ident">server</span>.<span class="ident">clone</span>());
     <span class="kw">let</span> <span class="ident">debug_node</span> <span class="op">=</span> <span class="ident">debug_node_route</span>(<span class="ident">server</span>.<span class="ident">clone</span>());
@@ -499,20 +496,18 @@
     <span class="ident">info</span>.<span class="ident">or</span>(<span class="ident">debug_node</span>).<span class="ident">or</span>(<span class="ident">dump</span>).<span class="ident">or</span>(<span class="ident">path</span>).<span class="ident">or</span>(<span class="ident">ni</span>).<span class="ident">or</span>(<span class="ident">walk</span>).<span class="ident">or</span>(<span class="ident">ws</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">info_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
-    <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">end</span>()
-        .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
-        .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_info</span>)
+<span class="kw">fn</span> <span class="ident">info_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+    <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">end</span>().<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>)).<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_info</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">debug_node_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">debug_node_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;debugnode&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">param</span>())
         .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
         .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_debug_node</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">dump_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">dump_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="kw">let</span> <span class="ident">dump_header</span> <span class="op">=</span> <span class="ident">warp</span>::<span class="ident">reply</span>::<span class="ident">with</span>::<span class="ident">header</span>(<span class="string">&quot;content-type&quot;</span>, <span class="string">&quot;application/octet-stream&quot;</span>);
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;dump&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
@@ -520,7 +515,7 @@
         .<span class="ident">with</span>(<span class="ident">dump_header</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">path_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">path_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;path&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">param</span>())
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">param</span>())
@@ -528,27 +523,25 @@
         .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_path</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">ni_with_ip_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">ni_with_ip_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;ni&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">param</span>())
         .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
         .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_ni_with_ip</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">ni_empty</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">ni_empty</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;ni&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">end</span>())
         .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
         .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_ni_empty</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">walk_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
-    <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;walk&quot;</span>)
-        .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
-        .<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_walk</span>)
+<span class="kw">fn</span> <span class="ident">walk_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+    <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;walk&quot;</span>).<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>)).<span class="ident">and_then</span>(<span class="ident">handlers</span>::<span class="ident">handle_walk</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">ws_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span><span class="op">=</span><span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">ws_route</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> <span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">path</span>::<span class="ident">path</span>(<span class="string">&quot;cjdnsnode_websocket&quot;</span>)
         .<span class="ident">and</span>(<span class="ident">warp</span>::<span class="ident">addr</span>::<span class="ident">remote</span>())
         .<span class="ident">and</span>(<span class="ident">with_server</span>(<span class="ident">server</span>))
@@ -565,7 +558,7 @@
         })
 }
 
-<span class="kw">fn</span> <span class="ident">with_server</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span><span class="op">=</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>,), <span class="ident">Error</span><span class="op">=</span><span class="ident">Infallible</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
+<span class="kw">fn</span> <span class="ident">with_server</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> (<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>,), <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Infallible</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span> {
     <span class="ident">warp</span>::<span class="ident">any</span>().<span class="ident">map</span>(<span class="kw">move</span> <span class="op">||</span> <span class="ident">server</span>.<span class="ident">clone</span>())
 }
 
@@ -577,8 +570,8 @@
     <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">json</span>;
     <span class="kw">use</span> <span class="ident">serde_json</span>::<span class="ident">Value</span> <span class="kw">as</span> <span class="ident">JsonValue</span>;
     <span class="kw">use</span> <span class="ident">thiserror</span>::<span class="ident">Error</span>;
-    <span class="kw">use</span> <span class="ident">warp</span>::{<span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">Rejection</span>, <span class="ident">Reply</span>};
     <span class="kw">use</span> <span class="ident">warp</span>::<span class="ident">reject</span>::<span class="ident">Reject</span>;
+    <span class="kw">use</span> <span class="ident">warp</span>::{<span class="ident">http</span>::<span class="ident">StatusCode</span>, <span class="ident">Rejection</span>, <span class="ident">Reply</span>};
 
     <span class="kw">use</span> <span class="ident">cjdns_ann</span>::{<span class="ident">Announcement</span>, <span class="ident">Entity</span>};
     <span class="kw">use</span> <span class="ident">cjdns_core</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">RoutingLabel</span>};
@@ -603,7 +596,7 @@
         <span class="kw">let</span> <span class="ident">peers_info</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">peers</span>.<span class="ident">get_info</span>();
         <span class="kw">let</span> <span class="ident">nodes_count</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">count</span>();
 
-        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>{{
+        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span> {{
             <span class="string">&quot;peer&quot;</span>: <span class="macro">json</span><span class="macro">!</span>{{
                 <span class="string">&quot;peers&quot;</span>: <span class="ident">peers_info</span>.<span class="ident">peers</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">pi</span><span class="op">|</span> {
                     <span class="macro">json</span><span class="macro">!</span>{{
@@ -638,12 +631,16 @@
         <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">by_ip</span>(<span class="kw-2">&amp;</span><span class="ident">src_ip</span>);
         <span class="kw">let</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">by_ip</span>(<span class="kw-2">&amp;</span><span class="ident">tar_ip</span>);
         <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;http getRoute req {} {}&quot;</span>, <span class="ident">src_ip</span>, <span class="ident">tar_ip</span>);
-        <span class="kw">if</span> <span class="ident">src</span>.<span class="ident">is_none</span>() { <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="string">&quot;src not found&quot;</span>.<span class="ident">to_string</span>()); }
-        <span class="kw">if</span> <span class="ident">tar</span>.<span class="ident">is_none</span>() { <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="string">&quot;tar not found&quot;</span>.<span class="ident">to_string</span>()); }
+        <span class="kw">if</span> <span class="ident">src</span>.<span class="ident">is_none</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="string">&quot;src not found&quot;</span>.<span class="ident">to_string</span>());
+        }
+        <span class="kw">if</span> <span class="ident">tar</span>.<span class="ident">is_none</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="string">&quot;tar not found&quot;</span>.<span class="ident">to_string</span>());
+        }
         <span class="kw">match</span> <span class="ident">get_route</span>(<span class="ident">server</span>.<span class="ident">clone</span>(), <span class="ident">src</span>, <span class="ident">tar</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">r</span>.<span class="ident">label</span>.<span class="ident">to_string</span>()),
-            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>))
-        } 
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>)),
+        }
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_ni_with_ip</span>(<span class="ident">ip6</span>: <span class="ident">String</span>, <span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Infallible</span><span class="op">&gt;</span> {
@@ -651,7 +648,7 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">by_ip</span>(<span class="kw-2">&amp;</span><span class="ident">ip6</span>) {
                 <span class="kw">let</span> <span class="ident">node_state</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">mut_state</span>.<span class="ident">read</span>();
 
-                <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>{{
+                <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span> {{
                     <span class="string">&quot;node&quot;</span>: <span class="macro">json</span><span class="macro">!</span>{{
                         <span class="string">&quot;type&quot;</span>: <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">node</span>.<span class="ident">node_type</span>),
                         <span class="string">&quot;version&quot;</span>: <span class="ident">node</span>.<span class="ident">version</span>,
@@ -694,15 +691,15 @@
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">reply_json</span>(<span class="kw-2">&amp;</span><span class="ident">reply</span>));
             }
         }
-        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>{{}};
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">reply_json</span>(<span class="kw-2">&amp;</span><span class="ident">reply</span>))
+        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span> {{}};
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">reply_json</span>(<span class="kw-2">&amp;</span><span class="ident">reply</span>));
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_ni_empty</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Infallible</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">nodes_info</span> <span class="op">=</span> <span class="ident">nodes_info</span>(<span class="kw-2">&amp;</span><span class="ident">server</span>.<span class="ident">nodes</span>);
         <span class="kw">let</span> <span class="ident">peers_info</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">peers</span>.<span class="ident">get_info</span>();
 
-        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span>{{
+        <span class="kw">let</span> <span class="ident">reply</span> <span class="op">=</span> <span class="macro">json</span><span class="macro">!</span> {{
             <span class="string">&quot;totalNodes&quot;</span>: <span class="ident">nodes_info</span>.<span class="ident">nodes</span>.<span class="ident">len</span>(),
             <span class="string">&quot;nodes&quot;</span>: <span class="ident">nodes_info</span>.<span class="ident">nodes</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">ni</span><span class="op">|</span> {
                 <span class="macro">json</span><span class="macro">!</span>{{
@@ -727,7 +724,7 @@
             }},
         }};
 
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">reply_json</span>(<span class="kw-2">&amp;</span><span class="ident">reply</span>))
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">reply_json</span>(<span class="kw-2">&amp;</span><span class="ident">reply</span>));
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_walk</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Reply</span>, <span class="ident">Infallible</span><span class="op">&gt;</span> {
@@ -773,19 +770,17 @@
     }
 
     <span class="kw">fn</span> <span class="ident">json_encoding_scheme</span>(<span class="ident">encoding_scheme</span>: <span class="kw-2">&amp;</span><span class="ident">EncodingScheme</span>) <span class="op">-&gt;</span> <span class="ident">JsonValue</span> {
-        <span class="macro">json</span><span class="macro">!</span>(
-            <span class="ident">encoding_scheme</span>
-                .<span class="ident">iter</span>()
-                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">form</span><span class="op">|</span> {
-                    <span class="kw">let</span> (<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">form</span>.<span class="ident">params</span>();
-                    <span class="macro">json</span><span class="macro">!</span>{{
-                        <span class="string">&quot;bitCount&quot;</span>: <span class="ident">bit_count</span>,
-                        <span class="string">&quot;prefix&quot;</span>: <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:x}&quot;</span>, <span class="ident">prefix</span>),
-                        <span class="string">&quot;prefixLen&quot;</span>: <span class="ident">prefix_len</span>,
-                    }}
-                })
-                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
-        )
+        <span class="macro">json</span><span class="macro">!</span>(<span class="ident">encoding_scheme</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">form</span><span class="op">|</span> {
+                <span class="kw">let</span> (<span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span>) <span class="op">=</span> <span class="ident">form</span>.<span class="ident">params</span>();
+                <span class="macro">json</span><span class="macro">!</span> {{
+                    <span class="string">&quot;bitCount&quot;</span>: <span class="ident">bit_count</span>,
+                    <span class="string">&quot;prefix&quot;</span>: <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:x}&quot;</span>, <span class="ident">prefix</span>),
+                    <span class="string">&quot;prefixLen&quot;</span>: <span class="ident">prefix_len</span>,
+                }}
+            })
+            .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>())
     }
 
     <span class="kw">fn</span> <span class="ident">json_label</span>(<span class="ident">label</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoutingLabel</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">JsonValue</span> {
@@ -800,7 +795,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">json_announcement</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="ident">JsonValue</span> {
-        <span class="macro">json</span><span class="macro">!</span>{{
+        <span class="macro">json</span><span class="macro">!</span> {{
             <span class="string">&quot;signature&quot;</span>: <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">signature</span>,
             <span class="string">&quot;pubSigningKey&quot;</span>: <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">pub_signing_key</span>,
             <span class="string">&quot;snodeIp&quot;</span>: <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span>.<span class="ident">to_string</span>(),
@@ -818,20 +813,20 @@
     <span class="kw">fn</span> <span class="ident">json_ann_entity</span>(<span class="ident">entity</span>: <span class="kw-2">&amp;</span><span class="ident">Entity</span>) <span class="op">-&gt;</span> <span class="ident">JsonValue</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">entity</span> {
             <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> {
-                <span class="macro">json</span><span class="macro">!</span>{{
+                <span class="macro">json</span><span class="macro">!</span> {{
                     <span class="string">&quot;type&quot;</span>: <span class="string">&quot;Version&quot;</span>,
                     <span class="string">&quot;version&quot;</span>: <span class="ident">v</span>,
                 }}
-            },
-            <span class="ident">Entity</span>::<span class="ident">EncodingScheme</span> {<span class="kw-2">ref</span> <span class="ident">hex</span>, <span class="kw-2">ref</span> <span class="ident">scheme</span>} <span class="op">=&gt;</span> {
-                <span class="macro">json</span><span class="macro">!</span>{{
+            }
+            <span class="ident">Entity</span>::<span class="ident">EncodingScheme</span> { <span class="kw-2">ref</span> <span class="ident">hex</span>, <span class="kw-2">ref</span> <span class="ident">scheme</span> } <span class="op">=&gt;</span> {
+                <span class="macro">json</span><span class="macro">!</span> {{
                     <span class="string">&quot;type&quot;</span>: <span class="string">&quot;EncodingScheme&quot;</span>,
                     <span class="string">&quot;hex&quot;</span>: <span class="ident">hex</span>.<span class="ident">clone</span>(),
                     <span class="string">&quot;scheme&quot;</span>: <span class="ident">json_encoding_scheme</span>(<span class="ident">scheme</span>),
                 }}
-            },
+            }
             <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="kw-2">ref</span> <span class="ident">peer_data</span>) <span class="op">=&gt;</span> {
-                <span class="macro">json</span><span class="macro">!</span>{{
+                <span class="macro">json</span><span class="macro">!</span> {{
                     <span class="string">&quot;type&quot;</span>: <span class="string">&quot;Peer&quot;</span>,
                     <span class="string">&quot;ipv6&quot;</span>: <span class="ident">peer_data</span>.<span class="ident">ipv6</span>.<span class="ident">to_string</span>(),
                     <span class="string">&quot;label&quot;</span>: <span class="ident">json_label</span>(<span class="ident">peer_data</span>.<span class="ident">label</span>),
@@ -841,9 +836,9 @@
                     <span class="string">&quot;encodingFormNum&quot;</span>: <span class="ident">peer_data</span>.<span class="ident">encoding_form_number</span>,
                     <span class="string">&quot;flags&quot;</span>: <span class="ident">peer_data</span>.<span class="ident">flags</span>,
                 }}
-            },
+            }
             <span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="kw-2">ref</span> <span class="ident">ls_data</span>) <span class="op">=&gt;</span> {
-                <span class="macro">json</span><span class="macro">!</span>{{
+                <span class="macro">json</span><span class="macro">!</span> {{
                     <span class="string">&quot;type&quot;</span>: <span class="string">&quot;LinkState&quot;</span>,
                     <span class="string">&quot;nodeId&quot;</span>: <span class="ident">ls_data</span>.<span class="ident">node_id</span>,
                     <span class="string">&quot;startingPoint&quot;</span>: <span class="ident">ls_data</span>.<span class="ident">starting_point</span>,
@@ -856,7 +851,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">json_binary_buffer</span>(<span class="ident">buf</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">JsonValue</span> {
-        <span class="macro">json</span><span class="macro">!</span>{{
+        <span class="macro">json</span><span class="macro">!</span> {{
             <span class="string">&quot;type&quot;</span>: <span class="string">&quot;Buffer&quot;</span>,
             <span class="string">&quot;data&quot;</span>: <span class="ident">buf</span>.<span class="ident">to_vec</span>(),
         }}
@@ -871,7 +866,7 @@
         <span class="doccomment">/// Copy of warp::reply::json, but with pretty json formatter</span>
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">reply_json</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Serialize</span><span class="op">&gt;</span>(<span class="ident">val</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) <span class="op">-&gt;</span> <span class="ident">Json</span> {
             <span class="ident">Json</span> {
-                <span class="ident">inner</span>: <span class="ident">serde_json</span>::<span class="ident">to_vec_pretty</span>(<span class="ident">val</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;json error {}&quot;</span>, <span class="ident">e</span>))
+                <span class="ident">inner</span>: <span class="ident">serde_json</span>::<span class="ident">to_vec_pretty</span>(<span class="ident">val</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;json error {}&quot;</span>, <span class="ident">e</span>)),
             }
         }
 
@@ -907,7 +902,7 @@
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">NodeShortInfo</span> {
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">ip6</span>: <span class="ident">String</span>,
         <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">announcements</span>: <span class="ident">u64</span>,
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">rst</span>: <span class="ident">bool</span>
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">rst</span>: <span class="ident">bool</span>,
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">nodes_info</span>(<span class="ident">nodes</span>: <span class="kw-2">&amp;</span><span class="ident">Nodes</span>) <span class="op">-&gt;</span> <span class="ident">NodesInfo</span> {
@@ -916,7 +911,8 @@
         <span class="kw">let</span> <span class="ident">nodes</span> <span class="op">=</span> <span class="ident">nodes</span>
             .<span class="ident">all_ips</span>()
             .<span class="ident">iter</span>()
-            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">ip6</span><span class="op">|</span> { <span class="comment">// Skip nodes that just disappeared</span>
+            .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">ip6</span><span class="op">|</span> {
+                <span class="comment">// Skip nodes that just disappeared</span>
                 <span class="ident">nodes</span>.<span class="ident">by_ip</span>(<span class="ident">ip6</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">node</span><span class="op">|</span> (<span class="ident">ip6</span>, <span class="ident">node</span>))
             })
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">ip6</span>, <span class="ident">node</span>)<span class="op">|</span> {
@@ -924,20 +920,19 @@
                 <span class="kw">let</span> <span class="ident">announcements</span> <span class="op">=</span> <span class="ident">node_state</span>.<span class="ident">announcements</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>;
                 <span class="ident">total_ann</span> <span class="op">+=</span> <span class="ident">announcements</span>;
                 <span class="kw">let</span> <span class="ident">rst</span> <span class="op">=</span> <span class="ident">node_state</span>.<span class="ident">reset_msg</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">node_state</span>.<span class="ident">announcements</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">ann</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">!=</span> <span class="ident">node_state</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>());
-                <span class="kw">if</span> <span class="ident">rst</span> { <span class="ident">resets</span> <span class="op">+=</span> <span class="number">1</span>; }
+                <span class="kw">if</span> <span class="ident">rst</span> {
+                    <span class="ident">resets</span> <span class="op">+=</span> <span class="number">1</span>;
+                }
                 <span class="ident">NodeShortInfo</span> {
                     <span class="ident">ip6</span>: <span class="ident">ip6</span>.<span class="ident">to_string</span>(),
                     <span class="ident">announcements</span>,
-                    <span class="ident">rst</span>
+                    <span class="ident">rst</span>,
                 }
             })
             .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>();
 
-        <span class="ident">NodesInfo</span> {
-            <span class="ident">nodes</span>,
-            <span class="ident">total_ann</span>,
-            <span class="ident">resets</span>,
-        }
+        <span class="ident">NodesInfo</span> { <span class="ident">nodes</span>, <span class="ident">total_ann</span>, <span class="ident">resets</span> }
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

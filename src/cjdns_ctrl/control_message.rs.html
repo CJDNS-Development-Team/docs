@@ -353,7 +353,7 @@
 
 <span class="kw">use</span> <span class="ident">num_enum</span>::{<span class="ident">IntoPrimitive</span>, <span class="ident">TryFromPrimitive</span>};
 
-<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">ExpectedSize</span>, <span class="ident">Writer</span>};
+<span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ExpectedSize</span>, <span class="ident">ParseError</span>, <span class="ident">Reader</span>, <span class="ident">SerializeError</span>, <span class="ident">Writer</span>};
 <span class="kw">use</span> <span class="ident">netchecksum</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ErrorData</span>, <span class="ident">PingData</span>};
@@ -420,10 +420,8 @@
         }
         <span class="kw">let</span> <span class="ident">msg_type</span> <span class="op">=</span> <span class="ident">CtrlMessageType</span>::<span class="ident">from_u16</span>(<span class="ident">type_code</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ParseError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;unknown ctrl packet&quot;</span>))<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">msg_data</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">msg_type</span> {
-            <span class="ident">CtrlMessageType</span>::<span class="ident">Error</span> <span class="op">=&gt;</span>
-                <span class="ident">CtrlMessageData</span>::<span class="ident">ErrorData</span>(<span class="ident">ErrorData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>)<span class="question-mark">?</span>),
-            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=&gt;</span>
-                <span class="ident">CtrlMessageData</span>::<span class="ident">SuperNodeQueryData</span>(),
+            <span class="ident">CtrlMessageType</span>::<span class="ident">Error</span> <span class="op">=&gt;</span> <span class="ident">CtrlMessageData</span>::<span class="ident">ErrorData</span>(<span class="ident">ErrorData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>)<span class="question-mark">?</span>),
+            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=&gt;</span> <span class="ident">CtrlMessageData</span>::<span class="ident">SuperNodeQueryData</span>(),
             <span class="ident">CtrlMessageType</span>::<span class="ident">Ping</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">Pong</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPing</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">KeyPong</span> <span class="op">=&gt;</span> {
                 <span class="ident">CtrlMessageData</span>::<span class="ident">PingData</span>(<span class="ident">PingData</span>::<span class="ident">parse</span>(<span class="ident">raw_data</span>, <span class="ident">msg_type</span>)<span class="question-mark">?</span>)
             }
@@ -445,7 +443,9 @@
                     .<span class="ident">ok_or</span>(<span class="ident">SerializeError</span>::<span class="ident">InvalidInvariant</span>(<span class="string">&quot;message with error header, but ping data body&quot;</span>))<span class="question-mark">?</span>;
                 <span class="ident">error_data</span>.<span class="ident">serialize</span>()<span class="question-mark">?</span>
             }
-            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SerializeError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;can&#39;t serialize GetsNode messages&quot;</span>)),
+            <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeQuery</span> <span class="op">|</span> <span class="ident">CtrlMessageType</span>::<span class="ident">GetSuperNodeResponse</span> <span class="op">=&gt;</span> {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SerializeError</span>::<span class="ident">InvalidData</span>(<span class="string">&quot;can&#39;t serialize GetsNode messages&quot;</span>))
+            }
             <span class="comment">// Ping | Pong | KeyPing | KeyPong</span>
             <span class="ident">ping_type</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">ping_data</span> <span class="op">=</span> <span class="self">self</span>
@@ -508,9 +508,9 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSPublicKey</span>;
     <span class="kw">use</span> <span class="ident">cjdns_core</span>::<span class="ident">RoutingLabel</span>;
     <span class="kw">use</span> <span class="ident">cjdns_hdr</span>::<span class="ident">SwitchHeader</span>;
+    <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNSPublicKey</span>;
 
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">ErrorMessageType</span>;
 

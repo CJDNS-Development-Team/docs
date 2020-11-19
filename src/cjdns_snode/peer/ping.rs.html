@@ -41,6 +41,8 @@
 <span id="40">40</span>
 <span id="41">41</span>
 <span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Peer supernode pinging</span>
 
@@ -67,7 +69,9 @@
         <span class="kw">for</span> <span class="kw-2">mut</span> <span class="ident">peer</span> <span class="kw">in</span> <span class="ident">ping_list</span> {
             <span class="kw">let</span> <span class="ident">seq</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">msg_id_seq</span>.<span class="ident">next</span>();
             <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">peer</span>.<span class="ident">send_msg</span>(<span class="macro">msg</span><span class="macro">!</span>[<span class="ident">seq</span>, <span class="string">&quot;PING&quot;</span>]).<span class="kw">await</span>;
-            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_err</span>() { <span class="kw">continue</span>; } <span class="comment">// Skip already closed connections</span>
+            <span class="kw">if</span> <span class="ident">res</span>.<span class="ident">is_err</span>() {
+                <span class="kw">continue</span>;
+            } <span class="comment">// Skip already closed connections</span>
             <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;&lt;PING {}&quot;</span>, <span class="ident">seq</span>);
         }
 

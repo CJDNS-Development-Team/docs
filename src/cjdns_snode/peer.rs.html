@@ -289,6 +289,16 @@
 <span id="288">288</span>
 <span id="289">289</span>
 <span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Connecting to other supernodes</span>
 
@@ -366,15 +376,17 @@
             <span class="kw">match</span> <span class="ident">res</span> {
                 <span class="prelude-val">Ok</span>((<span class="ident">ws_stream</span>, <span class="kw">_</span>)) <span class="op">=&gt;</span> {
                     <span class="macro">info</span><span class="macro">!</span>(<span class="string">&quot;Connected to {}&quot;</span>, <span class="ident">uri</span>);
-                    <span class="kw">let</span> <span class="ident">ipv6_addr</span> <span class="op">=</span> { <span class="comment">// Trim brackets: &#39;[1:2:3:4]&#39; -&gt; &#39;1:2:3:4&#39;</span>
+                    <span class="kw">let</span> <span class="ident">ipv6_addr</span> <span class="op">=</span> {
+                        <span class="comment">// Trim brackets: &#39;[1:2:3:4]&#39; -&gt; &#39;1:2:3:4&#39;</span>
                         <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">uri</span>.<span class="ident">host</span>().<span class="ident">expect</span>(<span class="string">&quot;host&quot;</span>);
                         <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">host</span>.<span class="ident">len</span>();
                         <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;=</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="ident">host</span>.<span class="ident">starts_with</span>(<span class="string">&#39;[&#39;</span>) <span class="op">&amp;&amp;</span> <span class="ident">host</span>.<span class="ident">ends_with</span>(<span class="string">&#39;]&#39;</span>) {
-                            <span class="kw-2">&amp;</span><span class="ident">host</span>[<span class="number">1</span>..<span class="ident">n</span><span class="op">-</span><span class="number">2</span>]
+                            <span class="kw-2">&amp;</span><span class="ident">host</span>[<span class="number">1</span>..<span class="ident">n</span> <span class="op">-</span> <span class="number">2</span>]
                         } <span class="kw">else</span> {
                             <span class="ident">host</span>
                         }
-                    }.<span class="ident">to_string</span>();
+                    }
+                    .<span class="ident">to_string</span>();
                     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">outgoing</span>(<span class="ident">ipv6_addr</span>, <span class="ident">ws_stream</span>).<span class="kw">await</span>;
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">res</span> {
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Error reading from peer: {}&quot;</span>, <span class="ident">e</span>);
@@ -386,7 +398,11 @@
                 }
             }
 
-            <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sucessfully_connected</span> { <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>) } <span class="kw">else</span> { <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span>) };
+            <span class="kw">let</span> <span class="ident">delay</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">sucessfully_connected</span> {
+                <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">1</span>)
+            } <span class="kw">else</span> {
+                <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span>)
+            };
             <span class="ident">time</span>::<span class="ident">delay_for</span>(<span class="ident">delay</span>).<span class="kw">await</span>;
         }
     }
@@ -461,7 +477,7 @@
         <span class="ident">res</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">create_peer</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">addr</span>: <span class="ident">String</span>, <span class="ident">ws_stream</span>: <span class="kw">impl</span> <span class="ident">WebSock</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="ident">peer_type</span>: <span class="ident">PeerType</span>) <span class="op">-&gt;</span> (<span class="ident">Peer</span>, <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span><span class="op">=</span><span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>) {
+    <span class="kw">fn</span> <span class="ident">create_peer</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">addr</span>: <span class="ident">String</span>, <span class="ident">ws_stream</span>: <span class="kw">impl</span> <span class="ident">WebSock</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="ident">peer_type</span>: <span class="ident">PeerType</span>) <span class="op">-&gt;</span> (<span class="ident">Peer</span>, <span class="kw">impl</span> <span class="ident">Future</span><span class="op">&lt;</span><span class="ident">Output</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>) {
         <span class="comment">// Create bounded channel to send messages</span>
         <span class="kw">const</span> <span class="ident">QUEUE_SIZE</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">1024</span>;
         <span class="kw">let</span> (<span class="ident">msg_tx</span>, <span class="ident">msg_rx</span>) <span class="op">=</span> <span class="ident">mpsc</span>::<span class="ident">channel</span>(<span class="ident">QUEUE_SIZE</span>);
@@ -482,7 +498,13 @@
         <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">remove_peer</span>(<span class="ident">peer</span>.<span class="ident">id</span>);
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">run_websocket</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">peer</span>: <span class="ident">Peer</span>, <span class="ident">ws_stream</span>: <span class="kw">impl</span> <span class="ident">WebSock</span>, <span class="kw-2">mut</span> <span class="ident">msg_rx</span>: <span class="ident">mpsc</span>::<span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>, <span class="kw-2">mut</span> <span class="ident">ann_tx</span>: <span class="ident">mpsc</span>::<span class="ident">Sender</span><span class="op">&lt;</span><span class="ident">AnnData</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">run_websocket</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">peer</span>: <span class="ident">Peer</span>,
+        <span class="ident">ws_stream</span>: <span class="kw">impl</span> <span class="ident">WebSock</span>,
+        <span class="kw-2">mut</span> <span class="ident">msg_rx</span>: <span class="ident">mpsc</span>::<span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>,
+        <span class="kw-2">mut</span> <span class="ident">ann_tx</span>: <span class="ident">mpsc</span>::<span class="ident">Sender</span><span class="op">&lt;</span><span class="ident">AnnData</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="comment">// Split the socket</span>
         <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">ws_write</span>, <span class="kw-2">mut</span> <span class="ident">ws_read</span>) <span class="op">=</span> <span class="ident">ws_stream</span>.<span class="ident">ws_split</span>();
 
@@ -539,8 +561,8 @@
                     <span class="kw">let</span> <span class="ident">anns</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">anns</span>.<span class="ident">lock</span>();
                     <span class="ident">anns</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">hash</span>).<span class="ident">unwrap_or_default</span>()
                 };
-                <span class="ident">peer</span>.<span class="ident">send_msg</span>(<span class="ident">Message</span>(<span class="ident">id</span>, <span class="ident">MessageData</span>::<span class="ident">DATA</span>(<span class="ident">ann</span>))).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="comment">//TODO Ask CJ whether it is possible to have empty announce data and under what circumstances</span>
+                <span class="ident">peer</span>.<span class="ident">send_msg</span>(<span class="ident">Message</span>(<span class="ident">id</span>, <span class="ident">MessageData</span>::<span class="ident">DATA</span>(<span class="ident">ann</span>))).<span class="kw">await</span><span class="question-mark">?</span>;
             }
 
             <span class="ident">PING</span> <span class="op">=&gt;</span> {
@@ -548,9 +570,7 @@
                 <span class="ident">peer</span>.<span class="ident">send_msg</span>(<span class="macro">msg</span><span class="macro">!</span>[<span class="ident">id</span>, <span class="string">&quot;ACK&quot;</span>]).<span class="kw">await</span><span class="question-mark">?</span>;
             }
 
-            <span class="ident">ACK</span> <span class="op">=&gt;</span> {
-                <span class="comment">/* no-op */</span>
-            }
+            <span class="ident">ACK</span> <span class="op">=&gt;</span> { <span class="comment">/* no-op */</span> }
 
             <span class="ident">INV</span>(<span class="ident">hash_list</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="ident">peer</span>.<span class="ident">peer_type</span> <span class="op">==</span> <span class="ident">PeerType</span>::<span class="ident">Outgoing</span> {
@@ -579,5 +599,6 @@
 
         <span class="prelude-val">Ok</span>(())
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_snode";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

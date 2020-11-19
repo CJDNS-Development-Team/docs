@@ -15,5 +15,6 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">seed</span>() <span class="op">-&gt;</span> <span class="ident">u64</span> {
     <span class="kw">let</span> <span class="ident">now</span> <span class="op">=</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>().<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>).<span class="ident">ok</span>();
     <span class="ident">now</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">as_secs</span>).<span class="ident">unwrap_or_default</span>()
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

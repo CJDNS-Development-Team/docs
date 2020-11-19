@@ -734,14 +734,65 @@
 <span id="733">733</span>
 <span id="734">734</span>
 <span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
 
 <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">hash</span>::<span class="ident">sha512</span>;
-<span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">sign</span>::<span class="ident">ed25519</span>::{<span class="ident">PublicKey</span>, <span class="ident">Signature</span>, <span class="ident">verify_detached</span>};
+<span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">sign</span>::<span class="ident">ed25519</span>::{<span class="ident">verify_detached</span>, <span class="ident">PublicKey</span>, <span class="ident">Signature</span>};
 
 <span class="kw">use</span> <span class="ident">cjdns_core</span>::{<span class="ident">deserialize_scheme</span>, <span class="ident">RoutingLabel</span>};
-<span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">CJDNS_IP6</span>, <span class="ident">CJDNSPublicKey</span>};
+<span class="kw">use</span> <span class="ident">cjdns_keys</span>::{<span class="ident">CJDNSPublicKey</span>, <span class="ident">CJDNS_IP6</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">errors</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">models</span>::{<span class="ident">Announcement</span>, <span class="ident">AnnouncementEntities</span>, <span class="ident">AnnouncementHeader</span>, <span class="ident">Entity</span>, <span class="ident">LinkStateSlots</span>};
@@ -943,11 +994,7 @@
                         <span class="ident">Entity</span>::<span class="ident">NodeProtocolVersion</span>(<span class="number">18</span>),
                         <span class="ident">Entity</span>::<span class="ident">EncodingScheme</span> {
                             <span class="ident">hex</span>: <span class="string">&quot;6114458100&quot;</span>.<span class="ident">to_string</span>(),
-                            <span class="ident">scheme</span>: <span class="ident">encoding_scheme</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[
-                                <span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>),
-                                <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">2</span>, <span class="number">2</span>),
-                                <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">2</span>, <span class="number">0</span>),
-                            ])
+                            <span class="ident">scheme</span>: <span class="ident">encoding_scheme</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[<span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">2</span>, <span class="number">2</span>), <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">2</span>, <span class="number">0</span>),])
                         },
                         <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">PeerData</span> {
                             <span class="ident">ipv6</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc92:8136:dc1f:e6e0:4ef6:a6dd:7187:b85f&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
@@ -959,8 +1006,7 @@
                             <span class="ident">flags</span>: <span class="number">0</span>
                         })
                     ],
-                    <span class="ident">node_pub_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>)
-                        .<span class="ident">expect</span>(<span class="string">&quot;failed pub key creation&quot;</span>),
+                    <span class="ident">node_pub_key</span>: <span class="ident">CJDNSPublicKey</span>::<span class="ident">try_from</span>(<span class="string">&quot;z15pzyd9wgzs2g5np7d3swrqc1533yb7xx9dq0pvrqrqs42uwgq0.k&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed pub key creation&quot;</span>),
                     <span class="ident">node_ip</span>: <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="string">&quot;fc49:11cb:38c2:8d42:9865:7b8e:0d67:11b3&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;failed ip6 creation&quot;</span>),
                     <span class="ident">binary</span>: <span class="ident">test_data_bytes</span>,
                     <span class="ident">hash</span>: <span class="ident">test_bytes_hash</span>
@@ -978,7 +1024,7 @@
     <span class="kw">use</span> <span class="ident">cjdns_bytes</span>::{<span class="ident">ExpectedSize</span>, <span class="ident">Reader</span>};
     <span class="kw">use</span> <span class="ident">serialized_data</span>::<span class="ident">AnnouncementPacket</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">models</span>::{<span class="ident">AnnHash</span>, <span class="ident">LINK_STATE_SLOTS</span>, <span class="ident">LinkStateData</span>, <span class="ident">PeerData</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">models</span>::{<span class="ident">AnnHash</span>, <span class="ident">LinkStateData</span>, <span class="ident">PeerData</span>, <span class="ident">LINK_STATE_SLOTS</span>};
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">var_int</span>::<span class="ident">read_var_int</span>;
 
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
@@ -1280,8 +1326,7 @@
                 <span class="comment">// timestamp-version-is_reset</span>
                 <span class="string">&quot;0000157354c540c1&quot;</span>;
             <span class="kw">let</span> <span class="ident">header_bytes</span> <span class="op">=</span> <span class="ident">decode_hex</span>(<span class="ident">valid_hexed_header</span>);
-            <span class="kw">let</span> <span class="ident">parsed_announcement</span> <span class="op">=</span>
-                <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">header_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid bytes len&quot;</span>)).<span class="ident">expect</span>(<span class="string">&quot;invalid ann data&quot;</span>);
+            <span class="kw">let</span> <span class="ident">parsed_announcement</span> <span class="op">=</span> <span class="ident">parser</span>::<span class="ident">parse</span>(<span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">header_bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid bytes len&quot;</span>)).<span class="ident">expect</span>(<span class="string">&quot;invalid ann data&quot;</span>);
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">parsed_announcement</span>.<span class="ident">entities</span>, <span class="macro">vec</span><span class="macro">!</span>[]);
         }
 
@@ -1301,8 +1346,8 @@
                 <span class="ident">decode_hex</span>(<span class="string">&quot;030201&quot;</span>),     <span class="comment">// version entity len should be 4</span>
                 <span class="ident">decode_hex</span>(<span class="string">&quot;0501000220&quot;</span>), <span class="comment">// peer entity len should be 32</span>
                 <span class="comment">// mixing valid and invalid</span>
-                <span class="ident">decode_hex</span>(<span class="string">&quot;030507006114458100&quot;</span>),                                                 <span class="comment">// 0305 and valid encoding entity</span>
-                <span class="ident">decode_hex</span>(<span class="string">&quot;0204020012&quot;</span>),                                                         <span class="comment">// 02 and valid version entity</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;030507006114458100&quot;</span>), <span class="comment">// 0305 and valid encoding entity</span>
+                <span class="ident">decode_hex</span>(<span class="string">&quot;0204020012&quot;</span>),         <span class="comment">// 02 and valid version entity</span>
                 <span class="ident">decode_hex</span>(<span class="string">&quot;20200100000000fffffffffffffc928136dc1fe6e04ef6a6dd7187b85f00000015&quot;</span>), <span class="comment">// 20 and valid peer entity</span>
             ];
             <span class="kw">for</span> <span class="ident">data</span> <span class="kw">in</span> <span class="ident">invalid_data</span>.<span class="ident">iter</span>() {
@@ -1411,9 +1456,66 @@
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="ident">LinkStateData</span> {
                     <span class="ident">node_id</span>: <span class="number">4</span>,
                     <span class="ident">starting_point</span>: <span class="number">16</span>,
-                    <span class="ident">lag_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">20</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>), <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">19</span>), <span class="prelude-val">Some</span>(<span class="number">18</span>)],
-                    <span class="ident">drop_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>)],
-                    <span class="ident">kb_recv_slots</span>: [<span class="prelude-val">Some</span>(<span class="number">2</span>), <span class="prelude-val">Some</span>(<span class="number">0</span>), <span class="prelude-val">Some</span>(<span class="number">3</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">2</span>)]
+                    <span class="ident">lag_slots</span>: [
+                        <span class="prelude-val">Some</span>(<span class="number">19</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">19</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">20</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">18</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">19</span>),
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="number">19</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">18</span>)
+                    ],
+                    <span class="ident">drop_slots</span>: [
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>)
+                    ],
+                    <span class="ident">kb_recv_slots</span>: [
+                        <span class="prelude-val">Some</span>(<span class="number">2</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">0</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">3</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">1</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">1</span>),
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">None</span>,
+                        <span class="prelude-val">Some</span>(<span class="number">1</span>),
+                        <span class="prelude-val">Some</span>(<span class="number">2</span>)
+                    ]
                 })]
             )
         }

@@ -76,8 +76,6 @@
 <span id="75">75</span>
 <span id="76">76</span>
 <span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Link state.</span>
 
@@ -96,7 +94,7 @@
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">peer_num</span>: <span class="ident">u16</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">link_state</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">u64</span>, <span class="ident">LinkStateEntry</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">create_time</span>: <span class="ident">u64</span>,
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">mut_state</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">LinkStateMut</span><span class="op">&gt;&gt;</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">mut_state</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">LinkStateMut</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -123,15 +121,13 @@
         <span class="ident">peer_num</span>: <span class="ident">ann_peer</span>.<span class="ident">peer_num</span>,
         <span class="ident">link_state</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">HashMap</span>::<span class="ident">new</span>())),
         <span class="ident">create_time</span>: <span class="ident">ann_time</span>,
-        <span class="ident">mut_state</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(
-            <span class="ident">LinkStateMut</span> {
-                <span class="ident">most_recent_ls_slot</span>: <span class="ident">ann_time</span> <span class="op">/</span> <span class="number">1000</span> <span class="op">/</span> <span class="number">10</span>,
-                <span class="ident">mtu</span>: <span class="ident">ann_peer</span>.<span class="ident">mtu</span>,
-                <span class="ident">flags</span>: <span class="ident">ann_peer</span>.<span class="ident">flags</span>,
-                <span class="ident">time</span>: <span class="ident">ann_time</span>,
-                <span class="ident">value</span>: <span class="number">0.0</span>,
-            }
-        ))
+        <span class="ident">mut_state</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">LinkStateMut</span> {
+            <span class="ident">most_recent_ls_slot</span>: <span class="ident">ann_time</span> <span class="op">/</span> <span class="number">1000</span> <span class="op">/</span> <span class="number">10</span>,
+            <span class="ident">mtu</span>: <span class="ident">ann_peer</span>.<span class="ident">mtu</span>,
+            <span class="ident">flags</span>: <span class="ident">ann_peer</span>.<span class="ident">flags</span>,
+            <span class="ident">time</span>: <span class="ident">ann_time</span>,
+            <span class="ident">value</span>: <span class="number">0.0</span>,
+        })),
     }
 }
 
@@ -155,7 +151,8 @@
         <span class="comment">// it will be the data which finally pushes the link over the edge.</span>
         <span class="comment">// But rising latency is bad news.</span>
         <span class="comment">// By far the worst news is drops.</span>
-        <span class="ident">kb_recv</span> <span class="op">/</span> ( <span class="ident">lag</span> <span class="op">*</span> <span class="ident">f64</span>::<span class="ident">powi</span>(<span class="number">2.0</span>, <span class="ident">drops</span>) )
+        <span class="ident">kb_recv</span> <span class="op">/</span> (<span class="ident">lag</span> <span class="op">*</span> <span class="ident">f64</span>::<span class="ident">powi</span>(<span class="number">2.0</span>, <span class="ident">drops</span>))
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

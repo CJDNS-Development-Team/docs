@@ -43,6 +43,9 @@
 <span id="42">42</span>
 <span id="43">43</span>
 <span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Dijkstra algorithm helper traits.</span>
 
@@ -57,7 +60,10 @@
 
 <span class="doccomment">/// Helper trait, providing total ordering for non-`Ord` types,</span>
 <span class="doccomment">/// such as `f64`, given its value is finite (i.e. not `NaN`, `Infinity` etc.)</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IntoOrd</span> <span class="kw">where</span> <span class="self">Self</span>::<span class="ident">Output</span>: <span class="ident">Ord</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">IntoOrd</span>
+<span class="kw">where</span>
+    <span class="self">Self</span>::<span class="ident">Output</span>: <span class="ident">Ord</span>,
+{
     <span class="doccomment">/// Some substitute `Ord` type which can be used instead of `Self` for ordering purposes.</span>
     <span class="doccomment">/// Only should be used for comparisons, its value itself is meaningless.</span>
     <span class="kw">type</span> <span class="ident">Output</span>;
@@ -87,5 +93,6 @@
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ord</span>(<span class="number">2.0</span>) <span class="op">&gt;</span> <span class="ident">ord</span>(<span class="number">1.0</span>));
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ord</span>(<span class="op">-</span><span class="number">2.0</span>) <span class="op">&lt;</span> <span class="ident">ord</span>(<span class="op">-</span><span class="number">1.0</span>));
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ord</span>(<span class="number">100.0</span>) <span class="op">&gt;</span> <span class="ident">ord</span>(<span class="number">10.0</span>));
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

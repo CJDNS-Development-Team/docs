@@ -262,21 +262,21 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Default</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">CookieResponsePayload</span> {
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;cookie&quot;</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">cookie</span>: <span class="ident">String</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">cookie</span>: <span class="ident">String</span>,
 }
 
 <span class="doccomment">/// Arguments for `Admin_availableFunctions` remote function.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">AvailableFnsQueryArg</span> {
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;page&quot;</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">page</span>: <span class="ident">usize</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">page</span>: <span class="ident">usize</span>,
 }
 
 <span class="doccomment">/// Return value for `Admin_availableFunctions` remote function.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>, <span class="ident">Default</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct</span> <span class="ident">AvailableFnsResponsePayload</span> {
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename</span> <span class="op">=</span> <span class="string">&quot;availableFunctions&quot;</span>, <span class="ident">default</span>)]</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">available_fns</span>: <span class="ident">RemoteFnDescrs</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">available_fns</span>: <span class="ident">RemoteFnDescrs</span>,
 }
 
 <span class="doccomment">/// Map of remote function names to map of arguments.</span>

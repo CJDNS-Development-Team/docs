@@ -64,14 +64,6 @@
 <span id="63">63</span>
 <span id="64">64</span>
 <span id="65">65</span>
-<span id="66">66</span>
-<span id="67">67</span>
-<span id="68">68</span>
-<span id="69">69</span>
-<span id="70">70</span>
-<span id="71">71</span>
-<span id="72">72</span>
-<span id="73">73</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Announcement parsing utils</span>
 
@@ -98,26 +90,18 @@
     <span class="prelude-val">None</span>
 }
 
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">peers_from_announcement</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">PeerData</span><span class="op">&gt;</span> {
-    <span class="ident">ann</span>.<span class="ident">entities</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
-            <span class="kw">match</span> <span class="ident">e</span> {
-                <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-            }
-        })
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">peers_from_announcement</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">PeerData</span><span class="op">&gt;</span> {
+    <span class="ident">ann</span>.<span class="ident">entities</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">e</span> {
+        <span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+    })
 }
 
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">link_states_from_announcement</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">LinkStateData</span><span class="op">&gt;</span> {
-    <span class="ident">ann</span>.<span class="ident">entities</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
-            <span class="kw">match</span> <span class="ident">e</span> {
-                <span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
-                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-            }
-        })
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">link_states_from_announcement</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">LinkStateData</span><span class="op">&gt;</span> {
+    <span class="ident">ann</span>.<span class="ident">entities</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">e</span> {
+        <span class="ident">Entity</span>::<span class="ident">LinkState</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>),
+        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+    })
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">ann_id</span>(<span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> {
@@ -145,5 +129,6 @@
         <span class="kw">return</span> <span class="ident">old_peer</span>.<span class="ident">peer_num</span> <span class="op">==</span> <span class="ident">new_peer</span>.<span class="ident">peer_num</span>;
     }
     <span class="bool-val">false</span>
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "cjdns_snode";</script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

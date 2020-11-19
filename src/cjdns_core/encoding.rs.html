@@ -618,54 +618,6 @@
 <span id="617">617</span>
 <span id="618">618</span>
 <span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
-<span id="626">626</span>
-<span id="627">627</span>
-<span id="628">628</span>
-<span id="629">629</span>
-<span id="630">630</span>
-<span id="631">631</span>
-<span id="632">632</span>
-<span id="633">633</span>
-<span id="634">634</span>
-<span id="635">635</span>
-<span id="636">636</span>
-<span id="637">637</span>
-<span id="638">638</span>
-<span id="639">639</span>
-<span id="640">640</span>
-<span id="641">641</span>
-<span id="642">642</span>
-<span id="643">643</span>
-<span id="644">644</span>
-<span id="645">645</span>
-<span id="646">646</span>
-<span id="647">647</span>
-<span id="648">648</span>
-<span id="649">649</span>
-<span id="650">650</span>
-<span id="651">651</span>
-<span id="652">652</span>
-<span id="653">653</span>
-<span id="654">654</span>
-<span id="655">655</span>
-<span id="656">656</span>
-<span id="657">657</span>
-<span id="658">658</span>
-<span id="659">659</span>
-<span id="660">660</span>
-<span id="661">661</span>
-<span id="662">662</span>
-<span id="663">663</span>
-<span id="664">664</span>
-<span id="665">665</span>
-<span id="666">666</span>
-<span id="667">667</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Serializing/deserializing of encoding schemes.</span>
 <span class="doccomment">//!</span>
@@ -701,9 +653,9 @@
 <span class="doccomment">//! assert_eq!(deserialized, forms_to_scheme(forms.as_ref()));</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">encoding_serialization</span>::{<span class="ident">deserialize_scheme</span>, <span class="ident">serialize_scheme</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">encoding_scheme</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">errors</span>::{<span class="ident">SchemeValidationError</span>, <span class="ident">EncodingSerializationError</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">encoding_serialization</span>::{<span class="ident">deserialize_scheme</span>, <span class="ident">serialize_scheme</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">errors</span>::{<span class="ident">EncodingSerializationError</span>, <span class="ident">SchemeValidationError</span>};
 
 <span class="kw">mod</span> <span class="ident">encoding_serialization</span> {
     <span class="doccomment">//! Serialization and deserialization logic</span>
@@ -791,15 +743,9 @@
             <span class="comment">// if prefix_len == 0 we simply read 0 bits from current position, receiving prefix = 0</span>
             <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">read_bits</span>(<span class="ident">scheme_bytes</span>, <span class="ident">cur_pos</span>, <span class="ident">prefix_len</span> <span class="kw">as</span> <span class="ident">u8</span>);
 
-            <span class="ident">result</span>.<span class="ident">push</span>(
-                <span class="ident">EncodingSchemeForm</span>::<span class="ident">try_new</span>(
-                    <span class="ident">bit_count</span> <span class="kw">as</span> <span class="ident">u8</span>,
-                    <span class="ident">prefix_len</span> <span class="kw">as</span> <span class="ident">u8</span>,
-                    <span class="ident">prefix</span>
-                )
-                .<span class="ident">expect</span>(<span class="string">&quot;invalid encoding scheme form&quot;</span>)
-            );
-            <span class="kw">if</span> <span class="ident">cur_pos</span> <span class="op">&lt;</span> (<span class="number">5</span> <span class="op">+</span> <span class="number">5</span>) { <span class="comment">// minimum size of scheme from (prefix_len == 0)</span>
+            <span class="ident">result</span>.<span class="ident">push</span>(<span class="ident">EncodingSchemeForm</span>::<span class="ident">try_new</span>(<span class="ident">bit_count</span> <span class="kw">as</span> <span class="ident">u8</span>, <span class="ident">prefix_len</span> <span class="kw">as</span> <span class="ident">u8</span>, <span class="ident">prefix</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid encoding scheme form&quot;</span>));
+            <span class="kw">if</span> <span class="ident">cur_pos</span> <span class="op">&lt;</span> (<span class="number">5</span> <span class="op">+</span> <span class="number">5</span>) {
+                <span class="comment">// minimum size of scheme from (prefix_len == 0)</span>
                 <span class="kw">break</span>;
             }
         }
@@ -862,24 +808,16 @@
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
         <span class="kw">fn</span> <span class="ident">test_is_sane_forms</span>() {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> [
-                <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>),
-                <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">1</span>, <span class="number">0</span>),
-            ].<span class="ident">to_vec</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> [<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">1</span>, <span class="number">0</span>)].<span class="ident">to_vec</span>();
 
             <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>).<span class="ident">is_ok</span>());
 
             <span class="comment">// test non-empty prefix in single form</span>
-            <span class="ident">input</span> <span class="op">=</span> [
-                <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>),
-            ].<span class="ident">to_vec</span>();
+            <span class="ident">input</span> <span class="op">=</span> [<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>)].<span class="ident">to_vec</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>), <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">SingleFormWithPrefix</span>));
 
             <span class="comment">// test non valid prefix_len</span>
-            <span class="ident">input</span> <span class="op">=</span> [
-                <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>),
-                <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>),
-            ].<span class="ident">to_vec</span>();
+            <span class="ident">input</span> <span class="op">=</span> [<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>)].<span class="ident">to_vec</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>), <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">MultiFormBadPrefix</span>));
 
             <span class="comment">// test bit_count not in ascending order</span>
@@ -889,23 +827,16 @@
                 <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">5</span>, <span class="number">3</span>),
                 <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">6</span>, <span class="number">4</span>),
                 <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">7</span>, <span class="number">5</span>),
-            ].<span class="ident">to_vec</span>();
+            ]
+            .<span class="ident">to_vec</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>), <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">BitCountNotSorted</span>));
 
             <span class="comment">// test too big form size (bit_count + prefix_len &gt; 59)</span>
-            <span class="ident">input</span> <span class="op">=</span> [
-                <span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>),
-                <span class="ident">encoding_form</span>(<span class="number">31</span>, <span class="number">29</span>, <span class="number">5</span>),
-            ].<span class="ident">to_vec</span>();
+            <span class="ident">input</span> <span class="op">=</span> [<span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">31</span>, <span class="number">29</span>, <span class="number">5</span>)].<span class="ident">to_vec</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>), <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">TooBigForm</span>));
 
             <span class="comment">// test non-unique prefix in multiple forms</span>
-            <span class="ident">input</span> <span class="op">=</span> [
-                <span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>),
-                <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>),
-                <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>),
-                <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">9</span>, <span class="number">2</span>),
-            ].<span class="ident">to_vec</span>();
+            <span class="ident">input</span> <span class="op">=</span> [<span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">2</span>), <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>), <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">9</span>, <span class="number">2</span>)].<span class="ident">to_vec</span>();
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">validate</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>), <span class="prelude-val">Err</span>(<span class="ident">SchemeValidationError</span>::<span class="ident">DuplicatePrefix</span>));
         }
 
@@ -915,12 +846,7 @@
             <span class="comment">// hex: &#39;8000&#39;</span>
             <span class="comment">// 80        00</span>
             <span class="comment">// 1000 0000 0000 0000</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>(
-                [
-                    <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>),
-                ]
-                .<span class="ident">as_ref</span>()
-            );
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>([<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>)].<span class="ident">as_ref</span>());
 
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">serialized</span> <span class="op">=</span> <span class="ident">serialize_scheme</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to serialize&quot;</span>);
             <span class="comment">// https://github.com/cjdelisle/cjdnsencode/blob/89216230daa82eb43689c6af48de3c6a138002f1/test.js#L8</span>
@@ -933,12 +859,7 @@
             <span class="comment">// hex: &#39;0001&#39;</span>
             <span class="comment">// 00        01</span>
             <span class="comment">// 0000 0000 0000 0001</span>
-            <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>(
-                [
-                    <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>),
-                ]
-                .<span class="ident">as_ref</span>()
-            );
+            <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>([<span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>)].<span class="ident">as_ref</span>());
 
             <span class="ident">serialized</span> <span class="op">=</span> <span class="ident">serialize_scheme</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to serialize&quot;</span>);
             <span class="comment">// https://github.com/cjdelisle/cjdnsencode/blob/89216230daa82eb43689c6af48de3c6a138002f1/test.js#L13</span>
@@ -954,13 +875,7 @@
             <span class="comment">// { bitCount: 8, prefix: &quot;00&quot;, prefixLen: 1 },</span>
             <span class="comment">// 81        0c        08</span>
             <span class="comment">// 1000 0001 0000 1100 0000 1000</span>
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>(
-                [
-                    <span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>),
-                    <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">1</span>, <span class="number">0</span>),
-                ]
-                .<span class="ident">as_ref</span>()
-            );
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>([<span class="ident">encoding_form</span>(<span class="number">4</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">1</span>, <span class="number">0</span>)].<span class="ident">as_ref</span>());
 
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">serialized</span> <span class="op">=</span> <span class="ident">serialize_scheme</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to serialize&quot;</span>);
             <span class="comment">// https://github.com/cjdelisle/cjdnsencode/blob/89216230daa82eb43689c6af48de3c6a138002f1/test.js#L21</span>
@@ -978,14 +893,7 @@
             <span class="comment">// hex: &#39;6114458100&#39;</span>
             <span class="comment">// 61        14        45        81  :      00</span>
             <span class="comment">// 0110 0001 0001 0100 0100 0101 1000 0001 0000 0000</span>
-            <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>(
-                [
-                    <span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>),
-                    <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">2</span>, <span class="number">2</span>),
-                    <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">2</span>, <span class="number">0</span>),
-                ]
-                .<span class="ident">as_ref</span>()
-            );
+            <span class="ident">input</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>([<span class="ident">encoding_form</span>(<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>), <span class="ident">encoding_form</span>(<span class="number">5</span>, <span class="number">2</span>, <span class="number">2</span>), <span class="ident">encoding_form</span>(<span class="number">8</span>, <span class="number">2</span>, <span class="number">0</span>)].<span class="ident">as_ref</span>());
 
             <span class="ident">serialized</span> <span class="op">=</span> <span class="ident">serialize_scheme</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>).<span class="ident">expect</span>(<span class="string">&quot;failed to serialize&quot;</span>);
             <span class="comment">// https://github.com/cjdelisle/cjdnsencode/blob/89216230daa82eb43689c6af48de3c6a138002f1/test.js#L30</span>
@@ -1020,10 +928,10 @@
 <span class="kw">mod</span> <span class="ident">encoding_scheme</span> {
     <span class="doccomment">//! Routing label encoding scheme.</span>
 
-    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashSet</span>;
+    <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
 
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">encoding</span>::<span class="ident">errors</span>::{<span class="ident">SchemeValidationError</span>, <span class="ident">FormValidationError</span>};
+    <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">encoding</span>::<span class="ident">errors</span>::{<span class="ident">FormValidationError</span>, <span class="ident">SchemeValidationError</span>};
 
     <span class="doccomment">/// In the old days every label needed to be topped with 0001.</span>
     <span class="doccomment">/// To make sure that no label would ever go over 64 bits even with 0001 spliced on the top of it, we use this reservation.</span>
@@ -1162,7 +1070,7 @@
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">schemes</span> {
         <span class="doccomment">//! Well-known encoding schemes</span>
 
-        <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">EncodingSchemeForm</span>, <span class="ident">EncodingScheme</span>};
+        <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">EncodingSchemeForm</span>};
 
         <span class="macro">lazy_static</span><span class="macro">!</span> {
             <span class="doccomment">/// Fixed-length 4 bit scheme.</span>
@@ -1230,7 +1138,7 @@
         }
 
         <span class="doccomment">/// Returns an iterator over all the well-known encoding schemes</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>() <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">EncodingScheme</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all</span>() <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">EncodingScheme</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span> {
             <span class="macro">lazy_static</span><span class="macro">!</span> {
                 <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">ALL</span>: [<span class="ident">EncodingScheme</span>; <span class="number">5</span>] <span class="op">=</span> [<span class="ident">F4</span>.<span class="ident">clone</span>(), <span class="ident">F8</span>.<span class="ident">clone</span>(), <span class="ident">V48</span>.<span class="ident">clone</span>(), <span class="ident">V358</span>.<span class="ident">clone</span>(), <span class="ident">V37</span>.<span class="ident">clone</span>()];
             }
@@ -1244,18 +1152,14 @@
 
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">mod</span> <span class="ident">tests</span> {
-        <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">EncodingScheme</span>, <span class="ident">EncodingSchemeForm</span>, <span class="ident">schemes</span>};
-        
+        <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">schemes</span>, <span class="ident">EncodingScheme</span>, <span class="ident">EncodingSchemeForm</span>};
+
         <span class="kw">fn</span> <span class="ident">encoding_scheme</span>(<span class="ident">forms</span>: <span class="kw-2">&amp;</span>[<span class="ident">EncodingSchemeForm</span>]) <span class="op">-&gt;</span> <span class="ident">EncodingScheme</span> {
             <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="ident">forms</span>).<span class="ident">expect</span>(<span class="string">&quot;invalid scheme&quot;</span>)
         }
 
         <span class="kw">fn</span> <span class="ident">encoding_form</span>(<span class="ident">bit_count</span>: <span class="ident">u8</span>, <span class="ident">prefix_len</span>: <span class="ident">u8</span>, <span class="ident">prefix</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">EncodingSchemeForm</span> {
-            <span class="ident">EncodingSchemeForm</span> {
-                <span class="ident">bit_count</span>,
-                <span class="ident">prefix_len</span>,
-                <span class="ident">prefix</span>,
-            }
+            <span class="ident">EncodingSchemeForm</span> { <span class="ident">bit_count</span>, <span class="ident">prefix_len</span>, <span class="ident">prefix</span> }
         }
 
         <span class="attribute">#[<span class="ident">test</span>]</span>
@@ -1319,7 +1223,7 @@
 
         <span class="doccomment">/// Encoded prefix length is insufficient for the provided prefix</span>
         <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Invalid encoding form: `prefix_len` is to little for provided `prefix`&quot;</span>)]</span>
-        <span class="ident">InvalidPrefixData</span>
+        <span class="ident">InvalidPrefixData</span>,
     }
 
     <span class="doccomment">/// Error returned when encoding scheme for serialization/deserialization fails</span>

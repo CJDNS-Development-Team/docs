@@ -217,6 +217,14 @@
 <span id="216">216</span>
 <span id="217">217</span>
 <span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! List of remote functions.</span>
 
@@ -298,7 +306,7 @@
 
     <span class="doccomment">/// Iterator over functions in this list returned in alphabetical order.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">Func</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Func</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">Funcs</span>(<span class="ident">list</span>) <span class="op">=</span> <span class="self">self</span>;
         <span class="ident">list</span>.<span class="ident">iter</span>()
     }
@@ -315,7 +323,7 @@
     <span class="doccomment">/// Iterator over arguments in this list.</span>
     <span class="doccomment">/// Returns required args first in alphabetical order, then non-required in alphabetical order.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="kw-2">&amp;</span><span class="ident">Arg</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Arg</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">Args</span>(<span class="ident">list</span>) <span class="op">=</span> <span class="self">self</span>;
         <span class="ident">list</span>.<span class="ident">iter</span>()
     }
@@ -390,9 +398,7 @@
                 (<span class="string">&quot;fn_a&quot;</span>, <span class="ident">mk_args</span>(<span class="macro">vec</span><span class="macro">!</span>[])),
                 (<span class="string">&quot;fn_c&quot;</span>, <span class="ident">mk_args</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;arg1&quot;</span>, <span class="bool-val">true</span>, <span class="string">&quot;Int&quot;</span>), (<span class="string">&quot;arg2&quot;</span>, <span class="bool-val">true</span>, <span class="string">&quot;String&quot;</span>)])),
             ]);
-            <span class="kw">let</span> <span class="ident">fns2</span> <span class="op">=</span> <span class="ident">mk_funcs</span>(<span class="macro">vec</span><span class="macro">!</span>[
-                (<span class="string">&quot;fn_b&quot;</span>, <span class="ident">mk_args</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;c&quot;</span>, <span class="bool-val">false</span>, <span class="string">&quot;Int&quot;</span>), (<span class="string">&quot;b&quot;</span>, <span class="bool-val">true</span>, <span class="string">&quot;Int&quot;</span>), (<span class="string">&quot;a&quot;</span>, <span class="bool-val">false</span>, <span class="string">&quot;Int&quot;</span>)])),
-            ]);
+            <span class="kw">let</span> <span class="ident">fns2</span> <span class="op">=</span> <span class="ident">mk_funcs</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;fn_b&quot;</span>, <span class="ident">mk_args</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="string">&quot;c&quot;</span>, <span class="bool-val">false</span>, <span class="string">&quot;Int&quot;</span>), (<span class="string">&quot;b&quot;</span>, <span class="bool-val">true</span>, <span class="string">&quot;Int&quot;</span>), (<span class="string">&quot;a&quot;</span>, <span class="bool-val">false</span>, <span class="string">&quot;Int&quot;</span>)]))]);
 
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">funcs</span> <span class="op">=</span> <span class="ident">Funcs</span>::<span class="ident">new</span>();
             <span class="ident">funcs</span>.<span class="ident">add_funcs</span>(<span class="ident">fns1</span>);
@@ -401,20 +407,27 @@
             <span class="ident">funcs</span>
         };
 
-        <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="op">|</span><span class="ident">nm</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">req</span>: <span class="ident">bool</span>, <span class="ident">typ</span>: <span class="ident">ArgType</span><span class="op">|</span> {
-            <span class="ident">Arg</span> {
-                <span class="ident">name</span>: <span class="ident">nm</span>.<span class="ident">to_string</span>(),
-                <span class="ident">required</span>: <span class="ident">req</span>,
-                <span class="ident">typ</span>,
-            }
+        <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="op">|</span><span class="ident">nm</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">req</span>: <span class="ident">bool</span>, <span class="ident">typ</span>: <span class="ident">ArgType</span><span class="op">|</span> <span class="ident">Arg</span> {
+            <span class="ident">name</span>: <span class="ident">nm</span>.<span class="ident">to_string</span>(),
+            <span class="ident">required</span>: <span class="ident">req</span>,
+            <span class="ident">typ</span>,
         };
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(
             <span class="ident">funcs</span>,
             <span class="ident">Funcs</span>(<span class="macro">vec</span><span class="macro">!</span>[
-                <span class="ident">Func</span> { <span class="ident">name</span>: <span class="string">&quot;fn_a&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[]) },
-                <span class="ident">Func</span> { <span class="ident">name</span>: <span class="string">&quot;fn_b&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">a</span>(<span class="string">&quot;b&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;a&quot;</span>, <span class="bool-val">false</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;c&quot;</span>, <span class="bool-val">false</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>)]) },
-                <span class="ident">Func</span> { <span class="ident">name</span>: <span class="string">&quot;fn_c&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">a</span>(<span class="string">&quot;arg1&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;arg2&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">String</span>)]) },
+                <span class="ident">Func</span> {
+                    <span class="ident">name</span>: <span class="string">&quot;fn_a&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[])
+                },
+                <span class="ident">Func</span> {
+                    <span class="ident">name</span>: <span class="string">&quot;fn_b&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">a</span>(<span class="string">&quot;b&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;a&quot;</span>, <span class="bool-val">false</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;c&quot;</span>, <span class="bool-val">false</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>)])
+                },
+                <span class="ident">Func</span> {
+                    <span class="ident">name</span>: <span class="string">&quot;fn_c&quot;</span>.<span class="ident">to_string</span>(),
+                    <span class="ident">args</span>: <span class="ident">Args</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">a</span>(<span class="string">&quot;arg1&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">Int</span>), <span class="ident">a</span>(<span class="string">&quot;arg2&quot;</span>, <span class="bool-val">true</span>, <span class="ident">ArgType</span>::<span class="ident">String</span>)])
+                },
             ])
         );
     }
@@ -430,10 +443,14 @@
     <span class="kw">fn</span> <span class="ident">mk_args</span>(<span class="ident">list</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">bool</span>, <span class="kw-2">&amp;</span><span class="ident">str</span>)<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">RemoteFnArgsDescr</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">BTreeMap</span>::<span class="ident">new</span>();
         <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">req</span>, <span class="ident">typ</span>) <span class="kw">in</span> <span class="ident">list</span> {
-            <span class="kw">let</span> <span class="ident">descr</span> <span class="op">=</span> <span class="ident">RemoteFnArgDescr</span> { <span class="ident">required</span>: <span class="kw">if</span> <span class="ident">req</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> }, <span class="ident">typ</span>: <span class="ident">typ</span>.<span class="ident">to_string</span>() };
+            <span class="kw">let</span> <span class="ident">descr</span> <span class="op">=</span> <span class="ident">RemoteFnArgDescr</span> {
+                <span class="ident">required</span>: <span class="kw">if</span> <span class="ident">req</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> },
+                <span class="ident">typ</span>: <span class="ident">typ</span>.<span class="ident">to_string</span>(),
+            };
             <span class="ident">res</span>.<span class="ident">insert</span>(<span class="ident">name</span>.<span class="ident">to_string</span>(), <span class="ident">descr</span>);
         }
         <span class="ident">res</span>
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_admin";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

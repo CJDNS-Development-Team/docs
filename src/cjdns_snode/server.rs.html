@@ -512,6 +512,39 @@
 <span id="511">511</span>
 <span id="512">512</span>
 <span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS supernode implementation.</span>
 
@@ -532,8 +565,8 @@
 <span class="kw">use</span> <span class="ident">cjdns_keys</span>::<span class="ident">CJDNS_IP6</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">config</span>::<span class="ident">Config</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">peer</span>::{<span class="ident">AnnData</span>, <span class="ident">create_peers</span>, <span class="ident">Peers</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">link</span>::{<span class="ident">Link</span>, <span class="ident">LinkStateEntry</span>, <span class="ident">mk_link</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">peer</span>::{<span class="ident">create_peers</span>, <span class="ident">AnnData</span>, <span class="ident">Peers</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">link</span>::{<span class="ident">mk_link</span>, <span class="ident">Link</span>, <span class="ident">LinkStateEntry</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">nodes</span>::{<span class="ident">Node</span>, <span class="ident">Nodes</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">server</span>::<span class="ident">route</span>::<span class="ident">Routing</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">utils</span>::<span class="ident">task</span>::<span class="ident">periodic_task</span>;
@@ -577,7 +610,9 @@
     <span class="comment">// Run announcements handling task</span>
     {
         <span class="kw">let</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">server</span>);
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> { <span class="ident">announces</span>.<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">ann</span><span class="op">|</span> { <span class="ident">server</span>.<span class="ident">handle_announce</span>(<span class="ident">ann</span>, <span class="bool-val">false</span>) }).<span class="kw">await</span>; });
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> {
+            <span class="ident">announces</span>.<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">ann</span><span class="op">|</span> <span class="ident">server</span>.<span class="ident">handle_announce</span>(<span class="ident">ann</span>, <span class="bool-val">false</span>)).<span class="kw">await</span>;
+        });
         <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
     }
 
@@ -602,7 +637,7 @@
                 <span class="kw">let</span> <span class="ident">peers</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">peers</span>);
                 <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> { <span class="ident">peers</span>.<span class="ident">connect_to</span>(<span class="ident">uri</span>).<span class="kw">await</span> });
                 <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
-            },
+            }
             <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to connect to {}: {}&quot;</span>, <span class="ident">peer_addr</span>, <span class="ident">err</span>);
             }
@@ -616,14 +651,14 @@
 <span class="kw">struct</span> <span class="ident">Server</span> {
     <span class="ident">peers</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Peers</span><span class="op">&gt;</span>,
     <span class="ident">nodes</span>: <span class="ident">Nodes</span>,
+    <span class="ident">routing</span>: <span class="ident">Routing</span>,
     <span class="ident">mut_state</span>: <span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">ServerMut</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">struct</span> <span class="ident">ServerMut</span> {
-    <span class="ident">debug_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span><span class="op">&gt;</span>, <span class="comment">//TODO Debugging feature - need to implement log filtering</span>
+    <span class="ident">debug_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span><span class="op">&gt;</span>,
     <span class="ident">self_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;&gt;</span>,
     <span class="ident">current_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span><span class="op">&gt;</span>,
-    <span class="ident">routing</span>: <span class="ident">Routing</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
@@ -643,11 +678,11 @@
         <span class="ident">Server</span> {
             <span class="ident">peers</span>: <span class="ident">peers</span>.<span class="ident">clone</span>(),
             <span class="ident">nodes</span>: <span class="ident">Nodes</span>::<span class="ident">new</span>(<span class="ident">peers</span>),
+            <span class="ident">routing</span>: <span class="ident">Routing</span>::<span class="ident">new</span>(),
             <span class="ident">mut_state</span>: <span class="ident">Mutex</span>::<span class="ident">new</span>(<span class="ident">ServerMut</span> {
                 <span class="ident">debug_node</span>: <span class="prelude-val">None</span>,
                 <span class="ident">self_node</span>: <span class="prelude-val">None</span>,
                 <span class="ident">current_node</span>: <span class="prelude-val">None</span>,
-                <span class="ident">routing</span>: <span class="ident">Routing</span>::<span class="ident">new</span>(),
             }),
         }
     }
@@ -661,18 +696,19 @@
 
 <span class="kw">impl</span> <span class="ident">Server</span> {
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_announce</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">AnnData</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>) {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">announce</span>, <span class="ident">from_node</span>).<span class="kw">await</span>;
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">announce</span>, <span class="ident">from_node</span>, <span class="prelude-val">None</span>).<span class="kw">await</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">res</span> {
             <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Bad announcement: {}&quot;</span>, <span class="ident">err</span>);
         }
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_announce_impl</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">AnnHash</span>, <span class="ident">ReplyError</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_announce_impl</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>, <span class="ident">maybe_debug_noisy</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">AnnHash</span>, <span class="ident">ReplyError</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="prelude-val">None</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">node</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">debug_noisy</span> <span class="op">=</span> <span class="ident">maybe_debug_noisy</span>.<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">announcement_packet</span>) <span class="op">=</span> <span class="ident">AnnouncementPacket</span>::<span class="ident">try_new</span>(<span class="ident">announce</span>) {
             <span class="kw">if</span> <span class="ident">announcement_packet</span>.<span class="ident">check</span>().<span class="ident">is_ok</span>() {
@@ -687,10 +723,13 @@
             <span class="ident">self_node</span> <span class="op">=</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
                 <span class="ident">state</span>.<span class="ident">current_node</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>.<span class="ident">node_ip</span>.<span class="ident">clone</span>());
+                <span class="kw">if</span> <span class="ident">maybe_debug_noisy</span>.<span class="ident">is_none</span>() {
+                    <span class="ident">debug_noisy</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">debug_node</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">dn</span><span class="op">|</span> <span class="ident">dn</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">ann</span>.<span class="ident">node_ip</span>)).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+                }
                 <span class="ident">state</span>.<span class="ident">self_node</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span>.<span class="ident">clone</span>())
             };
             <span class="ident">node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">nodes</span>.<span class="ident">by_ip</span>(<span class="kw-2">&amp;</span><span class="ident">ann</span>.<span class="ident">node_ip</span>);
-            <span class="kw">if</span> <span class="macro">log_enabled</span><span class="macro">!</span>(<span class="ident">log</span>::<span class="ident">Level</span>::<span class="ident">Debug</span>) {
+            <span class="kw">if</span> <span class="macro">log_enabled</span><span class="macro">!</span>(<span class="ident">log</span>::<span class="ident">Level</span>::<span class="ident">Debug</span>) <span class="op">&amp;&amp;</span> <span class="ident">debug_noisy</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(
                     <span class="string">&quot;ANN from [{}] ts [{}] isReset [{}] peers [{}] ls [{}] known [{}]{}&quot;</span>,
                     <span class="ident">ann</span>.<span class="ident">node_ip</span>,
@@ -717,8 +756,8 @@
         <span class="kw">if</span> <span class="ident">from_node</span> {
             <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no self_node&quot;</span>))<span class="question-mark">?</span>;
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
-                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">!=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
-                    <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement meant for other snode&quot;</span>);
+                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span> <span class="op">!=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
+                    <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement meant for other snode, we are {} got {}&quot;</span>, <span class="ident">self_node</span>.<span class="ident">ipv6</span>, <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span>);
                     <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
                     <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
                 }
@@ -777,16 +816,17 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span> {
                 <span class="ident">ann</span>
             } <span class="kw">else</span> {
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="ident">node</span>), <span class="ident">reply_error</span>));
+                <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="ident">node</span>, <span class="ident">debug_noisy</span>), <span class="ident">reply_error</span>));
             }
         };
         <span class="kw">let</span> <span class="ident">ann_timestamp</span> <span class="op">=</span> <span class="ident">mktime</span>(<span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span> <span class="ident">node</span>.<span class="ident">as_ref</span>() {
             <span class="kw">let</span> <span class="ident">node_timestamp</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">mut_state</span>.<span class="ident">read</span>().<span class="ident">timestamp</span>;
-            <span class="kw">if</span> <span class="ident">node_timestamp</span> <span class="op">&gt;</span> <span class="ident">ann_timestamp</span> { <span class="comment">//TODO suspicious - duplicate check? Ask CJ</span>
+            <span class="comment">//TODO suspicious - duplicate check? Ask CJ</span>
+            <span class="kw">if</span> <span class="ident">node_timestamp</span> <span class="op">&gt;</span> <span class="ident">ann_timestamp</span> {
                 <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;old announcement [{}] most recent [{:?}]&quot;</span>, <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>, <span class="ident">node_timestamp</span>);
-                <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">Some</span>(<span class="ident">node</span>.<span class="ident">clone</span>())), <span class="ident">reply_error</span>));
+                <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">Some</span>(<span class="ident">node</span>.<span class="ident">clone</span>()), <span class="ident">debug_noisy</span>), <span class="ident">reply_error</span>));
             }
         }
 
@@ -802,11 +842,11 @@
             <span class="kw">let</span> <span class="ident">try_node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">nodes</span>.<span class="ident">add_node</span>(<span class="ident">n</span>, <span class="bool-val">true</span>);
             <span class="ident">node</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">try_node</span>.<span class="ident">map_err</span>(<span class="op">|</span>()<span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;internal error: add_node() failed&quot;</span>))<span class="question-mark">?</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span> <span class="ident">node</span>.<span class="ident">as_ref</span>() {
-            <span class="self">self</span>.<span class="ident">add_announcement</span>(<span class="ident">node</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">ann</span>);
+            <span class="self">self</span>.<span class="ident">add_announcement</span>(<span class="ident">node</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">ann</span>, <span class="ident">debug_noisy</span>);
         } <span class="kw">else</span> {
             <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;no node and no reset message&quot;</span>);
             <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">UnknownNode</span>;
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">None</span>), <span class="ident">reply_error</span>));
+            <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">None</span>, <span class="ident">debug_noisy</span>), <span class="ident">reply_error</span>));
         }
 
         <span class="kw">let</span> <span class="ident">node</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">expect</span>(<span class="string">&quot;internal error: node expected&quot;</span>); <span class="comment">// Due to the above checks it should be valid node here</span>
@@ -859,7 +899,7 @@
             }
         }
 
-        <span class="self">self</span>.<span class="ident">link_state_update1</span>(<span class="kw-2">&amp;</span><span class="ident">ann</span>, <span class="ident">node</span>.<span class="ident">clone</span>());
+        <span class="self">self</span>.<span class="ident">link_state_update1</span>(<span class="kw-2">&amp;</span><span class="ident">ann</span>, <span class="ident">node</span>.<span class="ident">clone</span>(), <span class="ident">debug_noisy</span>);
 
         <span class="kw">let</span> <span class="ident">has_ann</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">node_mut</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">mut_state</span>.<span class="ident">read</span>();
@@ -869,10 +909,10 @@
             <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">add_ann</span>(<span class="ident">ann</span>.<span class="ident">hash</span>.<span class="ident">clone</span>(), <span class="ident">ann</span>.<span class="ident">binary</span>.<span class="ident">clone</span>()).<span class="kw">await</span>;
         }
 
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">Some</span>(<span class="ident">node</span>)), <span class="ident">reply_error</span>));
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">Some</span>(<span class="ident">node</span>), <span class="ident">debug_noisy</span>), <span class="ident">reply_error</span>));
     }
 
-    <span class="kw">fn</span> <span class="ident">add_announcement</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span>, <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>) {
+    <span class="kw">fn</span> <span class="ident">add_announcement</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span>, <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>, <span class="ident">debug_noisy</span>: <span class="ident">bool</span>) {
         <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="ident">mktime</span>(<span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>);
         <span class="kw">let</span> <span class="ident">since_time</span> <span class="op">=</span> <span class="ident">time</span> <span class="op">-</span> <span class="ident">AGREED_TIMEOUT</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drop_announce</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
@@ -881,7 +921,9 @@
         <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="ident">ann</span>.<span class="ident">clone</span>()); <span class="comment">//TODO ask CJ whether the order of the announces matters</span>
         <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> {
             <span class="kw">if</span> <span class="ident">mktime</span>(<span class="ident">a</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>) <span class="op">&lt;</span> <span class="ident">since_time</span> {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Expiring ann [{}] because it is too old&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>));
+                <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Expiring ann [{}] because it is too old&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>));
+                }
                 <span class="ident">drop_announce</span>.<span class="ident">push</span>(<span class="ident">a</span>.<span class="ident">clone</span>());
                 <span class="kw">return</span> <span class="bool-val">false</span>;
             }
@@ -904,19 +946,31 @@
             <span class="comment">// in which case it&#39;s an empty announce just to let the snode know the node is still here...</span>
             <span class="kw">if</span> <span class="ident">safe</span> <span class="op">||</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">ann</span> {
                 <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">ann</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Keeping ann [{}] because it was announced just now&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>));
+                    <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Keeping ann [{}] because it was announced just now&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>));
+                    }
                 } <span class="kw">else</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Keeping ann [{}] for entities [{:?}]&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>), <span class="ident">justifications</span>);
+                    <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Keeping ann [{}] for entities [{}]&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>), <span class="ident">debug</span>::<span class="ident">print_entities</span>(<span class="kw-2">&amp;</span><span class="ident">justifications</span>));
+                    }
                 }
                 <span class="kw">return</span> <span class="bool-val">true</span>;
             } <span class="kw">else</span> {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Dropping ann [{}] because all entities [{:?}] have been re-announced&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>), <span class="ident">justifications</span>);
+                <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(
+                        <span class="string">&quot;Dropping ann [{}] because all entities [{}] have been re-announced&quot;</span>,
+                        <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>),
+                        <span class="ident">debug</span>::<span class="ident">print_entities</span>(<span class="kw-2">&amp;</span><span class="ident">justifications</span>)
+                    );
+                }
                 <span class="ident">drop_announce</span>.<span class="ident">push</span>(<span class="ident">a</span>.<span class="ident">clone</span>());
                 <span class="kw">return</span> <span class="bool-val">false</span>;
             }
         });
 
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Finally there are {} anns in the state&quot;</span>, <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">len</span>());
+        <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Finally there are {} anns in the state&quot;</span>, <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">len</span>());
+        }
         <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="ident">drop_announce</span> {
             <span class="kw">if</span> <span class="ident">node_mut</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">reset_msg</span><span class="op">|</span> <span class="ident">a</span> <span class="op">!=</span> <span class="kw-2">*</span><span class="ident">reset_msg</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
                 <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">del_ann</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="ident">hash</span>);
@@ -925,7 +979,7 @@
         <span class="ident">node_mut</span>.<span class="ident">timestamp</span> <span class="op">=</span> <span class="ident">time</span>;
     }
 
-    <span class="kw">fn</span> <span class="ident">link_state_update1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>, <span class="ident">node</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">link_state_update1</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="ident">Announcement</span>, <span class="ident">node</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span>, <span class="ident">debug_noisy</span>: <span class="ident">bool</span>) {
         <span class="kw">let</span> <span class="ident">time</span> <span class="op">=</span> <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">timestamp</span>;
         <span class="kw">let</span> <span class="ident">ts</span> <span class="op">=</span> <span class="ident">time</span> <span class="op">/</span> <span class="number">1000</span> <span class="op">/</span> <span class="number">10</span>;
         <span class="comment">// Timeslots older than AGREED_TIMEOUT will be dropped</span>
@@ -997,10 +1051,9 @@
                         <span class="kw">let</span> <span class="ident">delta_v</span> <span class="op">=</span> <span class="ident">lsv</span> <span class="op">/</span> (<span class="number">1.0</span> <span class="op">+</span> (<span class="ident">ts</span> <span class="op">-</span> <span class="ident">time</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
                         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">delta_v</span> <span class="op">&gt;=</span> <span class="number">0.0</span>);
                         <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">value</span> <span class="op">+=</span> <span class="ident">delta_v</span>;
-                        <span class="macro">debug</span><span class="macro">!</span>(
-                            <span class="string">&quot;LINK_STATE_UPDATE: time={}, node_ip={}, ips_by_num[{}]={}, label={}, new_state={:?}&quot;</span>,
-                            <span class="ident">time</span>, <span class="ident">ann</span>.<span class="ident">node_ip</span>, <span class="ident">ls</span>.<span class="ident">node_id</span>, <span class="ident">ips_by_num</span>[<span class="kw-2">&amp;</span><span class="ident">ls</span>.<span class="ident">node_id</span>], <span class="ident">link</span>.<span class="ident">label</span>, <span class="ident">new_state</span>
-                        );
+                        <span class="kw">if</span> <span class="ident">debug_noisy</span> {
+                            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;LSU {} &lt;- {}/{} : {:?}&quot;</span>, <span class="ident">ann</span>.<span class="ident">node_ip</span>, <span class="ident">ips_by_num</span>[<span class="kw-2">&amp;</span><span class="ident">ls</span>.<span class="ident">node_id</span>], <span class="ident">ls</span>.<span class="ident">node_id</span>, <span class="ident">new_state</span>);
+                        }
                         <span class="ident">link_state</span>.<span class="ident">insert</span>(<span class="ident">time</span>, <span class="ident">new_state</span>);
                         <span class="ident">time</span> <span class="op">-=</span> <span class="number">1</span>;
                     }
@@ -1025,5 +1078,19 @@
             <span class="ident">ReplyError</span>::<span class="ident">UnknownNode</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;unknown_node&quot;</span>),
         }
     }
-}</pre></div>
+}
+
+<span class="kw">mod</span> <span class="ident">debug</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_entities</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>]) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="ident">list</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">print_entity</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">print_entity</span>(<span class="ident">e</span>: <span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="kw">match</span> <span class="ident">e</span> {
+            <span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="ident">p</span>.<span class="ident">ipv6</span>, <span class="ident">p</span>.<span class="ident">peer_num</span>),
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
+        }
+    }
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "cjdns_snode";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
