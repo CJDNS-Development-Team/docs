@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-snode/src/server.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>server.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_snode/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cjdns-snode/src/server.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>server.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../cjdns_snode/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
                 <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -584,7 +586,7 @@
 <span class="kw">const</span> <span class="ident">KEEP_TABLE_CLEAN_CYCLE</span>: <span class="ident">Duration</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">30</span>);
 
 <span class="doccomment">/// Server entry point. Requires config (loaded from an external file) to run.</span>
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>(<span class="ident">config</span>: <span class="ident">Config</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">main</span>(<span class="ident">config</span>: <span class="ident">Config</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="comment">// Background tasks we are going to spawn</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tasks</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
 
@@ -596,22 +598,22 @@
     <span class="comment">// Run timeout task</span>
     {
         <span class="kw">let</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">server</span>);
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="ident">periodic_task</span>(<span class="ident">KEEP_TABLE_CLEAN_CYCLE</span>, <span class="kw">move</span> <span class="op">||</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">keep_table_clean</span>()));
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="ident">periodic_task</span>(<span class="ident">KEEP_TABLE_CLEAN_CYCLE</span>, <span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="ident">server</span>.<span class="ident">nodes</span>.<span class="ident">keep_table_clean</span>()));
         <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
     }
 
     <span class="comment">// Run peer pings task</span>
     {
         <span class="kw">let</span> <span class="ident">peers</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">peers</span>);
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> { <span class="ident">peers</span>.<span class="ident">ping_task</span>().<span class="kw">await</span> });
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="ident">async</span> <span class="kw">move</span> { <span class="ident">peers</span>.<span class="ident">ping_task</span>().<span class="ident">await</span> });
         <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
     }
 
     <span class="comment">// Run announcements handling task</span>
     {
         <span class="kw">let</span> <span class="ident">server</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">server</span>);
-        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> {
-            <span class="ident">announces</span>.<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">ann</span><span class="op">|</span> <span class="ident">server</span>.<span class="ident">handle_announce</span>(<span class="ident">ann</span>, <span class="bool-val">false</span>)).<span class="kw">await</span>;
+        <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="ident">async</span> <span class="kw">move</span> {
+            <span class="ident">announces</span>.<span class="ident">for_each</span>(<span class="op">|</span><span class="ident">ann</span><span class="op">|</span> <span class="ident">server</span>.<span class="ident">handle_announce</span>(<span class="ident">ann</span>, <span class="bool-val">false</span>)).<span class="ident">await</span>;
         });
         <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
     }
@@ -633,19 +635,19 @@
     <span class="comment">// Connect to peer supernodes</span>
     <span class="kw">for</span> <span class="ident">peer_addr</span> <span class="kw">in</span> <span class="ident">config</span>.<span class="ident">peers</span>.<span class="ident">iter</span>() {
         <span class="kw">match</span> <span class="ident">Uri</span>::<span class="ident">from_str</span>(<span class="ident">peer_addr</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">uri</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">uri</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">let</span> <span class="ident">peers</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="ident">peers</span>);
-                <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="kw">async</span> <span class="kw">move</span> { <span class="ident">peers</span>.<span class="ident">connect_to</span>(<span class="ident">uri</span>).<span class="kw">await</span> });
+                <span class="kw">let</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">task</span>::<span class="ident">spawn</span>(<span class="ident">async</span> <span class="kw">move</span> { <span class="ident">peers</span>.<span class="ident">connect_to</span>(<span class="ident">uri</span>).<span class="ident">await</span> });
                 <span class="ident">tasks</span>.<span class="ident">push</span>(<span class="ident">h</span>);
             }
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Unable to connect to {}: {}&quot;</span>, <span class="ident">peer_addr</span>, <span class="ident">err</span>);
             }
         }
     }
 
     <span class="comment">// Await all spawned tasks</span>
-    <span class="ident">try_join_all</span>(<span class="ident">tasks</span>).<span class="kw">await</span>.<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>())
+    <span class="ident">try_join_all</span>(<span class="ident">tasks</span>).<span class="ident">await</span>.<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ()).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">into</span>())
 }
 
 <span class="kw">struct</span> <span class="ident">Server</span> {
@@ -657,7 +659,7 @@
 
 <span class="kw">struct</span> <span class="ident">ServerMut</span> {
     <span class="ident">debug_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span><span class="op">&gt;</span>,
-    <span class="ident">self_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">self_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Node</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">current_node</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CJDNS_IP6</span><span class="op">&gt;</span>,
 }
 
@@ -674,7 +676,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Server</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">peers</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Peers</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">peers</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Peers</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="ident">Server</span> {
             <span class="ident">peers</span>: <span class="ident">peers</span>.<span class="ident">clone</span>(),
             <span class="ident">nodes</span>: <span class="ident">Nodes</span>::<span class="ident">new</span>(<span class="ident">peers</span>),
@@ -695,14 +697,14 @@
 <span class="kw">const</span> <span class="ident">GLOBAL_TIMEOUT</span>: <span class="ident">Duration</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="ident">MAX_GLOBAL_CLOCKSKEW</span>.<span class="ident">as_secs</span>() <span class="op">+</span> <span class="ident">AGREED_TIMEOUT</span>.<span class="ident">as_secs</span>());
 
 <span class="kw">impl</span> <span class="ident">Server</span> {
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_announce</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">AnnData</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>) {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">announce</span>, <span class="ident">from_node</span>, <span class="prelude-val">None</span>).<span class="kw">await</span>;
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">handle_announce</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">AnnData</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>) {
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">announce</span>, <span class="ident">from_node</span>, <span class="prelude-val">None</span>).<span class="ident">await</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">res</span> {
             <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;Bad announcement: {}&quot;</span>, <span class="ident">err</span>);
         }
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_announce_impl</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>, <span class="ident">maybe_debug_noisy</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">AnnHash</span>, <span class="ident">ReplyError</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">handle_announce_impl</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">announce</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">from_node</span>: <span class="ident">bool</span>, <span class="ident">maybe_debug_noisy</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">AnnHash</span>, <span class="ident">ReplyError</span>), <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="prelude-val">None</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -754,9 +756,9 @@
         }
 
         <span class="kw">if</span> <span class="ident">from_node</span> {
-            <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ok_or_else</span>(<span class="op">||</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no self_node&quot;</span>))<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">self_node</span> <span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no self_node&quot;</span>))<span class="question-mark">?</span>;
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ann</span>) <span class="op">=</span> <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>() {
-                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span> <span class="op">!=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
+                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span> <span class="op">!</span><span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
                     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement meant for other snode, we are {} got {}&quot;</span>, <span class="ident">self_node</span>.<span class="ident">ipv6</span>, <span class="ident">ann</span>.<span class="ident">header</span>.<span class="ident">snode_ip</span>);
                     <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
                     <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -774,7 +776,7 @@
             }
         } <span class="kw">else</span> {
             <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">self_node</span>), <span class="prelude-val">Some</span>(<span class="ident">ann</span>)) <span class="op">=</span> (<span class="ident">self_node</span>, <span class="ident">ann_opt</span>.<span class="ident">as_ref</span>()) {
-                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">==</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
+                <span class="kw">if</span> <span class="ident">ann</span>.<span class="ident">node_ip</span> <span class="op">=</span><span class="op">=</span> <span class="ident">self_node</span>.<span class="ident">ipv6</span> {
                     <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;announcement received by gossip which is meant for us&quot;</span>);
                     <span class="ident">reply_error</span> <span class="op">=</span> <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span>;
                     <span class="ident">ann_opt</span> <span class="op">=</span> <span class="prelude-val">None</span>;
@@ -856,7 +858,7 @@
 
             <span class="kw">if</span> <span class="ident">peer</span>.<span class="ident">label</span>.<span class="ident">is_none</span>() {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">links</span>) <span class="op">=</span> <span class="ident">inward_links_by_ip</span>.<span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="ident">peer</span>.<span class="ident">ipv6</span>) {
-                    <span class="ident">links</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">peer_num</span> <span class="op">!=</span> <span class="ident">peer</span>.<span class="ident">peer_num</span>);
+                    <span class="ident">links</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">peer_num</span> <span class="op">!</span><span class="op">=</span> <span class="ident">peer</span>.<span class="ident">peer_num</span>);
                     <span class="kw">if</span> <span class="ident">links</span>.<span class="ident">is_empty</span>() {
                         <span class="ident">inward_links_by_ip</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">peer</span>.<span class="ident">ipv6</span>);
                     }
@@ -871,12 +873,12 @@
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stored</span>) <span class="op">=</span> <span class="ident">stored</span> {
                 <span class="lifetime">&#39;link</span>: <span class="kw">for</span> <span class="ident">stored_link</span> <span class="kw">in</span> <span class="ident">stored</span>.<span class="ident">iter_mut</span>() {
-                    <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">peer_num</span> <span class="op">!=</span> <span class="ident">new_link</span>.<span class="ident">peer_num</span> {
+                    <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">peer_num</span> <span class="op">!</span><span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">peer_num</span> {
                         <span class="kw">continue</span> <span class="lifetime">&#39;link</span>;
                     }
-                    <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">label</span> <span class="op">!=</span> <span class="ident">new_link</span>.<span class="ident">label</span> {
+                    <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">label</span> <span class="op">!</span><span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">label</span> {
                         <span class="comment">// nothing</span>
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">encoding_form_number</span> <span class="op">!=</span> <span class="ident">new_link</span>.<span class="ident">encoding_form_number</span> {
+                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">stored_link</span>.<span class="ident">encoding_form_number</span> <span class="op">!</span><span class="op">=</span> <span class="ident">new_link</span>.<span class="ident">encoding_form_number</span> {
                         <span class="comment">// nothing</span>
                     } <span class="kw">else</span> {
                         <span class="comment">// only small changes (if any)</span>
@@ -903,10 +905,10 @@
 
         <span class="kw">let</span> <span class="ident">has_ann</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">node_mut</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">mut_state</span>.<span class="ident">read</span>();
-            <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">==</span> <span class="ident">ann</span>) <span class="op">||</span> <span class="ident">node_mut</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">reset_msg</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">reset_msg</span> <span class="op">==</span> <span class="ident">ann</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+            <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="ident">ann</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">node_mut</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">reset_msg</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">reset_msg</span> <span class="op">=</span><span class="op">=</span> <span class="ident">ann</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
         };
         <span class="kw">if</span> <span class="ident">has_ann</span> {
-            <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">add_ann</span>(<span class="ident">ann</span>.<span class="ident">hash</span>.<span class="ident">clone</span>(), <span class="ident">ann</span>.<span class="ident">binary</span>.<span class="ident">clone</span>()).<span class="kw">await</span>;
+            <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">add_ann</span>(<span class="ident">ann</span>.<span class="ident">hash</span>.<span class="ident">clone</span>(), <span class="ident">ann</span>.<span class="ident">binary</span>.<span class="ident">clone</span>()).<span class="ident">await</span>;
         }
 
         <span class="kw">return</span> <span class="prelude-val">Ok</span>((<span class="ident">hash</span>::<span class="ident">node_announcement_hash</span>(<span class="prelude-val">Some</span>(<span class="ident">node</span>), <span class="ident">debug_noisy</span>), <span class="ident">reply_error</span>));
@@ -935,7 +937,7 @@
                     <span class="kw">continue</span>;
                 }
 
-                <span class="kw">if</span> <span class="ident">entities_announced</span>.<span class="ident">iter</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">je</span><span class="op">|</span> <span class="ident">utils</span>::<span class="ident">is_entity_replacement</span>(<span class="ident">e</span>, <span class="ident">je</span>)).<span class="ident">count</span>() <span class="op">==</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">entities_announced</span>.<span class="ident">iter</span>().<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">je</span><span class="op">|</span> <span class="ident">utils</span>::<span class="ident">is_entity_replacement</span>(<span class="ident">e</span>, <span class="ident">je</span>)).<span class="ident">count</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
                     <span class="ident">safe</span> <span class="op">=</span> <span class="bool-val">true</span>;
                     <span class="ident">justifications</span>.<span class="ident">push</span>(<span class="ident">e</span>);
                     <span class="ident">entities_announced</span>.<span class="ident">push</span>(<span class="ident">e</span>.<span class="ident">clone</span>());
@@ -944,8 +946,8 @@
 
             <span class="comment">// current announcement is always safe because it might not have actually announced anything</span>
             <span class="comment">// in which case it&#39;s an empty announce just to let the snode know the node is still here...</span>
-            <span class="kw">if</span> <span class="ident">safe</span> <span class="op">||</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">ann</span> {
-                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">ann</span> {
+            <span class="kw">if</span> <span class="ident">safe</span> <span class="op">|</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">ann</span> {
+                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">ann</span> {
                     <span class="kw">if</span> <span class="ident">debug_noisy</span> {
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Keeping ann [{}] because it was announced just now&quot;</span>, <span class="ident">utils</span>::<span class="ident">ann_id</span>(<span class="ident">a</span>));
                     }
@@ -972,7 +974,7 @@
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Finally there are {} anns in the state&quot;</span>, <span class="ident">node_mut</span>.<span class="ident">announcements</span>.<span class="ident">len</span>());
         }
         <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="ident">drop_announce</span> {
-            <span class="kw">if</span> <span class="ident">node_mut</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">reset_msg</span><span class="op">|</span> <span class="ident">a</span> <span class="op">!=</span> <span class="kw-2">*</span><span class="ident">reset_msg</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
+            <span class="kw">if</span> <span class="ident">node_mut</span>.<span class="ident">reset_msg</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">reset_msg</span><span class="op">|</span> <span class="ident">a</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">reset_msg</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
                 <span class="self">self</span>.<span class="ident">peers</span>.<span class="ident">del_ann</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="ident">hash</span>);
             }
         }
@@ -1011,7 +1013,7 @@
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link_mut</span> <span class="op">=</span> <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
                     <span class="kw">if</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">&gt;</span> <span class="ident">ts</span> {
                         <span class="kw">let</span> <span class="ident">decay_slots</span> <span class="op">=</span> <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">-</span> <span class="ident">ts</span>;
-                        <span class="ident">link_mut</span>.<span class="ident">value</span> <span class="op">/=</span> <span class="number">1.0</span> <span class="op">+</span> (<span class="ident">decay_slots</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
+                        <span class="ident">link_mut</span>.<span class="ident">value</span> <span class="op">/</span><span class="op">=</span> <span class="number">1.0</span> <span class="op">+</span> (<span class="ident">decay_slots</span> <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
                     }
                     <span class="ident">link_mut</span>.<span class="ident">most_recent_ls_slot</span> <span class="op">=</span> <span class="ident">ts</span>;
                 }
@@ -1029,7 +1031,7 @@
                 <span class="kw">let</span> <span class="ident">sp</span> <span class="op">=</span> (<span class="ident">ls</span>.<span class="ident">starting_point</span> <span class="op">%</span> <span class="ident">LINK_STATE_SLOTS</span>) <span class="kw">as</span> <span class="ident">i8</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">time</span> <span class="op">=</span> <span class="ident">ts</span>;
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">sp</span> <span class="op">-</span> <span class="number">1</span>;
-                <span class="kw">while</span> <span class="ident">index</span> <span class="op">!=</span> <span class="ident">sp</span> {
+                <span class="kw">while</span> <span class="ident">index</span> <span class="op">!</span><span class="op">=</span> <span class="ident">sp</span> {
                     <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="number">0</span> {
                         <span class="ident">index</span> <span class="op">=</span> (<span class="ident">LINK_STATE_SLOTS</span> <span class="op">-</span> <span class="number">1</span>) <span class="kw">as</span> <span class="ident">i8</span>;
                         <span class="kw">continue</span>;
@@ -1047,18 +1049,18 @@
                             <span class="ident">kb_recv</span>: <span class="ident">kb_recv_slot</span>,
                         };
                         <span class="kw">let</span> <span class="ident">lsv</span> <span class="op">=</span> <span class="ident">new_state</span>.<span class="ident">ls_value</span>();
-                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">lsv</span> <span class="op">&gt;=</span> <span class="number">0.0</span>, <span class="string">&quot;lsv {} for ls {:?}&quot;</span>, <span class="ident">lsv</span>, <span class="ident">new_state</span>);
+                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">lsv</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span>, <span class="string">&quot;lsv {} for ls {:?}&quot;</span>, <span class="ident">lsv</span>, <span class="ident">new_state</span>);
                         <span class="kw">let</span> <span class="ident">delta_v</span> <span class="op">=</span> <span class="ident">lsv</span> <span class="op">/</span> (<span class="number">1.0</span> <span class="op">+</span> (<span class="ident">ts</span> <span class="op">-</span> <span class="ident">time</span>) <span class="kw">as</span> <span class="ident">f64</span> <span class="op">*</span> <span class="ident">Link</span>::<span class="ident">DECAY_PER_TIMESLOT</span>);
-                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">delta_v</span> <span class="op">&gt;=</span> <span class="number">0.0</span>);
-                        <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">value</span> <span class="op">+=</span> <span class="ident">delta_v</span>;
+                        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">delta_v</span> <span class="op">&gt;</span><span class="op">=</span> <span class="number">0.0</span>);
+                        <span class="ident">link</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">value</span> <span class="op">+</span><span class="op">=</span> <span class="ident">delta_v</span>;
                         <span class="kw">if</span> <span class="ident">debug_noisy</span> {
                             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;LSU {} &lt;- {}/{} : {:?}&quot;</span>, <span class="ident">ann</span>.<span class="ident">node_ip</span>, <span class="ident">ips_by_num</span>[<span class="kw-2">&amp;</span><span class="ident">ls</span>.<span class="ident">node_id</span>], <span class="ident">ls</span>.<span class="ident">node_id</span>, <span class="ident">new_state</span>);
                         }
                         <span class="ident">link_state</span>.<span class="ident">insert</span>(<span class="ident">time</span>, <span class="ident">new_state</span>);
-                        <span class="ident">time</span> <span class="op">-=</span> <span class="number">1</span>;
+                        <span class="ident">time</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
                     }
 
-                    <span class="ident">index</span> <span class="op">-=</span> <span class="number">1</span>;
+                    <span class="ident">index</span> <span class="op">-</span><span class="op">=</span> <span class="number">1</span>;
                 }
             }
         }
@@ -1066,29 +1068,29 @@
 }
 
 <span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ReplyError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">ReplyError</span>::<span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;none&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">FailedParseOrValidate</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;failed_parse_or_validate&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">OldMessage</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;old_message&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;wrong_snode&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">ExcessiveClockSkew</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;excessive_clock_skew&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">NoEncodingScheme</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;no_encodingScheme&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">NoVersion</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;no_version&quot;</span>),
-            <span class="ident">ReplyError</span>::<span class="ident">UnknownNode</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;unknown_node&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;none&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">FailedParseOrValidate</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;failed_parse_or_validate&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">OldMessage</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;old_message&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">WrongSnode</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;wrong_snode&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">ExcessiveClockSkew</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;excessive_clock_skew&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">NoEncodingScheme</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;no_encodingScheme&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">NoVersion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;no_version&quot;</span>),
+            <span class="ident">ReplyError</span>::<span class="ident">UnknownNode</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;unknown_node&quot;</span>),
         }
     }
 }
 
 <span class="kw">mod</span> <span class="ident">debug</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_entities</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>]) <span class="op">-&gt;</span> <span class="ident">String</span> {
-        <span class="ident">list</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">print_entity</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_entities</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+        <span class="ident">list</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">print_entity</span>(<span class="kw-2">&amp;</span><span class="ident">e</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">print_entity</span>(<span class="ident">e</span>: <span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">print_entity</span>(<span class="ident">e</span>: <span class="kw-2">&amp;</span><span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
         <span class="kw">match</span> <span class="ident">e</span> {
-            <span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="ident">p</span>.<span class="ident">ipv6</span>, <span class="ident">p</span>.<span class="ident">peer_num</span>),
-            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
+            <span class="ident">cjdns_ann</span>::<span class="ident">Entity</span>::<span class="ident">Peer</span>(<span class="ident">p</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}/{}&quot;</span>, <span class="ident">p</span>.<span class="ident">ipv6</span>, <span class="ident">p</span>.<span class="ident">peer_num</span>),
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>),
         }
     }
 }

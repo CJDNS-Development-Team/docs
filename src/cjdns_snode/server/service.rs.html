@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `cjdns-snode/src/server/service.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>service.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="../../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cjdns_snode/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `cjdns-snode/src/server/service.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>service.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../cjdns_snode/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
                 <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
@@ -361,20 +363,20 @@
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">core_node_info</span>::<span class="ident">CoreNodeInfoPayload</span>;
 
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">service_task</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) {
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">async</span> <span class="kw">fn</span> <span class="ident">service_task</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) {
     <span class="kw">loop</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">do_service</span>(<span class="ident">server</span>.<span class="ident">clone</span>()).<span class="kw">await</span>;
+        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">do_service</span>(<span class="ident">server</span>.<span class="ident">clone</span>()).<span class="ident">await</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">res</span> {
             <span class="macro">error</span><span class="macro">!</span>(<span class="string">&quot;Failed to service local node: {}. Reconecting...&quot;</span>, <span class="ident">err</span>);
         }
     }
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">do_service</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cjdns</span> <span class="op">=</span> <span class="ident">cjdns_admin</span>::<span class="ident">connect</span>(<span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">do_service</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cjdns</span> <span class="op">=</span> <span class="ident">cjdns_admin</span>::<span class="ident">connect</span>(<span class="prelude-val">None</span>).<span class="ident">await</span><span class="question-mark">?</span>;
 
     <span class="comment">// Querying local node info</span>
-    <span class="kw">let</span> <span class="ident">node_info</span> <span class="op">=</span> <span class="ident">cjdns</span>.<span class="ident">invoke</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">CoreNodeInfoPayload</span><span class="op">&gt;</span>(<span class="string">&quot;Core_nodeInfo&quot;</span>, <span class="ident">Empty</span> {}).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">node_info</span> <span class="op">=</span> <span class="ident">cjdns</span>.<span class="ident">invoke</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">CoreNodeInfoPayload</span><span class="op">&gt;</span>(<span class="string">&quot;Core_nodeInfo&quot;</span>, <span class="ident">Empty</span> {}).<span class="ident">await</span><span class="question-mark">?</span>;
 
     <span class="kw">let</span> (<span class="ident">version</span>, <span class="kw">_</span>, <span class="ident">pub_key</span>) <span class="op">=</span> <span class="ident">parse_node_name</span>(<span class="kw-2">&amp;</span><span class="ident">node_info</span>.<span class="ident">my_addr</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;malformed node name string returned by Core_nodeInfo()&quot;</span>))<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">ipv6</span> <span class="op">=</span> <span class="ident">CJDNS_IP6</span>::<span class="ident">try_from</span>(<span class="kw-2">&amp;</span><span class="ident">pub_key</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;bad node public key returned by Core_nodeInfo(): {}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
@@ -390,59 +392,59 @@
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Got selfNode&quot;</span>);
 
     <span class="comment">// Starting to sniff traffic</span>
-    <span class="kw">let</span> <span class="ident">sniffer</span> <span class="op">=</span> <span class="ident">Sniffer</span>::<span class="ident">sniff_traffic</span>(<span class="ident">cjdns</span>.<span class="ident">clone</span>(), <span class="ident">ContentType</span>::<span class="ident">Cjdht</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="ident">sniffer</span> <span class="op">=</span> <span class="ident">Sniffer</span>::<span class="ident">sniff_traffic</span>(<span class="ident">cjdns</span>.<span class="ident">clone</span>(), <span class="ident">ContentType</span>::<span class="ident">Cjdht</span>).<span class="ident">await</span><span class="question-mark">?</span>;
 
     <span class="macro">select</span><span class="macro">!</span> {
-        <span class="ident">res</span> <span class="op">=</span> <span class="ident">handle_subnode_messages</span>(<span class="ident">sniffer</span>, <span class="ident">server</span>) <span class="op">=&gt;</span> <span class="ident">res</span>,
-        <span class="ident">res</span> <span class="op">=</span> <span class="ident">check_connection_alive</span>(<span class="ident">cjdns</span>) <span class="op">=&gt;</span> <span class="ident">res</span>,
+        <span class="ident">res</span> <span class="op">=</span> <span class="ident">handle_subnode_messages</span>(<span class="ident">sniffer</span>, <span class="ident">server</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">res</span>,
+        <span class="ident">res</span> <span class="op">=</span> <span class="ident">check_connection_alive</span>(<span class="ident">cjdns</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">res</span>,
     }
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">handle_subnode_messages</span>(<span class="kw-2">mut</span> <span class="ident">sniffer</span>: <span class="ident">Sniffer</span>, <span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">handle_subnode_messages</span>(<span class="kw-2">mut</span> <span class="ident">sniffer</span>: <span class="ident">Sniffer</span>, <span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">loop</span> {
-        <span class="kw">match</span> <span class="ident">sniffer</span>.<span class="ident">receive</span>().<span class="kw">await</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">ret_msg_opt</span> <span class="op">=</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">match</span> <span class="ident">sniffer</span>.<span class="ident">receive</span>().<span class="ident">await</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="kw">let</span> <span class="ident">ret_msg_opt</span> <span class="op">=</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>.<span class="ident">clone</span>(), <span class="ident">msg</span>).<span class="ident">await</span><span class="question-mark">?</span>;
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ret_msg</span>) <span class="op">=</span> <span class="ident">ret_msg_opt</span> {
-                    <span class="ident">sniffer</span>.<span class="ident">send</span>(<span class="ident">ret_msg</span>, <span class="prelude-val">None</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+                    <span class="ident">sniffer</span>.<span class="ident">send</span>(<span class="ident">ret_msg</span>, <span class="prelude-val">None</span>).<span class="ident">await</span><span class="question-mark">?</span>;
                 }
             }
-            <span class="prelude-val">Err</span>(<span class="ident">err</span> @ <span class="ident">ReceiveError</span>::<span class="ident">SocketError</span>(<span class="kw">_</span>)) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">err</span> @ <span class="ident">ReceiveError</span>::<span class="ident">SocketError</span>(<span class="kw">_</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>());
             }
-            <span class="prelude-val">Err</span>(<span class="ident">ReceiveError</span>::<span class="ident">ParseError</span>(<span class="ident">err</span>, <span class="ident">data</span>)) <span class="op">=&gt;</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">ReceiveError</span>::<span class="ident">ParseError</span>(<span class="ident">err</span>, <span class="ident">data</span>)) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Bad message received:\n{}\n{}&quot;</span>, <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">data</span>), <span class="macro">anyhow</span><span class="macro">!</span>(<span class="ident">err</span>));
             }
         }
     }
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">check_connection_alive</span>(<span class="kw-2">mut</span> <span class="ident">cjdns</span>: <span class="ident">Connection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">check_connection_alive</span>(<span class="kw-2">mut</span> <span class="ident">cjdns</span>: <span class="ident">Connection</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">const</span> <span class="ident">CHECK_CONNECTION_DELAY</span>: <span class="ident">Duration</span> <span class="op">=</span> <span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">5</span>);
 
     <span class="kw">loop</span> {
-        <span class="ident">time</span>::<span class="ident">delay_for</span>(<span class="ident">CHECK_CONNECTION_DELAY</span>).<span class="kw">await</span>;
+        <span class="ident">time</span>::<span class="ident">delay_for</span>(<span class="ident">CHECK_CONNECTION_DELAY</span>).<span class="ident">await</span>;
 
-        <span class="kw">if</span> <span class="ident">count_handlers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cjdns</span>).<span class="kw">await</span><span class="question-mark">?</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="ident">count_handlers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cjdns</span>).<span class="ident">await</span><span class="question-mark">?</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;Call to UpperDistributor_listHandlers returned 0 handlers - connection aborted?&quot;</span>));
         }
     }
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">count_handlers</span>(<span class="ident">cjdns</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Connection</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">ret</span>: <span class="ident">GenericResponsePayload</span> <span class="op">=</span> <span class="ident">cjdns</span>.<span class="ident">invoke</span>(<span class="string">&quot;UpperDistributor_listHandlers&quot;</span>, <span class="ident">ArgValues</span>::<span class="ident">new</span>().<span class="ident">add</span>(<span class="string">&quot;page&quot;</span>, <span class="number">0</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">count_handlers</span>(<span class="ident">cjdns</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Connection</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">ret</span>: <span class="ident">GenericResponsePayload</span> <span class="op">=</span> <span class="ident">cjdns</span>.<span class="ident">invoke</span>(<span class="string">&quot;UpperDistributor_listHandlers&quot;</span>, <span class="ident">ArgValues</span>::<span class="ident">new</span>().<span class="ident">add</span>(<span class="string">&quot;page&quot;</span>, <span class="number">0</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
     <span class="kw">match</span> <span class="ident">ret</span>.<span class="ident">get</span>(<span class="string">&quot;handlers&quot;</span>).<span class="ident">ok_or</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;no &#39;handler&#39; key in response&quot;</span>))<span class="question-mark">?</span> {
-        <span class="ident">ReturnValue</span>::<span class="ident">List</span>(<span class="ident">handlers</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">handlers</span>.<span class="ident">len</span>()),
-        <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;unrecognized &#39;handlers&#39; value format&quot;</span>)),
+        <span class="ident">ReturnValue</span>::<span class="ident">List</span>(<span class="ident">handlers</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">handlers</span>.<span class="ident">len</span>()),
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;unrecognized &#39;handlers&#39; value format&quot;</span>)),
     }
 }
 
 <span class="doccomment">/// Handles a message from local node, and returns a response message that should be sent in return.</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>, <span class="ident">msg</span>: <span class="ident">Message</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">on_subnode_message</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>, <span class="ident">msg</span>: <span class="ident">Message</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">let</span> (<span class="ident">route_header</span>, <span class="ident">content_type</span>, <span class="ident">content</span>) <span class="op">=</span> (<span class="ident">msg</span>.<span class="ident">route_header</span>, <span class="ident">msg</span>.<span class="ident">content_type</span>, <span class="ident">msg</span>.<span class="ident">content</span>);
     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Content</span>::<span class="ident">Benc</span>(<span class="ident">content_benc</span>) <span class="op">=</span> <span class="ident">content</span> {
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">on_subnode_message_impl</span>(<span class="ident">server</span>, <span class="ident">route_header</span>.<span class="ident">clone</span>(), <span class="ident">content_benc</span>)
-            .<span class="kw">await</span><span class="question-mark">?</span>
+            .<span class="ident">await</span><span class="question-mark">?</span>
             .<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">res_benc</span>, <span class="ident">ver</span>)<span class="op">|</span> {
                 <span class="kw">let</span> <span class="ident">route_header</span> <span class="op">=</span> {
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">h</span> <span class="op">=</span> <span class="ident">route_header</span>;
@@ -463,7 +465,7 @@
     }
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">on_subnode_message_impl</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>, <span class="ident">route_header</span>: <span class="ident">RouteHeader</span>, <span class="ident">content_benc</span>: <span class="ident">BValue</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">BValue</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="ident">async</span> <span class="kw">fn</span> <span class="ident">on_subnode_message_impl</span>(<span class="ident">server</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Server</span><span class="op">&gt;</span>, <span class="ident">route_header</span>: <span class="ident">RouteHeader</span>, <span class="ident">content_benc</span>: <span class="ident">BValue</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">BValue</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">content_benc</span>.<span class="ident">has_dict_entry</span>(<span class="string">&quot;sq&quot;</span>) {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>); <span class="comment">// Ignore unknown messages</span>
     }
@@ -488,7 +490,7 @@
         }
     };
 
-    <span class="kw">if</span> <span class="ident">route_header</span>.<span class="ident">public_key</span>.<span class="ident">is_none</span>() <span class="op">||</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>.<span class="ident">is_none</span>() {
+    <span class="kw">if</span> <span class="ident">route_header</span>.<span class="ident">public_key</span>.<span class="ident">is_none</span>() <span class="op">|</span><span class="op">|</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>.<span class="ident">is_none</span>() {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ip</span>) <span class="op">=</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>.<span class="ident">as_ref</span>() {
             <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;message from {} with missing key: {:?} {:?}&quot;</span>, <span class="ident">ip</span>, <span class="ident">route_header</span>, <span class="ident">content_benc</span>);
         }
@@ -502,7 +504,7 @@
     <span class="kw">let</span> <span class="ident">debug_noisy</span> <span class="op">=</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ms</span> <span class="op">=</span> <span class="ident">server</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>();
         <span class="ident">ms</span>.<span class="ident">current_node</span> <span class="op">=</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>.<span class="ident">clone</span>();
-        <span class="ident">ms</span>.<span class="ident">debug_node</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">ms</span>.<span class="ident">debug_node</span> <span class="op">==</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>
+        <span class="ident">ms</span>.<span class="ident">debug_node</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">ms</span>.<span class="ident">debug_node</span> <span class="op">=</span><span class="op">=</span> <span class="ident">route_header</span>.<span class="ident">ip6</span>
     };
 
     <span class="kw">let</span> <span class="ident">self_version</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">self_node</span>) <span class="op">=</span> <span class="ident">server</span>.<span class="ident">mut_state</span>.<span class="ident">lock</span>().<span class="ident">self_node</span>.<span class="ident">as_ref</span>() {
@@ -512,7 +514,7 @@
     };
 
     <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">sq</span>.<span class="ident">as_str</span>() {
-        <span class="string">&quot;gr&quot;</span> <span class="op">=&gt;</span> {
+        <span class="string">&quot;gr&quot;</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="op">!</span><span class="ident">content_benc</span>.<span class="ident">has_dict_entry</span>(<span class="string">&quot;src&quot;</span>) {
                 <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;missing src&quot;</span>);
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
@@ -574,10 +576,10 @@
             <span class="prelude-val">Some</span>((<span class="ident">res</span>.<span class="ident">build</span>(), <span class="ident">version</span>))
         }
 
-        <span class="string">&quot;ann&quot;</span> <span class="kw">if</span> <span class="ident">content_benc</span>.<span class="ident">has_dict_entry</span>(<span class="string">&quot;ann&quot;</span>) <span class="op">=&gt;</span> {
+        <span class="string">&quot;ann&quot;</span> <span class="kw">if</span> <span class="ident">content_benc</span>.<span class="ident">has_dict_entry</span>(<span class="string">&quot;ann&quot;</span>) <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">ann</span> <span class="op">=</span> <span class="ident">content_benc</span>.<span class="ident">get_dict_value_bytes</span>(<span class="string">&quot;ann&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;benc &#39;ann&#39; entry&quot;</span>); <span class="comment">// Safe because of the check above</span>
 
-            <span class="kw">let</span> (<span class="ident">state_hash</span>, <span class="ident">reply_err</span>) <span class="op">=</span> <span class="ident">server</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">ann</span>, <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="ident">debug_noisy</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let</span> (<span class="ident">state_hash</span>, <span class="ident">reply_err</span>) <span class="op">=</span> <span class="ident">server</span>.<span class="ident">handle_announce_impl</span>(<span class="ident">ann</span>, <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="ident">debug_noisy</span>)).<span class="ident">await</span><span class="question-mark">?</span>;
             <span class="kw">if</span> <span class="ident">debug_noisy</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;reply: {:?}&quot;</span>, <span class="ident">hex</span>::<span class="ident">encode</span>(<span class="ident">state_hash</span>.<span class="ident">bytes</span>()));
             }
@@ -594,7 +596,7 @@
             <span class="prelude-val">Some</span>((<span class="ident">res</span>, <span class="ident">version</span>))
         }
 
-        <span class="string">&quot;pn&quot;</span> <span class="op">=&gt;</span> {
+        <span class="string">&quot;pn&quot;</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="kw">if</span> <span class="ident">debug_noisy</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;pn&quot;</span>);
             }
@@ -618,7 +620,7 @@
             <span class="prelude-val">Some</span>((<span class="ident">res</span>.<span class="ident">build</span>(), <span class="ident">version</span>))
         }
 
-        <span class="kw">_</span> <span class="op">=&gt;</span> {
+        <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="macro">warn</span><span class="macro">!</span>(<span class="string">&quot;contentBenc {:?}&quot;</span>, <span class="ident">content_benc</span>);
             <span class="prelude-val">None</span>
         }
@@ -662,14 +664,14 @@
     <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="ident">EncForm</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">EncodingSchemeForm</span> {
         <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Error</span>;
 
-        <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">form</span>: <span class="ident">EncForm</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">form</span>: <span class="ident">EncForm</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
             <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">u32</span>::<span class="ident">from_str_radix</span>(<span class="kw-2">&amp;</span><span class="ident">form</span>.<span class="ident">prefix</span>, <span class="number">16</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;bad prefix: {}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>;
             <span class="ident">EncodingSchemeForm</span>::<span class="ident">try_new</span>(<span class="ident">form</span>.<span class="ident">bit_count</span>, <span class="ident">form</span>.<span class="ident">prefix_len</span>, <span class="ident">prefix</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">anyhow</span><span class="macro">!</span>(<span class="string">&quot;bad encoding form: {}&quot;</span>, <span class="ident">e</span>))
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">try_parse_encoding_scheme</span>(<span class="ident">encoding_scheme</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EncForm</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">encoding_forms</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">EncForm</span>::<span class="ident">try_into</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="kw">_</span><span class="op">&gt;&gt;</span>()<span class="question-mark">?</span>;
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">try_parse_encoding_scheme</span>(<span class="ident">encoding_scheme</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EncForm</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">EncodingScheme</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">encoding_forms</span> <span class="op">=</span> <span class="ident">encoding_scheme</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">EncForm</span>::<span class="ident">try_into</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">encoding_scheme</span> <span class="op">=</span> <span class="ident">EncodingScheme</span>::<span class="ident">try_new</span>(<span class="kw-2">&amp;</span><span class="ident">encoding_forms</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">encoding_scheme</span>)
     }
