@@ -29,6 +29,50 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS Crypto library.</span>
 <span class="doccomment">//! Wraps sodiumoxide so that the same version is used everywhere.</span>
@@ -36,8 +80,6 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">hash</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">scalarmult</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">crypto</span>::<span class="ident">sign</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">init</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sodiumoxide</span>::<span class="ident">randombytes</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sign_ext</span> {
     <span class="kw">use</span> <span class="ident">libsodium_sys</span>::<span class="ident">crypto_sign_ed25519_pk_to_curve25519</span>;
@@ -55,6 +97,52 @@
             <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
         } <span class="kw">else</span> {
             <span class="prelude-val">Err</span>(())
+        }
+    }
+}
+
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">random</span> {
+    <span class="kw">use</span> <span class="ident">parking_lot</span>::<span class="ident">Once</span>;
+
+    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Random</span> {
+        <span class="kw">fn</span> <span class="ident">random_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]);
+    }
+
+    <span class="doccomment">/// Default `Random` implementation which uses sodiumoxide as backend.</span>
+    <span class="comment">// Use a dummy private field so it cannot be instantiated</span>
+    <span class="comment">// without call to `new()`</span>
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DefaultRandom</span>(());
+
+    <span class="kw">impl</span> <span class="ident">DefaultRandom</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, ()<span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="self">Self</span>::<span class="ident">init_sodiumoxide</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">DefaultRandom</span>(()))
+            } <span class="kw">else</span> {
+                <span class="prelude-val">Err</span>(())
+            }
+        }
+
+        <span class="kw">fn</span> <span class="ident">init_sodiumoxide</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+            <span class="kw">static</span> <span class="ident">INIT_SODIUMOXIDE</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once</span>::<span class="ident">new</span>();
+            <span class="kw">static</span> <span class="kw-2">mut</span> <span class="ident">INITIALIZED</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
+
+            <span class="ident">INIT_SODIUMOXIDE</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">success</span> <span class="op">=</span> <span class="ident">sodiumoxide</span>::<span class="ident">init</span>().<span class="ident">is_ok</span>();
+                <span class="kw">unsafe</span> {
+                    <span class="comment">// Safe because of `call_once()` guarantees</span>
+                    <span class="ident">INITIALIZED</span> <span class="op">=</span> <span class="ident">success</span>;
+                }
+            });
+
+            <span class="comment">// Safe because of `call_once()` guarantees</span>
+            <span class="kw">unsafe</span> { <span class="ident">INITIALIZED</span> }
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">Random</span> <span class="kw">for</span> <span class="ident">DefaultRandom</span> {
+        <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
+        <span class="kw">fn</span> <span class="ident">random_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) {
+            <span class="ident">sodiumoxide</span>::<span class="ident">randombytes</span>::<span class="ident">randombytes_into</span>(<span class="ident">dest</span>);
         }
     }
 }</pre></div>

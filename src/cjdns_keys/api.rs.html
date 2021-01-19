@@ -110,39 +110,21 @@
 <span id="107">107</span>
 <span id="108">108</span>
 <span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! CJDNS API. Used for easy, fast and safe creation of random key pair.</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">convert</span>::<span class="ident">TryFrom</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::{
-    <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
-    <span class="ident">Once</span>,
-};
 
-<span class="kw">use</span> <span class="ident">cjdns_crypto</span>::<span class="ident">init</span>;
+<span class="kw">use</span> <span class="ident">cjdns_crypto</span>::<span class="ident">random</span>::<span class="ident">DefaultRandom</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">CJDNS_IP6</span>, <span class="ident">CJDNSPrivateKey</span>, <span class="ident">CJDNSPublicKey</span>};
 
 <span class="doccomment">/// Type that encapsulates some crate functions making it safer for its users to work with randomly created keys.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The struct initialization ensures thread-safety in runtime. If you don&#39;t need to work with randomly created keys, you can use appropriate key types directly.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CJDNSKeysApi</span>;
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CJDNSKeysApi</span> {
+    <span class="ident">random</span>: <span class="ident">DefaultRandom</span>
+}
 
 <span class="doccomment">/// Convenience type for managing all CJDNS key types in one variable.</span>
 <span class="doccomment">///</span>
@@ -162,9 +144,11 @@
 }
 
 <span class="kw">impl</span> <span class="ident">CJDNSKeysApi</span> {
-    <span class="doccomment">/// Initialization function, which guarantees on success that it will be safe to call methods, which use &quot;randomize&quot; logic (i.e. `key_pair`, `gen_private_key`).</span>
+    <span class="doccomment">/// Initialization function, which guarantees on success that it will be safe to call methods</span>
+    <span class="doccomment">/// which use &quot;randomize&quot; logic (i.e. `key_pair`, `gen_private_key`).</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// If you want to work with randomly created cjdns keys, it&#39;s recommended to first initialize `CJDNSKeysApi`.</span>
+    <span class="doccomment">/// If you want to work with randomly created cjdns keys,</span>
+    <span class="doccomment">/// it&#39;s recommended to first initialize `CJDNSKeysApi`.</span>
     <span class="doccomment">/// For example:</span>
     <span class="doccomment">/// ```rust</span>
     <span class="doccomment">/// use cjdns_keys::CJDNSKeysApi;</span>
@@ -174,25 +158,11 @@
     <span class="doccomment">/// let keys = keys_api.key_pair();</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, ()<span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">Self</span>::<span class="ident">init_sodiumoxide</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="self">Self</span>);
-        }
-        <span class="prelude-val">Err</span>(())
-    }
-
-    <span class="doccomment">/// for thread safety: https://docs.rs/sodiumoxide/0.2.5/sodiumoxide/randombytes/fn.randombytes.html</span>
-    <span class="kw">fn</span> <span class="ident">init_sodiumoxide</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">static</span> <span class="ident">INIT_SODIUMOXIDE</span>: <span class="ident">Once</span> <span class="op">=</span> <span class="ident">Once</span>::<span class="ident">new</span>();
-        <span class="kw">static</span> <span class="ident">INITIALIZED</span>: <span class="ident">AtomicBool</span> <span class="op">=</span> <span class="ident">AtomicBool</span>::<span class="ident">new</span>(<span class="bool-val">false</span>);
-
-        <span class="ident">INIT_SODIUMOXIDE</span>.<span class="ident">call_once</span>(<span class="op">|</span><span class="op">|</span> {
-            <span class="comment">// if any thread reached `store`, which will be executed thread safely and only once, it does not need any strict order for this op.</span>
-            <span class="ident">INITIALIZED</span>.<span class="ident">store</span>(<span class="ident">init</span>().<span class="ident">is_ok</span>(), <span class="ident">Ordering</span>::<span class="ident">Relaxed</span>);
-        });
-
-        <span class="comment">// `Ordering::Relaxed` is used because there can&#39;t be any `stores` after it.</span>
-        <span class="comment">// Explanation: `store` happens in `Once` closure, so no `store` ops will be executed after it.</span>
-        <span class="ident">INITIALIZED</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>)
+        <span class="prelude-val">Ok</span>(
+            <span class="ident">CJDNSKeysApi</span> {
+                <span class="ident">random</span>: <span class="ident">DefaultRandom</span>::<span class="ident">new</span>()<span class="question-mark">?</span>
+            }
+        )
     }
 
     <span class="doccomment">/// Convenience method that generates safely valid key &quot;pair&quot;. Returns `CJDNSKeys` struct with corresponding keys as its fields.</span>
@@ -214,7 +184,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Considered safe, because the method takes immutable reference of the successfully initialized api type instance.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gen_private_key</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">CJDNSPrivateKey</span> {
-        <span class="ident">CJDNSPrivateKey</span>::<span class="ident">new_random</span>()
+        <span class="ident">CJDNSPrivateKey</span>::<span class="ident">new_random</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">random</span>)
     }
 }
 
